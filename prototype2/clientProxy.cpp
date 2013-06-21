@@ -6,32 +6,47 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 #include <string.h>
+#include <sys/types.h>
 
-#include "ProxyFactory.h"
+#include "ProxyStubFactory.h"
 
 int main(void) {
 
+	Protocol *proxy = ProxyStubFactory::createProxy();
+
+	size_t msz;
+	char req[IPC_MAX_MSG_SZ];
+	char ans[IPC_MAX_MSG_SZ];
+
 	printf("Enter lines of text, ^D to quit:\n");
 
-	char buf[200];
+	while (fgets(req, sizeof req, stdin) != NULL) {
 
-	ProtocolProxy *pp = ProxyFactory::createProxy();
-
-	while (fgets(buf, sizeof buf, stdin) != NULL) {
-
-		int len = strlen(buf);
+		int len = strlen(req);
 
 		/* ditch newline at end, if it exists */
-		if (buf[len - 1] == '\n')
-			buf[len - 1] = '\0';
+		if (req[len - 1] == '\n') {
 
-		if (pp->sendMsg(&buf, len + 1) == -1) /* +1 for '\0' */
-			perror("msgsnd");
+			printf("len = %d\n", len);
+			req[len - 1] = '\0';
+		}
+
+		if (!proxy->send(req, len))
+			perror("MsgClient::send");
+
+		if (!proxy->recv(ans, msz))
+			perror("MsgClient::recv");
+
+		printf("got answer: %s\n", ans);
+
+		memset(req, 0, sizeof(req));
+		memset(ans, 0, sizeof(ans));
 	}
 
-	delete pp;
-
+	delete proxy;
 	return 0;
 }
 

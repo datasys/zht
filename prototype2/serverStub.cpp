@@ -5,43 +5,51 @@
  *      Author: Xiaobing Zhou
  */
 
-/*
- * spock.c
- *
- *  Created on: Jun 17, 2013
- *      Author: Xiaobing Zhou
- */
+#include <errno.h>
+#include <sys/types.h>
 
-#include "StubFactory.h"
-#include "MsgShared.h"
-
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main(void) {
+#include "ProxyStubFactory.h"
+#include "mpi_proxy_stub.h"
 
-	struct MsgBuf buf;
-	buf.size = 200;
-	buf.mtext = (char*) calloc(buf.size, sizeof(char));
+int main(int argc, char **argv) {
 
-	printf("spock: ready to receive messages, captain.\n");
+	MPIProxy mpiproxy(argc, argv);
 
-	ProtocolStub *ps = StubFactory::createStub();
-	/* Spock never quits! */
-	for (;;) {
+	size_t msz;
+	char req[IPC_MAX_MSG_SZ];
+	char ans[IPC_MAX_MSG_SZ];
 
-		if (ps->recvMsg(&buf, buf.size) == -1) {
+	Protocol *stub = ProxyStubFactory::createStub();
 
-			perror("msgrcv");
+	for (;;) {/* Spock never quits! */
+
+		if (!stub->recv(req, msz)) {
+
+			perror("MsgServer::recv");
 			exit(1);
 		}
 
-		printf("spock: \"%s\"\n", buf.mtext);
+		if (!mpiproxy.sendrecv(req, msz, ans, msz)) {
 
+			perror("MPIProxy::sendrecv");
+			exit(1);
+		}
+
+		if (!stub->send(ans, msz)) {
+
+			perror("MsgServer::send");
+			exit(1);
+		}
+
+		memset(req, 0, sizeof(req));
+		memset(ans, 0, sizeof(ans));
 	}
 
-	free(buf.mtext);
-	delete ps;
+	delete stub;
 
 	return 0;
 }

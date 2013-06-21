@@ -11,13 +11,11 @@
 #include <string.h>
 #include <sys/types.h>
 
-#include "ipc_plus.h"
-
-using namespace IPC;
+#include "ProxyStubFactory.h"
 
 int main(void) {
 
-	MsgClient mc(1);
+	Protocol *proxy = ProxyStubFactory::createProxy();
 
 	size_t msz;
 	char req[IPC_MAX_MSG_SZ];
@@ -36,10 +34,10 @@ int main(void) {
 			req[len - 1] = '\0';
 		}
 
-		if (!mc.xmit(req, len)) /* +1 for '\0' */
-			perror("MsgClient::xmit");
+		if (!proxy->send(req, len))
+			perror("MsgClient::send");
 
-		if (!mc.recv(ans, msz))
+		if (!proxy->recv(ans, msz))
 			perror("MsgClient::recv");
 
 		printf("got answer: %s\n", ans);
@@ -48,6 +46,7 @@ int main(void) {
 		memset(ans, 0, sizeof(ans));
 	}
 
+	delete proxy;
 	return 0;
 }
 
