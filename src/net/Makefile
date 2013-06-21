@@ -1,4 +1,4 @@
-TARGETS = kirk spock spock2 mpi_server
+TARGETS = kirk spock2 mpi_server
 
 
 CC = g++
@@ -8,9 +8,6 @@ LIBFLAGS = -lmpich
 all:	$(TARGETS)
 	
 kirk: kirk.o ProxyStubFactory.o Protocol.o mq_proxy_stub.o ipc_plus.o
-	$(CC) $(CCFLAGS) -o $@ $^
-
-spock: spock.o MsgShared.o
 	$(CC) $(CCFLAGS) -o $@ $^
 
 
@@ -24,19 +21,12 @@ spock: spock.o MsgShared.o
 	$(CC) $(CCFLAGS) -c $< $^
 
 kirk.o: kirk.cpp
-spock.o: spock.cpp
-MsgShared.o: MsgShared.cpp
 
 
-clientProxy.o: clientProxy.cpp
-serverStub.o: serverStub.cpp
-
+ProxyStubFactory.o: ProxyStubFactory.cpp
 Protocol.o: Protocol.cpp
 mq_proxy_stub.o: mq_proxy_stub.cpp
 ipc_plus.o: ipc_plus.cpp
-ProxyStubFactory.o: ProxyStubFactory.cpp
-
-
 
 
 
