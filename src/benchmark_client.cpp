@@ -44,15 +44,21 @@
 #include <pthread.h>
 #include <error.h>
 
+#include "meta.pb.h"
+#include "Util.h"
+
 using namespace std;
 
 #include "ZHTClient.h"
+#include "ZHTUtil.h"
+
 using namespace iit::datasys::zht::dm;
 
 struct thread_data {
 	vector<struct HostEntity> hostList;
 	list<string> packageList;
 };
+
 vector<struct HostEntity> hostList;
 //list<string> myPackagelist;
 bool TCP;
@@ -76,7 +82,7 @@ int benchmarkInsert(string cfgFile, string zht_conf, string neighbor_conf,
 
 	for (int i = 0; i < numTest; i++) {
 		Package package, package_ret;
-		package.set_virtualpath(randomString(lenString)); //as key
+		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
 		package.set_isdir(true);
 		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
 		package.set_operation(3); // 3 for insert, 1 for look up, 2 for remove
@@ -97,7 +103,7 @@ int benchmarkInsert(string cfgFile, string zht_conf, string neighbor_conf,
 	}
 	double start = 0;
 	double end = 0;
-	start = getTime_msec();
+	start = TimeUtil::getTime_msec();
 	int errCount = 0;
 	vector<string>::iterator it;
 	int c = 0;
@@ -114,7 +120,7 @@ int benchmarkInsert(string cfgFile, string zht_conf, string neighbor_conf,
 		}
 	}
 //close(sock);
-	end = getTime_msec();
+	end = TimeUtil::getTime_msec();
 	cout << "Inserted " << numTest - errCount << " packages out of " << numTest
 			<< ", cost " << end - start << " ms" << endl;
 	return 0;
@@ -127,7 +133,8 @@ int benchmarkAppend(ZHTClient &client, int numTest, int lenString) {
 	vector<string> pkgList_append;
 	for (int i = 0; i < numTest; i++) {
 		Package package, package_ret;
-		package.set_virtualpath(randomString(lenString).append("-append")); //as key
+		package.set_virtualpath(
+				HashUtil::randomString(lenString).append("-append")); //as key
 		package.set_isdir(true);
 		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
 		package.set_operation(4); // 3 for insert, 1 for look up, 2 for remove
@@ -148,7 +155,7 @@ int benchmarkAppend(ZHTClient &client, int numTest, int lenString) {
 	}
 	double start = 0;
 	double end = 0;
-	start = getTime_msec();
+	start = TimeUtil::getTime_msec();
 	int errCount = 0;
 	vector<string>::iterator it;
 	int c = 0;
@@ -169,7 +176,7 @@ int benchmarkAppend(ZHTClient &client, int numTest, int lenString) {
 		}
 	}
 //close(sock);
-	end = getTime_msec();
+	end = TimeUtil::getTime_msec();
 	cout << "Appended " << numTest - errCount << " packages out of " << numTest
 			<< ", cost " << end - start << " ms" << endl;
 	return 0;
@@ -194,7 +201,7 @@ int benmarkTimeAnalize(string cfgFile, string zht_conf, string neighbor_conf,
 	int i = 0;
 	for (i = 0; i < numTest; i++) {
 		Package package, package_ret;
-		package.set_virtualpath(randomString(lenString)); //as key
+		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
 		package.set_isdir(true);
 		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
 		package.set_operation(3); // 3 for insert, 1 for look up, 2 for remove
@@ -226,14 +233,14 @@ int benmarkTimeAnalize(string cfgFile, string zht_conf, string neighbor_conf,
 	ofstream record;
 	record.open(Recordpath.c_str());
 
-	start = getTime_msec();
+	start = TimeUtil::getTime_msec();
 	for (it = pkgList.begin(); it != pkgList.end(); it++) {
 //		cout<<c<<endl;
 		c++;
 		double interval = 0;
-		istart = getTime_usec();
+		istart = TimeUtil::getTime_usec();
 		int op_ret = client.insert((*it));
-		iend = getTime_usec();
+		iend = TimeUtil::getTime_usec();
 
 		if (op_ret < 0) {
 			errCount++;
@@ -244,7 +251,7 @@ int benmarkTimeAnalize(string cfgFile, string zht_conf, string neighbor_conf,
 		timeRecord[c] = interval;
 
 	}
-	end = getTime_msec();
+	end = TimeUtil::getTime_msec();
 	record.close();
 
 	cout << "Inserted " << numTest - errCount << " packages out of " << numTest
@@ -258,7 +265,7 @@ float benchmarkLookup(vector<string> strList, ZHTClient &client) {
 
 	double start = 0;
 	double end = 0;
-	start = getTime_msec();
+	start = TimeUtil::getTime_msec();
 	int errCount = 0;
 //cout << "Client: benchmarkLookup: start lookup \n";
 	int c = 0;
@@ -281,7 +288,7 @@ float benchmarkLookup(vector<string> strList, ZHTClient &client) {
 //		cout << result.c_str() << endl;
 	}
 
-	end = getTime_msec();
+	end = TimeUtil::getTime_msec();
 
 	cout << "Lookup " << strList.size() - errCount << " packages out of "
 			<< strList.size() << ", cost " << end - start << " ms" << endl;
@@ -304,7 +311,7 @@ float benchmarkRemove(vector<string> strList, ZHTClient &client) {
 
 	double start = 0;
 	double end = 0;
-	start = getTime_msec();
+	start = TimeUtil::getTime_msec();
 	int errCount = 0;
 	int c = 0;
 	for (it = strList.begin(); it != strList.end(); it++) {
@@ -319,7 +326,7 @@ float benchmarkRemove(vector<string> strList, ZHTClient &client) {
 
 	}
 
-	end = getTime_msec();
+	end = TimeUtil::getTime_msec();
 
 	cout << "Remove " << strList.size() - errCount << " packages out of "
 			<< strList.size() << ", cost " << end - start << " ms" << endl;
@@ -346,7 +353,7 @@ int main(int argc, char* argv[]) {
 	 //cout<<"Client random n = "<<v<<endl;
 	 srand(v);
 	 */
-	srand(getpid() + getTime_usec());
+	srand(getpid() + TimeUtil::getTime_usec());
 	char* isTCP = argv[4];
 //	cout<<"Protocol = "<<isTCP<<endl;
 	/*if (!strcmp("TCP", isTCP)) {

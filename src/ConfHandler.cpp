@@ -45,6 +45,7 @@ namespace datasys {
 namespace zht {
 namespace dm {
 
+ConfHandler::VEC ConfHandler::NeighborVector = VEC();
 ConfHandler::MAP ConfHandler::NeighborSeeds = MAP();
 ConfHandler::MAP ConfHandler::ZHTParameters = MAP();
 ConfHandler::MAP ConfHandler::NodeParameters = MAP();

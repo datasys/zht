@@ -40,6 +40,18 @@ namespace datasys {
 namespace zht {
 namespace dm {
 
+class TimeUtil {
+public:
+	TimeUtil();
+	virtual ~TimeUtil();
+
+	static double getTime_usec();
+
+	static double getTime_msec();
+
+	static double getTime_sec();
+};
+
 /*
  *
  */

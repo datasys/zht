@@ -28,9 +28,9 @@ public:
 
 	virtual bool teardown();
 
-public:
-	static int getSockCached(const string& host, const uint& port);
-	static int makeClientSocket(const string& host, const uint& port);
+protected:
+	virtual int getSockCached(const string& host, const uint& port);
+	virtual int makeClientSocket(const string& host, const uint& port);
 
 private:
 	static int CACHE_SIZE;

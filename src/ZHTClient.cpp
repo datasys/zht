@@ -32,6 +32,7 @@
 
 #include "meta.pb.h"
 #include "ConfHandler.h"
+#include "Env.h"
 
 namespace iit {
 namespace datasys {

@@ -11,6 +11,7 @@
 #include "Protocol.h"
 
 #include <string>
+#include <sys/types.h>
 using namespace std;
 
 /*
@@ -22,7 +23,7 @@ public:
 	virtual ~IPProtocol();
 
 protected:
-	int reuseSock(int sock);
+	virtual int reuseSock(int sock) = 0;
 };
 
 #endif /* IPPROTOCOL_H_ */

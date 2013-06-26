@@ -36,7 +36,6 @@
 #include <string>
 using namespace std;
 
-#include "zht_util.h"
 #include "lru_cache.h"
 
 #include "ProxyStubFactory.h"

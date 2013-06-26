@@ -47,9 +47,6 @@ namespace datasys {
 namespace zht {
 namespace dm {
 
-/*
- * todo: monitor node.cfg
- */
 class ConfHandler {
 public:
 	typedef map<string, ConfEntry> MAP;

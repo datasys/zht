@@ -7,10 +7,10 @@ COMMON = common/
 all:	$(TARGETS)
 	
 
-zht_benchmark: benchmark_client.o ZHTClient.o meta.pb-c.o lru_cache.o meta.pb.o net_util.o novoht.o zht_util.o \
+zht_benchmark: benchmark_client.o ZHTClient.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o \
 Const.o ConfHandler.o ConfEntry.o \
 ProxyStubFactory.o Protocol.o IPProtocol.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o ZHTUtil.o \
-bigdata_transfer.o Env.o
+bigdata_transfer.o Env.o Util.o
 	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
 
 
@@ -34,9 +34,9 @@ ZHTClient.o: ZHTClient.cpp
 meta.pb-c.o: meta.pb-c.c
 lru_cache.o: lru_cache.cpp	
 meta.pb.o: meta.pb.cc
-net_util.o: net_util.cpp
+#net_util.o: net_util.cpp
 novoht.o: novoht.cpp
-zht_util.o: zht_util.cpp
+#zht_util.o: zht_util.cpp
 
 Const.o: Const.cpp
 ConfHandler.o: ConfHandler.cpp
@@ -52,6 +52,7 @@ udp_proxy_stub.o: udp_proxy_stub.cpp
 ZHTUtil.o: ZHTUtil.cpp
 bigdata_transfer.o: bigdata_transfer.cpp
 Env.o: Env.cpp
+Util.o: Util.cpp
 
 .PHONY:	clean
 	

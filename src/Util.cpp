@@ -30,6 +30,7 @@
 
 #include "Util.h"
 
+#include <sys/time.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <sstream>
@@ -39,6 +40,42 @@ namespace iit {
 namespace datasys {
 namespace zht {
 namespace dm {
+
+TimeUtil::TimeUtil() {
+
+}
+
+TimeUtil::~TimeUtil() {
+
+}
+
+double TimeUtil::getTime_usec() {
+
+	struct timeval tp;
+
+	gettimeofday(&tp, NULL);
+	return static_cast<double>(tp.tv_sec) * 1E6
+			+ static_cast<double>(tp.tv_usec);
+}
+
+double TimeUtil::getTime_msec() {
+
+	struct timeval tp;
+
+	gettimeofday(&tp, NULL);
+	return static_cast<double>(tp.tv_sec) * 1E3
+			+ static_cast<double>(tp.tv_usec) / 1E3;
+
+}
+
+double TimeUtil::getTime_sec() {
+
+	struct timeval tp;
+
+	gettimeofday(&tp, NULL);
+	return static_cast<double>(tp.tv_sec)
+			+ static_cast<double>(tp.tv_usec) / 1E6;
+}
 
 const int HashUtil::LEN_BASE = 15;
 const uint64_t HashUtil::ULL_MAX = (uint64_t) -1;

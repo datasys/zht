@@ -27,9 +27,9 @@ public:
 
 	virtual bool teardown();
 
-private:
-	static int getSockCached(const string& host, const uint& port);
-	static int makeClientSocket(const string& host, const uint& port);
+protected:
+	virtual int getSockCached(const string& host, const uint& port);
+	virtual int makeClientSocket(const string& host, const uint& port);
 
 private:
 	int udpSendTo(int sock, const string &host, uint port, const char* sendbuf,
