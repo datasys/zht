@@ -26,16 +26,6 @@ UDPProxy::UDPProxy() {
 UDPProxy::~UDPProxy() {
 }
 
-bool UDPProxy::send(const void *sendbuf, const size_t sendcount) {
-
-	return false;
-}
-
-bool UDPProxy::recv(void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
 bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 		void *recvbuf, size_t &recvcount) {
 
@@ -55,7 +45,7 @@ bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 	int sent_bool = sentSize == sendcount;
 
 	/*receive response*/
-	recvcount = udpRecvFrom(sock, recvbuf, sizeof(recvbuf)); //todo: sizeof(recvbuf)
+	recvcount = udpRecvFrom(sock, recvbuf, recvcount);
 
 	int recv_bool = recvcount >= 0;
 
@@ -102,7 +92,9 @@ int UDPProxy::udpRecvFrom(int sock, void* recvbuf, int recvbufsize) {
 
 bool UDPProxy::teardown() {
 
-	return true;
+	int rc = close(UDP_SOCKET);
+
+	return rc == 0;
 }
 
 int UDPProxy::getSockCached(const string& host, const uint& port) {
@@ -147,23 +139,8 @@ UDPStub::UDPStub() {
 UDPStub::~UDPStub() {
 }
 
-bool UDPStub::recv(void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool UDPStub::send(const void *sendbuf, const size_t sendcount) {
-
-	return false;
-}
-
-bool UDPStub::sendrecv(const void *sendbuf, const size_t sendcount,
-		void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool UDPStub::teardown() {
+bool UDPStub::recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
+		const size_t sendcount) {
 
 	return true;
 }

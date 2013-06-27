@@ -32,16 +32,6 @@ TCPProxy::TCPProxy() {
 TCPProxy::~TCPProxy() {
 }
 
-bool TCPProxy::send(const void *sendbuf, const size_t sendcount) {
-
-	return false;
-}
-
-bool TCPProxy::recv(void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
 bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 		void *recvbuf, size_t &recvcount) {
 
@@ -62,7 +52,7 @@ bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 	int sent_bool = sentSize == sendcount;
 
 	/*receive response*/ //todo: loopedReceive for zht_lookup
-	recvcount = ::recv(sock, recvbuf, sizeof(recvbuf), 0); //todo: sizeof(recvbuf)
+	recvcount = ::recv(sock, recvbuf, recvcount, 0);
 
 	if (recvcount < 0) {
 
@@ -78,6 +68,7 @@ bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 bool TCPProxy::teardown() {
 
+	//todo: close all socket cached
 	return true;
 }
 
@@ -146,153 +137,6 @@ int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 
 }
 
-/*HostEntity he;
- if (phe == NULL) {
-
- getHostByKey(msg, he);
- if (!he.host.empty())
- phe = &he;
- }
-
- if (phe == NULL)
- return Const::ZSC_REC_CLTFAIL; //-2
-
- int sock = getSockCached(phe, TCP);
- reuseSock(sock);
-
- ...send...
- int ssize = generalSendTo(phe->host.data(), phe->port, sock, msg.c_str(),
- msg.size(), TCP);
- */
-
-/*
-
- const string ZHTClient::getDestZHTByKey(const HostEntity& coordinator,
- const string& msg, string& destZHT) {
-
- Package pkg;
- pkg.ParseFromString(msg);
- pkg.set_opcode(Const::ZSC_OPC_GET_DESTZHT);
-
- string result;
- string sstatus = sendPkgInternal(coordinator.host, coordinator.port,
- pkg.SerializeAsString(), result);
-
- Package pkg2;
- pkg2.ParseFromString(result);
-
- destZHT = pkg2.targetzht();
-
- return sstatus;
- }
- */
-
-/*
-
-
- const string ZHTClient::getHostByKey(const string& msg, HostEntity& he) {
-
- Package pkg;
- pkg.ParseFromString(msg);
-
- int index = HashUtil::genHash(pkg.virtualpath()) % _MemList.size(); //todo: problem when shrink the size of ZHT network.
-
- string destZHT;
- string sstatus = getDestZHTByKey(_MemList.at(index), msg, destZHT);
-
- if (!destZHT.empty())
- he = getHostEntity(Address::getHost(destZHT),
- Address::getPort(destZHT));
-
- return sstatus;
- }
-
-
-
- int ZHTClient::getSockCached(const HostEntity* phe, const bool& tcp) {
-
- int sock = 0;
-
- if (phe == NULL)
- return sock;
-
- return getSockCached(phe->host, phe->port, tcp);
-
- }
-
- int ZHTClient::getSockCached(const string& host, const uint& port,
- const bool& tcp) {
-
- int sock = 0;
-
- string hashKey = HashUtil::genBase(host, port);
-
- if (tcp == true) {
-
- sock = CONN_CACHE.fetch(hashKey, tcp);
-
- if (sock <= 0) {
-
- sock = makeClientSocket(host.c_str(), port, tcp);
-
- if (sock <= 0) {
-
- cerr << "Client insert:making connection failed." << endl;
- sock = -1;
- } else {
-
- int tobeRemoved = -1;
- CONN_CACHE.insert(hashKey, sock, tobeRemoved);
-
- if (tobeRemoved != -1) {
- close(tobeRemoved);
- }
- }
- }
- } else {
-
- if (UDP_SOCKET <= 0) {
- sock = makeClientSocket(host.c_str(), port, tcp);
- UDP_SOCKET = sock;
- } else
- sock = UDP_SOCKET;
- }
-
- return sock;
- }
-
-
-
- int ZHTClient::tearDown() {
-
- int rcode = 0;
-
- try {
- if (TCP == true) {
-
- int size = _MemList.size();
-
- for (int i = 0; i < size; i++) {
-
- struct HostEntity dest = _MemList.at(i);
- int sock = dest.sock;
-
- if (sock > 0) {
- close(sock);
- }
- }
- }
- } catch (exception& e) {
-
- fprintf(stderr, "%s, exception caught:\n\t%s", "ZHTClient::tearDown",
- e.what());
- rcode = -1;
- }
-
- return rcode;
- }
- */
-
 TCPStub::TCPStub() {
 
 }
@@ -300,23 +144,8 @@ TCPStub::TCPStub() {
 TCPStub::~TCPStub() {
 }
 
-bool TCPStub::send(const void *sendbuf, const size_t sendcount) {
-
-	return false;
-}
-
-bool TCPStub::recv(void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool TCPStub::sendrecv(const void *sendbuf, const size_t sendcount,
-		void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool TCPStub::teardown() {
+bool TCPStub::recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
+		const size_t sendcount) {
 
 	return true;
 }

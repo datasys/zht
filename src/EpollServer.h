@@ -22,58 +22,68 @@
  * Data-Intensive Distributed Systems Laboratory, 10 W. 31st Street,
  * Stuart Building, Room 003B, Chicago, IL 60616 USA.
  *
- * ZHTClient.h
+ * EpollServer.h
  *
- *  Created on: Sep 16, 2012
+ *  Created on: Aug 9, 2012
  *      Author: tony, xiaobingo
  */
 
-#ifndef ZHTCLIENT_H_
-#define ZHTCLIENT_H_
+#ifndef EPOLLSERVER_H_
+#define EPOLLSERVER_H_
 
-#include <stdint.h>
-#include <map>
-#include <string>
-using namespace std;
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include "ZProcessor.h"
 
-#include "lru_cache.h"
-
-#include "ProxyStubFactory.h"
+#include "bigdata_transfer.h"
 
 namespace iit {
 namespace datasys {
 namespace zht {
 namespace dm {
 
+class EpollData {
+public:
+	EpollData(const int& fd, const sockaddr * const sender);
+	virtual ~EpollData();
+
+	int fd() const;
+	const sockaddr * const sender() const;
+
+private:
+	int _fd;
+	const sockaddr * const _sender;
+};
 /*
  *
  */
-class ZHTClient {
-
+class EpollServer {
 public:
-	ZHTClient();
+	EpollServer(ZProcessor *processor, bool tcp = true);
+	virtual ~EpollServer();
 
-	ZHTClient(const string& zht_conf, const string& neighbor_conf);
-	virtual ~ZHTClient();
-
-	int init(const string& zht_conf, const string& neighbor_conf);
-	int lookup(const string& pair, string& result);
-	int remove(const string& pair);
-	int insert(const string& pair);
-	int tearDown();
+	int serve(const char *port);
 
 private:
-	int commonOp(const string& opcode, const string& pair, string& result);
-	string commonOpInternal(const string& opcode, const string& pair,
-			string& result);
-	void parseStatusAndResult(string& sstatus, string& result);
+	int create_and_bind(const char *port);
+	int create_and_bind(const char *host, const char *port);
+	int make_socket_non_blocking(const int& sfd);
+	int makeSvrSocket(int port);
+	int reuseSock(int sock);
 
 private:
-	ProtoProxy *proxy;
+	EpollServer();
+	bool _tcp;
+	static const int MAX_EVENTS;
+	static const uint MAX_MSG_SIZE;
+	ZProcessor *_ZProcessor;
+	BdRecvBase *pbrb;
+
 };
 
 } /* namespace dm */
 } /* namespace zht */
 } /* namespace datasys */
 } /* namespace iit */
-#endif /* ZHTCLIENT_H_ */
+#endif /* EPOLLSERVER_H_ */

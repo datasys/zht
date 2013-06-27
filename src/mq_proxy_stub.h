@@ -8,7 +8,7 @@
 #ifndef MQ_PROXY_STUB_H_
 #define MQ_PROXY_STUB_H_
 
-#include "Protocol.h"
+#include "proxy_stub.h"
 
 #include "ipc_plus.h"
 using namespace IPC;
@@ -16,7 +16,7 @@ using namespace IPC;
 /*
  *
  */
-class MQProxy: public Protocol {
+class MQProxy: public ProtoProxy {
 public:
 	MQProxy();
 	explicit MQProxy(const unsigned int key0);
@@ -26,16 +26,11 @@ public:
 
 	virtual bool recv(void *recvbuf, size_t &recvcount);
 
-	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
-			void *recvbuf, size_t &recvcount);
-
-	virtual bool teardown();
-
 private:
 	MsgClient _mc;
 };
 
-class MQStub: public Protocol {
+class MQStub: public ProtoStub {
 public:
 	MQStub();
 	explicit MQStub(const unsigned int key0);
@@ -44,11 +39,6 @@ public:
 	virtual bool send(const void *sendbuf, const size_t sendcount);
 
 	virtual bool recv(void *recvbuf, size_t &recvcount);
-
-	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
-			void *recvbuf, size_t &recvcount);
-
-	virtual bool teardown();
 
 private:
 	MsgServer _ms;

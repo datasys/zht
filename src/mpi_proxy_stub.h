@@ -8,7 +8,7 @@
 #ifndef MPI_PROXY_STUB_H_
 #define MPI_PROXY_STUB_H_
 
-#include "Protocol.h"
+#include "proxy_stub.h"
 
 #include "ipc_plus.h"
 using namespace IPC;
@@ -16,7 +16,7 @@ using namespace IPC;
 /*
  *
  */
-class MPIProxy: public Protocol {
+class MPIProxy: public ProtoProxy {
 
 private:
 	MPIProxy();
@@ -25,14 +25,8 @@ public:
 	MPIProxy(int argc, char **argv);
 	virtual ~MPIProxy();
 
-	virtual bool send(const void *sendbuf, const size_t sendcount);
-
-	virtual bool recv(void *recvbuf, size_t &recvcount);
-
 	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
 			void *recvbuf, size_t &recvcount);
-
-	virtual bool teardown();
 
 private:
 	virtual int get_mpi_dest();
@@ -42,19 +36,13 @@ private:
 	int rank;
 };
 
-class MPIStub: public Protocol {
+class MPIStub: public ProtoStub {
 
 public:
 	MPIStub();
 	virtual ~MPIStub();
 
-	virtual bool send(const void *sendbuf, const size_t sendcount);
-
-	virtual bool recv(void *recvbuf, size_t &recvcount);
-
-	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
-			void *recvbuf, size_t &recvcount);
-
-	virtual bool teardown();
+	virtual bool recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
+			const size_t sendcount);
 };
 #endif /* MPI_PROXY_STUB_H_ */

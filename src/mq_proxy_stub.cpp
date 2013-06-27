@@ -29,17 +29,6 @@ bool MQProxy::recv(void *recvbuf, size_t &recvcount) {
 	return _mc.recv(recvbuf, recvcount);
 }
 
-bool MQProxy::sendrecv(const void *sendbuf, const size_t sendcount,
-		void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool MQProxy::teardown() {
-
-	return true;
-}
-
 MQStub::MQStub() :
 		_ms(1) {
 
@@ -60,15 +49,4 @@ bool MQStub::send(const void *sendbuf, const size_t sendcount) {
 bool MQStub::recv(void *recvbuf, size_t &recvcount) {
 
 	return _ms.recv(recvbuf, recvcount);
-}
-
-bool MQStub::sendrecv(const void *sendbuf, const size_t sendcount,
-		void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool MQStub::teardown() {
-
-	return true;
 }

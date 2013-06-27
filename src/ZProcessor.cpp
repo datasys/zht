@@ -22,58 +22,66 @@
  * Data-Intensive Distributed Systems Laboratory, 10 W. 31st Street,
  * Stuart Building, Room 003B, Chicago, IL 60616 USA.
  *
- * ZHTClient.h
+ * ZProcessor.cpp
  *
- *  Created on: Sep 16, 2012
+ *  Created on: Aug 9, 2012
  *      Author: tony, xiaobingo
  */
 
-#ifndef ZHTCLIENT_H_
-#define ZHTCLIENT_H_
+#include "ZProcessor.h"
+#include "Const-impl.h"
 
-#include <stdint.h>
-#include <map>
-#include <string>
+#include <sys/socket.h>
+#include <stdio.h>
+
 using namespace std;
-
-#include "lru_cache.h"
-
-#include "ProxyStubFactory.h"
 
 namespace iit {
 namespace datasys {
 namespace zht {
 namespace dm {
 
-/*
- *
- */
-class ZHTClient {
+ZProcessor::ZProcessor() {
 
-public:
-	ZHTClient();
+}
 
-	ZHTClient(const string& zht_conf, const string& neighbor_conf);
-	virtual ~ZHTClient();
+ZProcessor::~ZProcessor() {
 
-	int init(const string& zht_conf, const string& neighbor_conf);
-	int lookup(const string& pair, string& result);
-	int remove(const string& pair);
-	int insert(const string& pair);
-	int tearDown();
+}
 
-private:
-	int commonOp(const string& opcode, const string& pair, string& result);
-	string commonOpInternal(const string& opcode, const string& pair,
-			string& result);
-	void parseStatusAndResult(string& sstatus, string& result);
+void ZProcessor::sendback(const int& fd, const char *buf, const size_t& count,
+		sockaddr receiver, const int& protocol) {
 
-private:
-	ProtoProxy *proxy;
-};
+	int i = -2;
+	try {
+		if (protocol == Const::PROTO_STREAM) {
+
+			i = send(fd, buf, count, 0);
+#if ILOG
+			fprintf(stdout, "in sendback, send to sock(%d), %d bytes sent\n",
+					fd, i);
+#endif
+		} else if (protocol == Const::PROTO_UGRADM) {
+
+			i = sendto(fd, buf, count, 0, (struct sockaddr*) &receiver,
+					sizeof(struct sockaddr));
+#if ILOG
+			fprintf(stdout, "in sendback, send to sock(%d), %d bytes sent\n",
+					fd, i);
+#endif
+		} else {
+		}
+	} catch (exception& e) {
+
+		fprintf(stderr, "%s, exception caught:\n\t%s",
+				"ZProcessor::sendback(const int& fd, const char *buf, const size_t& count, const sockaddr& receiver, const int& protocol)",
+				e.what());
+	}
+
+}
 
 } /* namespace dm */
 } /* namespace zht */
 } /* namespace datasys */
 } /* namespace iit */
-#endif /* ZHTCLIENT_H_ */
+

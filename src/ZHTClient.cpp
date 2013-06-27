@@ -51,7 +51,11 @@ ZHTClient::ZHTClient(const string& zht_conf, const string& neighbor_conf) {
 
 ZHTClient::~ZHTClient() {
 
-	delete proxy;
+	if (proxy != NULL) {
+
+		delete proxy;
+		proxy = NULL;
+	}
 }
 
 int ZHTClient::init(const string& zht_conf, const string& neighbor_conf) {
@@ -116,9 +120,10 @@ string ZHTClient::commonOpInternal(const string& opcode, const string& pair,
 
 	string msg = pkg.SerializeAsString();
 
-	size_t msz;
 	char buf[Env::MAX_MSG_SIZE];
 	memset(buf, 0, sizeof(buf));
+
+	size_t msz = sizeof(buf);
 
 	/*send to and receive from*/
 	proxy->sendrecv(msg.c_str(), msg.size(), buf, msz);

@@ -8,19 +8,15 @@
 #ifndef UDP_PROXY_STUB_H_
 #define UDP_PROXY_STUB_H_
 
-#include "IPProtocol.h"
+#include "ip_proxy_stub.h"
 
 /*
  *
  */
-class UDPProxy: public IPProtocol {
+class UDPProxy: public IPProtoProxy {
 public:
 	UDPProxy();
 	virtual ~UDPProxy();
-
-	virtual bool send(const void *sendbuf, const size_t sendcount);
-
-	virtual bool recv(void *recvbuf, size_t &recvcount);
 
 	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
 			void *recvbuf, size_t &recvcount);
@@ -40,19 +36,13 @@ private:
 	static int UDP_SOCKET;
 };
 
-class UDPStub: public IPProtocol {
+class UDPStub: public IPProtoStub {
 public:
 	UDPStub();
 	virtual ~UDPStub();
 
-	virtual bool send(const void *sendbuf, const size_t sendcount);
-
-	virtual bool recv(void *recvbuf, size_t &recvcount);
-
-	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
-			void *recvbuf, size_t &recvcount);
-
-	virtual bool teardown();
+	virtual bool recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
+			const size_t sendcount);
 };
 
 #endif /* UDP_PROXY_STUB_H_ */

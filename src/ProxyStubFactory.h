@@ -8,7 +8,7 @@
 #ifndef PROXYSTUBFACTORY_H_
 #define PROXYSTUBFACTORY_H_
 
-#include "Protocol.h"
+#include "proxy_stub.h"
 /*
  *
  */
@@ -17,9 +17,9 @@ public:
 	ProxyStubFactory();
 	virtual ~ProxyStubFactory();
 
-	static Protocol* createProxy();
+	static ProtoProxy* createProxy();
 
-	static Protocol* createStub();
+	static ProtoStub* createStub();
 };
 
 #endif /* PROXYSTUBFACTORY_H_ */

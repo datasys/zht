@@ -94,6 +94,16 @@ public:
 	static const string ZC_PROTOCOL;
 
 	/*
+	 * PROTO_: protocol
+	 */
+	static const string PROTO_NAME;
+	static const string PROTO_PORT;
+	static const string PROTO_VAL_TCP;
+	static const string PROTO_VAL_UDP;
+	static const string PROTO_VAL_UDT;
+	static const string PROTO_VAL_MPI;
+
+	/*
 	 * ASC_: admin server(service) chars
 	 * ASI_: admin server(service) integers
 	 * OPC_: operation code

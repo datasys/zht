@@ -60,6 +60,13 @@ const string Const::ZC_HTDATA_PATH = "HTDATA_PATH";
 const string Const::ZC_MIGSLP_TIME = "MIGSLP_TIME";
 const string Const::ZC_PROTOCOL = "PROTOCOL";
 
+const string Const::PROTO_NAME = "PROTOCOL";
+const string Const::PROTO_PORT = "PORT";
+const string Const::PROTO_VAL_TCP = "TCP";
+const string Const::PROTO_VAL_UDP = "UDP";
+const string Const::PROTO_VAL_UDT = "UDT";
+const string Const::PROTO_VAL_MPI = "MPI";
+
 const string Const::ASC_OPC_AZ_ALL = "101";
 const string Const::ASC_OPC_AZ_PORT = "102";
 const string Const::ASC_OPC_AZ_IPPORT = "103";

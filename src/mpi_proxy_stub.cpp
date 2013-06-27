@@ -32,16 +32,6 @@ MPIProxy::~MPIProxy() {
 	MPI_Finalize();
 }
 
-bool MPIProxy::send(const void *sendbuf, const size_t sendcount) {
-
-	return false;
-}
-
-bool MPIProxy::recv(void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
 bool MPIProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 		void *recvbuf, size_t &recvcount) {
 
@@ -71,11 +61,6 @@ int MPIProxy::get_mpi_dest() {
 	return rand() % (size - 1);
 }
 
-bool MPIProxy::teardown() {
-
-	return true;
-}
-
 MPIStub::MPIStub() {
 
 }
@@ -83,23 +68,8 @@ MPIStub::MPIStub() {
 MPIStub::~MPIStub() {
 }
 
-bool MPIStub::send(const void *sendbuf, const size_t sendcount) {
-
-	return false;
-}
-
-bool MPIStub::recv(void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool MPIStub::sendrecv(const void *sendbuf, const size_t sendcount,
-		void *recvbuf, size_t &recvcount) {
-
-	return false;
-}
-
-bool MPIStub::teardown() {
+bool MPIStub::recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
+		const size_t sendcount) {
 
 	return true;
 }

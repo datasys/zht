@@ -1,11 +1,11 @@
 /*
- * IPProtocol.cpp
+ * ip_proxy_stub.cpp
  *
  *  Created on: Jun 25, 2013
  *      Author: Xiaobing Zhou
  */
 
-#include "IPProtocol.h"
+#include "ip_proxy_stub.h"
 
 #include <sys/socket.h>
 #include <string.h>
@@ -14,13 +14,13 @@
 
 using namespace std;
 
-IPProtocol::IPProtocol() {
+IPProtoProxy::IPProtoProxy() {
 }
 
-IPProtocol::~IPProtocol() {
+IPProtoProxy::~IPProtoProxy() {
 }
 
-int IPProtocol::reuseSock(int sock) {
+int IPProtoProxy::reuseSock(int sock) {
 
 	int reuse_addr = 1;
 	int ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse_addr,
@@ -30,4 +30,10 @@ int IPProtocol::reuseSock(int sock) {
 		return -1;
 	} else
 		return 0;
+}
+
+IPProtoStub::IPProtoStub() {
+}
+
+IPProtoStub::~IPProtoStub() {
 }

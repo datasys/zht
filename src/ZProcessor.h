@@ -22,23 +22,18 @@
  * Data-Intensive Distributed Systems Laboratory, 10 W. 31st Street,
  * Stuart Building, Room 003B, Chicago, IL 60616 USA.
  *
- * ZHTClient.h
+ * ZProcessor.h
  *
- *  Created on: Sep 16, 2012
+ *  Created on: Aug 9, 2012
  *      Author: tony, xiaobingo
  */
 
-#ifndef ZHTCLIENT_H_
-#define ZHTCLIENT_H_
+#ifndef ZPROCESSOR_H_
+#define ZPROCESSOR_H_
 
-#include <stdint.h>
-#include <map>
-#include <string>
-using namespace std;
-
-#include "lru_cache.h"
-
-#include "ProxyStubFactory.h"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <stddef.h>
 
 namespace iit {
 namespace datasys {
@@ -48,32 +43,20 @@ namespace dm {
 /*
  *
  */
-class ZHTClient {
-
+class ZProcessor {
 public:
-	ZHTClient();
+	ZProcessor();
+	virtual ~ZProcessor();
 
-	ZHTClient(const string& zht_conf, const string& neighbor_conf);
-	virtual ~ZHTClient();
+	virtual void process(const int& fd, const char * const buf, sockaddr sender,
+			const int& protocol) = 0;
 
-	int init(const string& zht_conf, const string& neighbor_conf);
-	int lookup(const string& pair, string& result);
-	int remove(const string& pair);
-	int insert(const string& pair);
-	int tearDown();
-
-private:
-	int commonOp(const string& opcode, const string& pair, string& result);
-	string commonOpInternal(const string& opcode, const string& pair,
-			string& result);
-	void parseStatusAndResult(string& sstatus, string& result);
-
-private:
-	ProtoProxy *proxy;
+	virtual void sendback(const int& fd, const char *buf, const size_t& count,
+			sockaddr receiver, const int& protocol);
 };
 
 } /* namespace dm */
 } /* namespace zht */
 } /* namespace datasys */
 } /* namespace iit */
-#endif /* ZHTCLIENT_H_ */
+#endif /* ZPROCESSOR_H_ */
