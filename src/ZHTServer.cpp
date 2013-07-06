@@ -5,25 +5,6 @@
  *      Author: Xiaobing Zhou
  */
 
-#include "ZHTServer.h"
-
-#include  "ProxyStubFactory.h"
-
-ZHTServer::ZHTServer() {
-}
-
-ZHTServer::~ZHTServer() {
-}
-
-void ZHTServer::process(const int& fd, const char * const buf, sockaddr sender,
-		const int& protocol) {
-
-	ProtoStub *stub = ProxyStubFactory::createStub();
-
-	//stub->recvsend();
-
-}
-
 #include <getopt.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -33,6 +14,9 @@ using namespace std;
 #include "EpollServer.h"
 #include "ConfHandler.h"
 using namespace iit::datasys::zht::dm;
+
+//#include "mpi_server.h"
+#include "ip_server.h"
 
 void printUsage(char *argv_0);
 
@@ -136,6 +120,12 @@ int main(int argc, char **argv) {
 				exit(1);
 			}
 
+			if (port.empty()) {
+
+				cout << "zht.conf: port not configured" << endl;
+				exit(1);
+			}
+
 			char buf[100];
 			memset(buf, 0, sizeof(buf));
 			int n = sprintf(buf, "ZHT server- <localhost:%s> started...\n",
@@ -143,9 +133,8 @@ int main(int argc, char **argv) {
 
 			cout << buf << endl;
 
-			ZHTServer *zs = new ZHTServer();
-			EpollServer es(zs);
-
+			IPServer *is = new IPServer();
+			EpollServer es(is);
 			es.serve(port.c_str());
 
 		} else {

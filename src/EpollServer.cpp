@@ -370,8 +370,7 @@ int EpollServer::serve(const char *port) {
 					sockaddr *sender = (struct sockaddr*) &fromaddr;
 
 					string str(buf);
-					_ZProcessor->process(edata->fd(), buf, *sender,
-							Const::PROTO_UGRADM); //todo: problem maybe
+					_ZProcessor->process(edata->fd(), buf, *sender); //todo: problem maybe
 
 					memset(buf, 0, sizeof(buf));
 				}
@@ -426,7 +425,7 @@ int EpollServer::serve(const char *port) {
 							if (ready) {
 
 								_ZProcessor->process(edata->fd(), buf,
-										*edata->sender(), Const::PROTO_STREAM);
+										*edata->sender());
 							}
 						}
 

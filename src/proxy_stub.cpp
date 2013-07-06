@@ -7,6 +7,13 @@
 
 #include "proxy_stub.h"
 
+ProtoAddr::ProtoAddr() :
+		fd(-1), sender(0) {
+}
+
+ProtoAddr::~ProtoAddr() {
+}
+
 ProtoProxy::ProtoProxy() {
 }
 
@@ -50,8 +57,7 @@ bool ProtoStub::recv(void *recvbuf, size_t &recvcount) {
 	return false;
 }
 
-bool ProtoStub::recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
-		const size_t sendcount) {
+bool ProtoStub::recvsend(ProtoAddr addr, const void * const recvbuf) {
 
 	return false;
 }

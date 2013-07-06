@@ -38,9 +38,7 @@ public:
 	TCPStub();
 	virtual ~TCPStub();
 
-	virtual bool recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
-			const size_t sendcount);
-
+	virtual bool recvsend(ProtoAddr addr, const void * const recvbuf);
 };
 
 #endif /* TCP_PROXY_STUB_H_ */

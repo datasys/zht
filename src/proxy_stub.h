@@ -12,6 +12,16 @@
 
 #include "protocol_shared.h"
 
+class ProtoAddr {
+
+public:
+	ProtoAddr();
+	virtual ~ProtoAddr();
+
+	int fd;
+	void *sender;
+};
+
 class ProtoProxy {
 
 public:
@@ -38,8 +48,7 @@ public:
 
 	virtual bool recv(void *recvbuf, size_t &recvcount);
 
-	virtual bool recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
-			const size_t sendcount);
+	virtual bool recvsend(ProtoAddr addr, const void * const recvbuf);
 
 	virtual bool teardown();
 };

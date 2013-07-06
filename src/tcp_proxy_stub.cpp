@@ -144,8 +144,7 @@ TCPStub::TCPStub() {
 TCPStub::~TCPStub() {
 }
 
-bool TCPStub::recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
-		const size_t sendcount) {
+bool TCPStub::recvsend(ProtoAddr addr, const void * const recvbuf) {
 
 	return true;
 }

@@ -18,7 +18,7 @@ zhtserver: ZHTServer.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o bigdata_transf
 Const.o ConfHandler.o ConfEntry.o \
 ProxyStubFactory.o proxy_stub.o ip_proxy_stub.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o \
 ZHTUtil.o Env.o Util.o \
-EpollServer.o ZProcessor.o 
+EpollServer.o ZProcessor.o ip_server.o
 	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
 
 
@@ -64,6 +64,11 @@ Util.o: Util.cpp
 EpollServer.o: EpollServer.cpp
 ZProcessor.o: ZProcessor.cpp
 ZHTServer.o: ZHTServer.cpp
+ip_server.o: ip_server.cpp
+
+
+
+
 
 .PHONY:	clean
 	

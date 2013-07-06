@@ -139,8 +139,7 @@ UDPStub::UDPStub() {
 UDPStub::~UDPStub() {
 }
 
-bool UDPStub::recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
-		const size_t sendcount) {
+bool UDPStub::recvsend(ProtoAddr addr, const void * const recvbuf) {
 
 	return true;
 }
