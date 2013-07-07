@@ -30,6 +30,7 @@
 
 #include "ConfHandler.h"
 #include "ConfEntry.h"
+#include "StrTokenizer.h"
 
 #include <stdlib.h>
 #include <string>
@@ -77,6 +78,8 @@ ConfHandler::~ConfHandler() {
 void ConfHandler::setNeighborSeeds(const string& neighborCfg) {
 
 	setParametersInternal(neighborCfg, NeighborSeeds);
+
+	setNeighborVector(NeighborVector);
 }
 
 void ConfHandler::setZHTParameters(const string& zhtConfig) {
@@ -102,31 +105,35 @@ void ConfHandler::setParametersInternal(string configFile, MAP& configMap) {
 	string line;
 	while (getline(ifs, line)) {
 
-		string remains = Const::trim(line);
+		string remains = line;
+
 		if (remains.empty())
 			continue;
 
 		if (remains.substr(0, 1) == "#") //starts with #, means comment
 			continue;
 
-		size_t found = remains.find(delimiter);
+		StrTokenizer strtok(remains);
 
-		if (found != string::npos) {
+		string one;
+		string two;
 
-			string one = Const::trim(remains.substr(0, int(found)));
-			string two = Const::trim(remains.substr(int(found) + 1));
+		if (strtok.has_more_tokens())
+			one = strtok.next_token();
 
-			if (one.empty() || two.empty())
-				continue;
+		if (strtok.has_more_tokens())
+			two = strtok.next_token();
 
-			string name = one;
-			string value = two;
+		if (one.empty() || two.empty())
+			continue;
 
-			if (!name.empty() && !value.empty()) {
+		string name = one;
+		string value = two;
 
-				ConfEntry ce(name, value);
-				configMap.insert(PAIR(ce.toString(), ce)); //todo: use hash code to reduce size of key/value pair.
-			}
+		if (!name.empty() && !value.empty()) {
+
+			ConfEntry ce(name, value);
+			configMap.insert(PAIR(ce.toString(), ce)); //todo: use hash code to reduce size of key/value pair.
 		}
 	}
 

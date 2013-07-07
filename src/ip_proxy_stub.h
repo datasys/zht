@@ -23,12 +23,18 @@ public:
 
 protected:
 	virtual int reuseSock(int sock);
+	virtual int recvFrom(int sock, void* recvbuf, int recvbufsize)= 0;
 };
 
 class IPProtoStub: public ProtoStub {
 public:
 	IPProtoStub();
 	virtual ~IPProtoStub();
+
+protected:
+	virtual int sendBack(ProtoAddr addr, const void* sendbuf,
+			int sendcount) = 0;
+
 };
 
 #endif /* IPPROTOCOL_H_ */

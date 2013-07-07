@@ -92,6 +92,7 @@ const int Const::ASI_REC_SUCC = 100;
 const string Const::ZSC_OPC_LOOKUP = "001";
 const string Const::ZSC_OPC_REMOVE = "002";
 const string Const::ZSC_OPC_INSERT = "003";
+const string Const::ZSC_OPC_APPEND = "004";
 const string Const::ZSC_OPC_BRDDN_GMEM = "087";
 const string Const::ZSC_OPC_OPR_CANCEL = "088";
 const string Const::ZSC_OPC_GET_ASNGHB = "089";

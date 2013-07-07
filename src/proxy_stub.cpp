@@ -57,7 +57,7 @@ bool ProtoStub::recv(void *recvbuf, size_t &recvcount) {
 	return false;
 }
 
-bool ProtoStub::recvsend(ProtoAddr addr, const void * const recvbuf) {
+bool ProtoStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	return false;
 }

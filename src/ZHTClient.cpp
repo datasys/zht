@@ -58,24 +58,28 @@ ZHTClient::~ZHTClient() {
 	}
 }
 
-int ZHTClient::init(const string& zht_conf, const string& neighbor_conf) {
+int ZHTClient::init(const string& zhtConf, const string& neighborConf) {
 
-	ConfHandler::CONF_ZHT = zht_conf;
-	ConfHandler::CONF_NEIGHBOR = neighbor_conf;
+	ConfHandler::CONF_ZHT = zhtConf;
+	ConfHandler::CONF_NEIGHBOR = neighborConf;
 
-	ConfHandler::setZHTParameters(zht_conf);
-	ConfHandler::setNeighborSeeds(neighbor_conf);
+	ConfHandler::setZHTParameters(zhtConf);
+	ConfHandler::setNeighborSeeds(neighborConf);
 
 	proxy = ProxyStubFactory::createProxy();
 
-	return 0; //todo: take care the return code
+	if (proxy == 0)
+		return -1;
+	else
+		return 0;
 }
 
 int ZHTClient::commonOp(const string& opcode, const string& pair,
 		string& result) {
 
 	if (opcode != Const::ZSC_OPC_LOOKUP && opcode != Const::ZSC_OPC_REMOVE
-			&& opcode != Const::ZSC_OPC_INSERT)
+			&& opcode != Const::ZSC_OPC_INSERT
+			&& opcode != Const::ZSC_OPC_APPEND)
 		return Const::toInt(Const::ZSC_REC_UOPC);
 
 	string sstatus = commonOpInternal(opcode, pair, result);
@@ -104,12 +108,18 @@ int ZHTClient::insert(const string& pair) {
 	return commonOp(Const::ZSC_OPC_INSERT, pair, result);
 }
 
+int ZHTClient::append(const string& pair) {
+
+	string result;
+	return commonOp(Const::ZSC_OPC_APPEND, pair, result);
+}
+
 string ZHTClient::commonOpInternal(const string& opcode, const string& pair,
 		string& result) {
 
 	Package pkg;
 	pkg.ParseFromString(pair);
-	pkg.set_opcode(opcode); //"001": lookup, "002": remove, "003": insert
+	pkg.set_opcode(opcode); //"001": lookup, "002": remove, "003": insert, "004": append
 	pkg.set_replicano(3);
 
 	if (pkg.virtualpath().empty())
@@ -166,7 +176,7 @@ void ZHTClient::parseStatusAndResult(string& sstatus, string& result) {
 	}
 }
 
-int ZHTClient::tearDown() {
+int ZHTClient::teardown() {
 
 	if (proxy->teardown())
 		return 0;

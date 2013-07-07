@@ -10,15 +10,16 @@ all:	$(TARGETS)
 zhtben: benchmark_client.o ZHTClient.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o bigdata_transfer.o\
 Const.o ConfHandler.o ConfEntry.o \
 ProxyStubFactory.o proxy_stub.o ip_proxy_stub.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o \
-ZHTUtil.o Env.o Util.o
+ZHTUtil.o Env.o Util.o \
+HTWorker.o StrTokenizer.o
 	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
 
 
 zhtserver: ZHTServer.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o bigdata_transfer.o\
 Const.o ConfHandler.o ConfEntry.o \
 ProxyStubFactory.o proxy_stub.o ip_proxy_stub.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o \
-ZHTUtil.o Env.o Util.o \
-EpollServer.o ZProcessor.o ip_server.o
+ZHTUtil.o Env.o Util.o StrTokenizer.o\
+EpollServer.o ZProcessor.o ip_server.o HTWorker.o StrTokenizer.o
 	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
 
 
@@ -65,10 +66,8 @@ EpollServer.o: EpollServer.cpp
 ZProcessor.o: ZProcessor.cpp
 ZHTServer.o: ZHTServer.cpp
 ip_server.o: ip_server.cpp
-
-
-
-
+HTWorker.o: HTWorker.cpp
+StrTokenizer.o: StrTokenizer.cpp
 
 .PHONY:	clean
 	

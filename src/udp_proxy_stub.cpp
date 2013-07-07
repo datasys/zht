@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "ZHTUtil.h"
+#include "HTWorker.h"
 
 int UDPProxy::UDP_SOCKET = -1;
 
@@ -29,6 +30,7 @@ UDPProxy::~UDPProxy() {
 bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 		void *recvbuf, size_t &recvcount) {
 
+	/*get client sock fd*/
 	ZHTUtil zu;
 	string msg((char*) sendbuf, sendcount);
 
@@ -38,22 +40,20 @@ bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 	reuseSock(sock);
 
-	/*send over sock*/
-	int sentSize = udpSendTo(sock, he.host, he.port, (char*) sendbuf,
-			sendcount);
-
+	/*send message to server over client sock fd*/
+	int sentSize = sendTo(sock, he.host, he.port, (char*) sendbuf, sendcount);
 	int sent_bool = sentSize == sendcount;
 
-	/*receive response*/
-	recvcount = udpRecvFrom(sock, recvbuf, recvcount);
-
+	/*receive response from server over client sock fd*/ //todo: loopedReceive for zht_lookup
+	recvcount = recvFrom(sock, recvbuf, recvcount);
 	int recv_bool = recvcount >= 0;
 
+	/*combine flags as value to be returned*/
 	return sent_bool && recv_bool;
 }
 
-int UDPProxy::udpSendTo(int sock, const string &host, uint port,
-		const char* sendbuf, int sendcount) {
+int UDPProxy::sendTo(int sock, const string &host, uint port,
+		const void* sendbuf, int sendcount) {
 
 	sockaddr_in recvAddr;
 
@@ -68,14 +68,17 @@ int UDPProxy::udpSendTo(int sock, const string &host, uint port,
 	int sentSize = sendto(sock, sendbuf, sendcount, 0,
 			(struct sockaddr*) &server, sizeof(struct sockaddr));
 
-	if (sentSize < 0) {
-		cerr << "net_util.cpp: udpSendTo error: " << strerror(errno) << endl;
+	/*prompt errors*/
+	if (sentSize < sendcount) {
+
+		cerr << "UDPProxy::sendTo(): error on ::sendto(...): "
+				<< strerror(errno) << endl;
 	}
 
 	return sentSize;
 }
 
-int UDPProxy::udpRecvFrom(int sock, void* recvbuf, int recvbufsize) {
+int UDPProxy::recvFrom(int sock, void* recvbuf, int recvbufsize) {
 
 	struct sockaddr_in recvAddr;
 	socklen_t addr_len = sizeof(struct sockaddr);
@@ -83,8 +86,11 @@ int UDPProxy::udpRecvFrom(int sock, void* recvbuf, int recvbufsize) {
 	int recvcount = recvfrom(sock, recvbuf, recvbufsize, 0,
 			(struct sockaddr *) &recvAddr, &addr_len);
 
+	/*prompt errors*/
 	if (recvcount < 0) {
-		cerr << "net_util.cpp: udpRecvFrom error: " << strerror(errno) << endl;
+
+		cerr << "UDPProxy::recvFrom(): error on ::recvfrom(...): "
+				<< strerror(errno) << endl;
 	}
 
 	return recvcount;
@@ -139,7 +145,31 @@ UDPStub::UDPStub() {
 UDPStub::~UDPStub() {
 }
 
-bool UDPStub::recvsend(ProtoAddr addr, const void * const recvbuf) {
+bool UDPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
-	return true;
+	/*get response to be sent to client*/
+	HTWorker htw;
+	string result = htw.run((char*) recvbuf);
+
+	const char *sendbuf = result.data();
+	int sendcount = result.size();
+
+	/*send response to client over server sock fd*/
+	int sentsize = sendBack(addr, sendbuf, sendcount);
+	bool sent_bool = sentsize == sendcount;
+
+	return sent_bool;
+}
+
+int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+
+	int sentsize = sendto(addr.fd, sendbuf, sendcount, 0,
+			(struct sockaddr *) addr.sender, sizeof(struct sockaddr));
+
+	if (sentsize < sendcount) {
+
+		cerr << "UDPStub::sendBack(): error on ::sendto(...)" << strerror(errno)
+				<< endl;
+	}
+	return sentsize;
 }

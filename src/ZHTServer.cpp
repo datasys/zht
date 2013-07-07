@@ -128,7 +128,7 @@ int main(int argc, char **argv) {
 
 			char buf[100];
 			memset(buf, 0, sizeof(buf));
-			int n = sprintf(buf, "ZHT server- <localhost:%s> started...\n",
+			int n = sprintf(buf, "ZHT server- <localhost:%s> started...",
 					port.c_str());
 
 			cout << buf << endl;

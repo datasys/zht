@@ -148,6 +148,7 @@ public:
 	static const string ZSC_OPC_LOOKUP; //lookup item
 	static const string ZSC_OPC_REMOVE; //remove item
 	static const string ZSC_OPC_INSERT; //insert item
+	static const string ZSC_OPC_APPEND; //append item
 	static const string ZSC_OPC_BRDDN_GMEM; //broadcast global membership done
 	static const string ZSC_OPC_OPR_CANCEL; //cancle an operation
 	static const string ZSC_OPC_GET_ASNGHB; //get information of ZHTNode as a neighbor

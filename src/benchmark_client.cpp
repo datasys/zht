@@ -28,59 +28,26 @@
  *      Author: tony, xiaobingo
  */
 #include <string>
-#include <cstring>
 #include <iostream>
-#include <sstream>
 #include <fstream>
 
-#include <algorithm>
-#include <signal.h>
-#include <sys/time.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <list>
 #include <vector>
-#include <netdb.h>
-#include <pthread.h>
 #include <error.h>
 
 #include "meta.pb.h"
 #include "Util.h"
 
-using namespace std;
-
 #include "ZHTClient.h"
 #include "ZHTUtil.h"
 
+using namespace std;
 using namespace iit::datasys::zht::dm;
 
-struct thread_data {
-	vector<struct HostEntity> hostList;
-	list<string> packageList;
-};
-
-vector<struct HostEntity> hostList;
-//list<string> myPackagelist;
-bool TCP;
-int UDP_SOCKET = -1;
-int CACHE_SIZE = 1024;
-
-void sig_pipe(int signum) {
-	printf("SIGPIPE Caught!\n");
-	signal(SIGPIPE, sig_pipe);
-}
-
-int benchmarkInsert(string cfgFile, string zht_conf, string neighbor_conf,
-		vector<string> &pkgList, ZHTClient &clientRet, int numTest,
+int benchmarkInsert(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
 		int lenString) {
 
-//	if (clientRet.initialize(cfgFile, neighbor_conf) != 0) { //zhouxb
-	if (clientRet.init(zht_conf, neighbor_conf) != 0) {
-		cout << "Crap! ZHTClient initialization failed, program exits." << endl;
-		return -1;
-	}
+	for (int i = 0; i < numOfOps; i++) {
 
-	for (int i = 0; i < numTest; i++) {
 		Package package, package_ret;
 		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
 		package.set_isdir(true);
@@ -94,44 +61,40 @@ int benchmarkInsert(string cfgFile, string zht_conf, string neighbor_conf,
 		package.add_listitem("item-----5");
 		package.add_listitem("item-----6");
 		string str = package.SerializeAsString();
-//		cout << "package size = " << str.size() << endl;
-//		cout<<"Client.cpp:benchmarkInsert: "<<endl;
-//		cout<<"string: "<<str<<endl;
-//		cout<<"Insert str: "<<str.c_str()<<endl;
-//		cout<<"data(): "<< str.data()<<endl;
 		pkgList.push_back(str);
 	}
+
 	double start = 0;
 	double end = 0;
 	start = TimeUtil::getTime_msec();
 	int errCount = 0;
-	vector<string>::iterator it;
+
 	int c = 0;
-//	cout << "-----2" << endl;
+	vector<string>::iterator it;
 	for (it = pkgList.begin(); it != pkgList.end(); it++) {
-		//	cerr <<"insert count "<< c << endl;
+
 		c++;
 		string str_ins = *it;
-//cout << "-----1" << endl;
-		int ret = clientRet.insert(str_ins);
-//cout << "-----2" << endl;
+
+		int ret = zc.insert(str_ins);
+
 		if (ret < 0) {
 			errCount++;
 		}
 	}
-//close(sock);
+
 	end = TimeUtil::getTime_msec();
-	cout << "Inserted " << numTest - errCount << " packages out of " << numTest
-			<< ", cost " << end - start << " ms" << endl;
+	cout << "Inserted " << numOfOps - errCount << " packages out of "
+			<< numOfOps << ", cost " << end - start << " ms" << endl;
 	return 0;
 }
 
-//pretty much same as benchmarkInsert.
-int benchmarkAppend(ZHTClient &client, int numTest, int lenString) {
-//	cout << "start to append"<<endl;
-//      if (clientRet.initialize(cfgFile, neighbor_conf) != 0) { //zhouxb
+int benchmarkAppend(ZHTClient &zc, int numOfOps, int lenString) {
+
 	vector<string> pkgList_append;
-	for (int i = 0; i < numTest; i++) {
+
+	for (int i = 0; i < numOfOps; i++) {
+
 		Package package, package_ret;
 		package.set_virtualpath(
 				HashUtil::randomString(lenString).append("-append")); //as key
@@ -146,60 +109,41 @@ int benchmarkAppend(ZHTClient &client, int numTest, int lenString) {
 		package.add_listitem("item-----5");
 		package.add_listitem("item-----6");
 		string str = package.SerializeAsString();
-//              cout << "package size = " << str.size() << endl;
-//              cout<<"Client.cpp:benchmarkInsert: "<<endl;
-//              cout<<"string: "<<str<<endl;
-//              cout<<"Insert str: "<<str.c_str()<<endl;
-//              cout<<"data(): "<< str.data()<<endl;
 		pkgList_append.push_back(str);
 	}
+
 	double start = 0;
 	double end = 0;
 	start = TimeUtil::getTime_msec();
 	int errCount = 0;
-	vector<string>::iterator it;
+
 	int c = 0;
-//cout << "-----0" << endl;
+	vector<string>::iterator it;
 	for (it = pkgList_append.begin(); it != pkgList_append.end(); it++) {
-		//      cerr <<"insert count "<< c << endl;
+
 		c++;
 		string str_ins = *it;
-//cout << "-----1:about to append" << endl;
-//	sleep(1);
-//		int ret = client.append(str_ins);
-		int ret = 0;
-		if (ret != 0)
-			cout << "client: append ret = " << ret << endl;
-//cout << "-----2" << endl;
+		int ret = zc.append(str_ins);
+
 		if (ret < 0) {
 			errCount++;
 		}
 	}
-//close(sock);
+
 	end = TimeUtil::getTime_msec();
-	cout << "Appended " << numTest - errCount << " packages out of " << numTest
-			<< ", cost " << end - start << " ms" << endl;
+	cout << "Appended " << numOfOps - errCount << " packages out of "
+			<< numOfOps << ", cost " << end - start << " ms" << endl;
 	return 0;
 }
 
-int benmarkTimeAnalize(string cfgFile, string zht_conf, string neighbor_conf,
-		vector<string> &pkgList, ZHTClient &clientRet, int numTest,
+int benmarkTimeAnalize(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
 		int lenString, string Recordpath) {
-	ZHTClient client;
 
-//	if (client.initialize(cfgFile, neighbor_conf) != 0) {
-	if (client.init(zht_conf, neighbor_conf) != 0) {
-		cout << "Crap! ZHTClient initialization failed, program exits." << endl;
-		return -1;
-	}
+	double timeRecord[numOfOps]; //={0};
 
-	double timeRecord[numTest]; //={0};
-//	bzero(timeRecord, sizeof(timeRecord));
-	clientRet = client; //reserve this client object for other benchmark(lookup/remove) to use.
-
-	//vector<string> pkgList;
 	int i = 0;
-	for (i = 0; i < numTest; i++) {
+	for (i = 0; i < numOfOps; i++) {
+
 		Package package, package_ret;
 		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
 		package.set_isdir(true);
@@ -213,11 +157,6 @@ int benmarkTimeAnalize(string cfgFile, string zht_conf, string neighbor_conf,
 		package.add_listitem("item-----4");
 		package.add_listitem("item-----5");
 		string str = package.SerializeAsString();
-//		cout << "package size = " << str.size() << endl;
-//		cout<<"Client.cpp:benchmarkInsert: "<<endl;
-//		cout<<"string: "<<str<<endl;
-//		cout<<"Insert str: "<<str.c_str()<<endl;
-//		cout<<"data(): "<< str.data()<<endl;
 
 		pkgList.push_back(str);
 	}
@@ -227,19 +166,20 @@ int benmarkTimeAnalize(string cfgFile, string zht_conf, string neighbor_conf,
 	double istart = 0;
 	double iend = 0;
 	int errCount = 0;
-	vector<string>::iterator it;
-	int c = 0;
 
 	ofstream record;
 	record.open(Recordpath.c_str());
 
 	start = TimeUtil::getTime_msec();
+
+	int c = 0;
+	vector<string>::iterator it;
 	for (it = pkgList.begin(); it != pkgList.end(); it++) {
-//		cout<<c<<endl;
+
 		c++;
 		double interval = 0;
 		istart = TimeUtil::getTime_usec();
-		int op_ret = client.insert((*it));
+		int op_ret = zc.insert((*it));
 		iend = TimeUtil::getTime_usec();
 
 		if (op_ret < 0) {
@@ -251,41 +191,36 @@ int benmarkTimeAnalize(string cfgFile, string zht_conf, string neighbor_conf,
 		timeRecord[c] = interval;
 
 	}
+
 	end = TimeUtil::getTime_msec();
 	record.close();
 
-	cout << "Inserted " << numTest - errCount << " packages out of " << numTest
-			<< ", cost " << end - start << " ms" << endl;
+	cout << "Inserted " << numOfOps - errCount << " packages out of "
+			<< numOfOps << ", cost " << end - start << " ms" << endl;
 
 	return 0;
 }
 
-float benchmarkLookup(vector<string> strList, ZHTClient &client) {
-	vector<string>::iterator it;
+float benchmarkLookup(vector<string> strList, ZHTClient &zc) {
 
 	double start = 0;
 	double end = 0;
 	start = TimeUtil::getTime_msec();
 	int errCount = 0;
-//cout << "Client: benchmarkLookup: start lookup \n";
+
 	int c = 0;
+	vector<string>::iterator it;
 	for (it = strList.begin(); it != strList.end(); it++) {
+
 		string result;
-//		cout << c << endl;
 		c++;
-//		cout<<"lookup: "<<c<<endl;
-//sleep(1);
-//
-//		cout << "Client: What I want to find: \n";
-//		cout <<"Lookup: "<< (*it).c_str() << endl;
-		if (client.lookup((*it), result) < 0) {
+
+		if (zc.lookup((*it), result) < 0) {
 
 			errCount++;
 		} else if (result.empty()) { //empty string
 			errCount++;
 		}
-//		cout << "Client: What I get: ";
-//		cout << result.c_str() << endl;
 	}
 
 	end = TimeUtil::getTime_msec();
@@ -295,35 +230,36 @@ float benchmarkLookup(vector<string> strList, ZHTClient &client) {
 	return 0;
 }
 
-float benchmarkRemove(vector<string> strList, ZHTClient &client) {
-	vector<string>::iterator it;
+float benchmarkRemove(vector<string> strList, ZHTClient &zc) {
 
+	vector<string> removes;
+
+	vector<string>::iterator it;
 	for (it = strList.begin(); it != strList.end(); it++) {
+
 		Package package;
 		package.ParseFromString((*it));
 		package.set_operation(2); // 3 for insert, 1 for look up, 2 for remove
 		package.set_replicano(5); //5: original, 3 not original
 
-		strList.erase(it);
 		string newStr = package.SerializeAsString();
-		strList.push_back(newStr);
+		removes.push_back(newStr);
 	}
 
 	double start = 0;
 	double end = 0;
 	start = TimeUtil::getTime_msec();
 	int errCount = 0;
+
 	int c = 0;
-	for (it = strList.begin(); it != strList.end(); it++) {
+	for (it = removes.begin(); it != removes.end(); it++) {
+
 		string result;
 		c++;
-//		cout <<"Remove count "<< c << endl;
 
-//		cout <<"Remove: "<< (*it).c_str() << endl;
-		if (client.remove((*it)) < 0) {
+		if (zc.remove((*it)) < 0) {
 			errCount++;
 		}
-
 	}
 
 	end = TimeUtil::getTime_msec();
@@ -332,90 +268,94 @@ float benchmarkRemove(vector<string> strList, ZHTClient &client) {
 			<< strList.size() << ", cost " << end - start << " ms" << endl;
 	return 0;
 }
-//This is an example.
 
-int benchmarkALL(int numTest, int strLen) { //103+length
-//	int para = strLen - 128;
+int benchmark(string &zhtConf, string &neighborConf, int numOfOps) {
+
+	srand(getpid() + TimeUtil::getTime_usec());
+
+	vector<string> pkgList;
+	ZHTClient zc;
+
+	if (zc.init(zhtConf, neighborConf) != 0) {
+
+		cout << "Crap! ZHTClient initialization failed, program exits." << endl;
+		return -1;
+	}
+
+	benchmarkInsert(pkgList, zc, numOfOps, 15);
+
+	benchmarkLookup(pkgList, zc);
+
+	benchmarkAppend(zc, numOfOps, 15);
+
+	benchmarkRemove(pkgList, zc);
+
+	zc.teardown();
+
 	return 0;
+
 }
 
-int main(int argc, char* argv[]) {
+void printUsage(char *argv_0);
 
-//	cout << "Usage: ./client <num_operations> <neighbor_conf> <configFile>"<< endl;
-	/*	//	For BGP
-	 const string cmd = "cat /proc/personality.sh | grep BG_PSETORG";
-	 string torusID = executeShell(cmd);
-	 torusID.resize(torusID.size() - 1);
-	 int pid = getpid();
-	 unsigned int v = myhash(torusID.c_str(), 1000000) + pid ;
-	 //cout<<"client: pid = "<<pid<<endl;
+int main(int argc, char **argv) {
 
-	 //cout<<"Client random n = "<<v<<endl;
-	 srand(v);
-	 */
-	srand(getpid() + TimeUtil::getTime_usec());
-	char* isTCP = argv[4];
-//	cout<<"Protocol = "<<isTCP<<endl;
-	/*if (!strcmp("TCP", isTCP)) {
-	 TCP = true;
-	 } else {
-	 TCP = false;
-	 }*/
+	extern char *optarg;
 
-	TCP = true;
-
-	string zht_conf; //todo:
-
-	int numOper = atoi(argv[1]);
-//cout<<"numOper = "<<numOper<<endl;
-	string cfgFile(argv[3]);
-//cout<<"cfgFile = "<<cfgFile<<endl;
-	string neighbor_conf(argv[2]);
-//cout<<"neighbor_conf: "<<neighbor_conf<<endl;
-	vector<string> pkgList;
-	ZHTClient testClient;
-//	int pid = getpid();
-	char* tmpStr;
-	stringstream ss; //create a stringstream
-//	ss << pid;
-
-//	string recordFile = "record." + ss.str();
-//	benmarkTimeAnalize(cfgFile, neighbor_conf, pkgList, testClient, numOper, 15, recordFile);
-//cout<<"start to insert..."<<endl;
-
-	int lk = 0;
-	int rm = 0;
-	int in = 0;
+	int printHelp = 0;
+	int numOfOps = -1;
+	string zhtConf = "";
+	string neighborConf = "";
 
 	int c;
-	while ((c = getopt(argc, argv, "ilr")) != -1) {
+	while ((c = getopt(argc, argv, "z:n:o:h")) != -1) {
 		switch (c) {
-		case 'l':
-			lk = 1;
+		case 'z':
+			zhtConf = string(optarg);
 			break;
-		case 'r':
-			rm = 1;
+		case 'n':
+			neighborConf = string(optarg);
 			break;
-		case 'i':
-			in = 1;
+		case 'o':
+			numOfOps = atoi(optarg);
+			break;
+		case 'h':
+			printHelp = 1;
 			break;
 		default:
 			fprintf(stderr, "Illegal argument \"%c\"\n", c);
+			printUsage(argv[0]);
 			exit(1);
 		}
 	}
 
-	benchmarkInsert(cfgFile, zht_conf, neighbor_conf, pkgList, testClient,
-			numOper, 15); //25fro 128bytes.
+	int helpPrinted = 0;
+	if (printHelp) {
+		printUsage(argv[0]);
+		helpPrinted = 1;
+	}
 
-	//cout << "Client:main, start lookup \n";
-	benchmarkLookup(pkgList, testClient);
-	//sleep(2);
-//	benchmarkAppend(testClient, numOper, 15);
+	try {
+		if (!zhtConf.empty() && !neighborConf.empty() && numOfOps != -1) {
 
-	benchmarkRemove(pkgList, testClient);
-//	testClient.tearDownTCP(TCP);
-//	testClient.tearDownTCP(); //zhouxb
-	return 0;
+			benchmark(zhtConf, neighborConf, numOfOps);
+
+		} else {
+
+			if (!helpPrinted)
+				printUsage(argv[0]);
+		}
+	} catch (exception& e) {
+
+		fprintf(stderr, "%s, exception caught:\n\t%s",
+				"benchmark_client.cpp::main", e.what());
+	}
 
 }
+
+void printUsage(char *argv_0) {
+
+	fprintf(stdout, "Usage:\n%s %s\n", argv_0,
+			"-z zht.conf -n neighbor.conf -o number_of_operations [-h(help)]");
+}
+

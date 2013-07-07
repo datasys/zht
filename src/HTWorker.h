@@ -22,59 +22,40 @@
  * Data-Intensive Distributed Systems Laboratory, 10 W. 31st Street,
  * Stuart Building, Room 003B, Chicago, IL 60616 USA.
  *
- * ZHTClient.h
+ * HTWorker.h
  *
- *  Created on: Sep 16, 2012
+ *  Created on: Sep 10, 2012
  *      Author: tony, xiaobingo
  */
 
-#ifndef ZHTCLIENT_H_
-#define ZHTCLIENT_H_
+#ifndef HTWORKER_H_
+#define HTWORKER_H_
 
-#include <stdint.h>
-#include <map>
+#include "meta.pb.h"
+#include "novoht.h"
+
 #include <string>
 using namespace std;
-
-#include "lru_cache.h"
-
-#include "ProxyStubFactory.h"
-
-namespace iit {
-namespace datasys {
-namespace zht {
-namespace dm {
 
 /*
  *
  */
-class ZHTClient {
+class HTWorker {
+public:
+	HTWorker();
+	virtual ~HTWorker();
 
 public:
-	ZHTClient();
-
-	ZHTClient(const string& zht_conf, const string& neighbor_conf);
-	virtual ~ZHTClient();
-
-	int init(const string& zht_conf, const string& neighbor_conf);
-	int lookup(const string& pair, string& result);
-	int remove(const string& pair);
-	int insert(const string& pair);
-	int append(const string& pair);
-	int teardown();
+	string run(const char *buf);
 
 private:
-	int commonOp(const string& opcode, const string& pair, string& result);
-	string commonOpInternal(const string& opcode, const string& pair,
-			string& result);
-	void parseStatusAndResult(string& sstatus, string& result);
+	string lookup(const Package &pkg);
+	string remove(const Package &pkg);
+	string insert(const Package &pkg);
+	string append(const Package &pkg);
 
 private:
-	ProtoProxy *proxy;
+	static NoVoHT *pmap;
 };
 
-} /* namespace dm */
-} /* namespace zht */
-} /* namespace datasys */
-} /* namespace iit */
-#endif /* ZHTCLIENT_H_ */
+#endif /* HTWORKER_H_ */

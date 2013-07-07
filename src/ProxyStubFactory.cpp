@@ -59,7 +59,7 @@ ProtoStub* ProxyStubFactory::createStub() {
 		return new UDPStub();
 	} else if (zpmap->find(ce_mpi.toString()) != zpmap->end()) {
 
-		return new MQStub();
+		return new MQStub(); //todo: return new MPIStub();
 	}
 
 	return 0;

@@ -48,7 +48,7 @@ public:
 
 	virtual bool recv(void *recvbuf, size_t &recvcount);
 
-	virtual bool recvsend(ProtoAddr addr, const void * const recvbuf);
+	virtual bool recvsend(ProtoAddr addr, const void *recvbuf);
 
 	virtual bool teardown();
 };

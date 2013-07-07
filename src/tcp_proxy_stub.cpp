@@ -17,6 +17,7 @@
 #include "Util.h"
 #include "ZHTUtil.h"
 #include "bigdata_transfer.h"
+#include "HTWorker.h"
 
 using namespace iit::datasys::zht::dm;
 
@@ -35,6 +36,7 @@ TCPProxy::~TCPProxy() {
 bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 		void *recvbuf, size_t &recvcount) {
 
+	/*get client sock fd*/
 	ZHTUtil zu;
 	string msg((char*) sendbuf, sendcount);
 	HostEntity he = zu.getHostEntityByKey(msg);
@@ -43,26 +45,15 @@ bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 	reuseSock(sock);
 
-	/*send over sock*/
-	BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
-	int sentSize = pbsb->bsend(sock);
-	delete pbsb;
-	pbsb = NULL;
-
+	/*send message to server over client sock fd*/
+	int sentSize = sendTo(sock, sendbuf, sendcount);
 	int sent_bool = sentSize == sendcount;
 
-	/*receive response*/ //todo: loopedReceive for zht_lookup
-	recvcount = ::recv(sock, recvbuf, recvcount, 0);
-
-	if (recvcount < 0) {
-
-		cerr << "net_util: generalReceive(): error on receive: "
-				<< strerror(errno) << endl;
-		return -1;
-	}
-
+	/*receive response from server over client sock fd*/
+	recvcount = recvFrom(sock, recvbuf, recvcount);
 	int recv_bool = recvcount >= 0;
 
+	/*combine flags as value to be returned*/
 	return sent_bool && recv_bool;
 }
 
@@ -86,7 +77,9 @@ int TCPProxy::getSockCached(const string& host, const uint& port) {
 
 		if (sock <= 0) {
 
-			cerr << "Client insert:making connection failed." << endl;
+			cerr
+					<< "TCPProxy::getSockCached(): error on makeClientSocket(...): "
+					<< strerror(errno) << endl;
 			sock = -1;
 		} else {
 
@@ -121,7 +114,8 @@ int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 
 	if (to_sock < 0) {
 
-		cerr << "net_util: error on socket(): " << strerror(errno) << endl;
+		cerr << "TCPProxy::makeClientSocket(): error on ::socket(...): "
+				<< strerror(errno) << endl;
 		return -1;
 	}
 
@@ -129,12 +123,45 @@ int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 
 	if (ret_con < 0) {
 
-		cerr << "net_util: error on connect(): " << strerror(errno) << endl;
+		cerr << "TCPProxy::makeClientSocket(): error on ::connect(...): "
+				<< strerror(errno) << endl;
 		return -1;
 	}
 
 	return to_sock;
 
+}
+
+int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
+
+	BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
+	int sentSize = pbsb->bsend(sock);
+	delete pbsb;
+	pbsb = NULL;
+
+	/*prompt errors*/
+	if (sentSize < sendcount) {
+
+		cerr << "TCPProxy::sendTo(): error on BdSendToServer::bsend(...): "
+				<< strerror(errno) << endl;
+	}
+
+	return sentSize;
+}
+
+int TCPProxy::recvFrom(int sock, void* recvbuf, int recvbufsize) {
+
+	//todo: loopedReceive for zht_lookup
+	int recvcount = ::recv(sock, recvbuf, recvbufsize, 0);
+
+	/*prompt errors*/
+	if (recvcount < 0) {
+
+		cerr << "TCPProxy::recvFrom: error on ::recv(...): " << strerror(errno)
+				<< endl;
+	}
+
+	return recvcount;
 }
 
 TCPStub::TCPStub() {
@@ -144,7 +171,37 @@ TCPStub::TCPStub() {
 TCPStub::~TCPStub() {
 }
 
-bool TCPStub::recvsend(ProtoAddr addr, const void * const recvbuf) {
+bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
-	return true;
+	/*get response to be sent to client*/
+	HTWorker htw;
+	string result = htw.run((char*) recvbuf);
+
+	const char *sendbuf = result.data();
+	int sendcount = result.size();
+
+	/*send response to client over server sock fd*/
+	int sentsize = sendBack(addr, sendbuf, result.size());
+	bool sent_bool = sentsize == sendcount;
+
+	return sent_bool;
+}
+
+int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+
+	/*send response to client over server sock fd*/
+	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
+	int sentsize = pbsb->bsend(addr.fd);
+
+	delete pbsb;
+	pbsb = NULL;
+
+	/*prompt errors*/
+	if (sentsize < sendcount) {
+
+		cerr << "TCPStub::sendBack():  error on BdSendToClient::bsend(...): "
+				<< strerror(errno) << endl;
+	}
+
+	return sentsize;
 }

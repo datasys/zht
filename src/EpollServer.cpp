@@ -328,11 +328,11 @@ int EpollServer::serve(const char *port) {
 						getnameinfo(in_addr, in_len, hbuf, sizeof hbuf, sbuf,
 								sizeof sbuf, 0);
 
-						if (s == 0) {
+						/*if (s == 0) {
 
-							printf("Accepted connection on descriptor %d "
-									"(host=%s, port=%s)\n", infd, hbuf, sbuf);
-						}
+						 printf("Accepted connection on descriptor %d "
+						 "(host=%s, port=%s)\n", infd, hbuf, sbuf);
+						 }*/
 
 						/* Make the incoming socket non-blocking and add it to the
 						 list of fds to monitor. */
@@ -433,8 +433,8 @@ int EpollServer::serve(const char *port) {
 					}
 					if (done) {
 
-						printf("Closed connection on descriptor %d, done.\n",
-								edata->fd());
+						/*printf("Closed connection on descriptor %d, done.\n",
+								edata->fd());*/
 
 						/* Closing the descriptor will make epoll remove it
 						 from the set of descriptors which are monitored. */

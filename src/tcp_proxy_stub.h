@@ -21,12 +21,15 @@ public:
 
 	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
 			void *recvbuf, size_t &recvcount);
-
 	virtual bool teardown();
 
 protected:
 	virtual int getSockCached(const string& host, const uint& port);
 	virtual int makeClientSocket(const string& host, const uint& port);
+	virtual int recvFrom(int sock, void* recvbuf, int recvbufsize);
+
+private:
+	int sendTo(int sock, const void* sendbuf, int sendcount);
 
 private:
 	static int CACHE_SIZE;
@@ -38,7 +41,10 @@ public:
 	TCPStub();
 	virtual ~TCPStub();
 
-	virtual bool recvsend(ProtoAddr addr, const void * const recvbuf);
+	virtual bool recvsend(ProtoAddr addr, const void *recvbuf);
+
+protected:
+	virtual int sendBack(ProtoAddr addr, const void* sendbuf, int sendcount);
 };
 
 #endif /* TCP_PROXY_STUB_H_ */

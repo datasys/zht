@@ -20,17 +20,16 @@ public:
 
 	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
 			void *recvbuf, size_t &recvcount);
-
 	virtual bool teardown();
 
 protected:
 	virtual int getSockCached(const string& host, const uint& port);
 	virtual int makeClientSocket(const string& host, const uint& port);
+	virtual int recvFrom(int sock, void* recvbuf, int recvbufsize);
 
 private:
-	int udpSendTo(int sock, const string &host, uint port, const char* sendbuf,
+	int sendTo(int sock, const string &host, uint port, const void* sendbuf,
 			int sendcount);
-	int udpRecvFrom(int sock, void* recvbuf, int recvbufsize);
 
 private:
 	static int UDP_SOCKET;
@@ -41,7 +40,11 @@ public:
 	UDPStub();
 	virtual ~UDPStub();
 
-	virtual bool recvsend(ProtoAddr addr, const void * const recvbuf);
+	virtual bool recvsend(ProtoAddr addr, const void *recvbuf);
+
+protected:
+	virtual int sendBack(ProtoAddr addr, const void* sendbuf, int sendcount);
+
 };
 
 #endif /* UDP_PROXY_STUB_H_ */
