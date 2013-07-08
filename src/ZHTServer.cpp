@@ -11,63 +11,17 @@
 #include <string.h>
 using namespace std;
 
+#ifdef PF_INET
 #include "EpollServer.h"
+#include "ip_server.h"
+#elif MPI_INET
+#include "mpi_server.h"
+#endif
+
 #include "ConfHandler.h"
 using namespace iit::datasys::zht::dm;
 
-//#include "mpi_server.h"
-#include "ip_server.h"
-
 void printUsage(char *argv_0);
-
-string getProtocolFromConf() {
-
-	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
-
-	ConfHandler::MIT it;
-
-	for (it = zpmap->begin(); it != zpmap->end(); it++) {
-
-		ConfEntry ce;
-		ce.assign(it->first);
-
-		if (ce.name() == Const::PROTO_NAME) {
-
-			return ce.value();
-		}
-	}
-
-	return "";
-}
-
-string getPortFromConf() {
-
-	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
-
-	ConfHandler::MIT it;
-
-	for (it = zpmap->begin(); it != zpmap->end(); it++) {
-
-		ConfEntry ce;
-		ce.assign(it->first);
-
-		if (ce.name() == Const::PROTO_PORT) {
-
-			return ce.value();
-		}
-	}
-
-	return "";
-}
-
-void init_conf(string zhtConf, string neighborConf) {
-
-	ConfHandler::CONF_ZHT = zhtConf; //zht.conf
-	ConfHandler::CONF_NEIGHBOR = neighborConf; //neighbor.conf
-
-	ConfHandler::setZHTParameters(zhtConf);
-	ConfHandler::setNeighborSeeds(neighborConf);
-}
 
 int main(int argc, char **argv) {
 
@@ -108,11 +62,11 @@ int main(int argc, char **argv) {
 		if (!zhtConf.empty() && !neighborConf.empty()) {
 
 			/*init config*/
-			init_conf(zhtConf, neighborConf);
+			ConfHandler::initConf(zhtConf, neighborConf);
 
 			/*get protocol and port*/
-			protocol = getProtocolFromConf();
-			port = getPortFromConf();
+			protocol = ConfHandler::getProtocolFromConf();
+			port = ConfHandler::getPortFromConf();
 
 			if (protocol.empty()) {
 
@@ -128,14 +82,21 @@ int main(int argc, char **argv) {
 
 			char buf[100];
 			memset(buf, 0, sizeof(buf));
-			int n = sprintf(buf, "ZHT server- <localhost:%s> started...",
-					port.c_str());
+			int n = sprintf(buf,
+					"ZHT server- <localhost:%s> <protocol:%s> started...",
+					port.c_str(), protocol.c_str());
 
 			cout << buf << endl;
 
-			IPServer *is = new IPServer();
-			EpollServer es(is);
-			es.serve(port.c_str());
+#ifdef PF_INET
+
+			EpollServer es(port.c_str(), new IPServer());
+			es.serve();
+#elif MPI_INET
+
+			MPIServer mpis(argc, argv);
+			mpis.serve();
+#endif
 
 		} else {
 

@@ -29,6 +29,16 @@ bool MQProxy::recv(void *recvbuf, size_t &recvcount) {
 	return _mc.recv(recvbuf, recvcount);
 }
 
+bool MQProxy::sendrecv(const void *sendbuf, const size_t sendcount,
+		void *recvbuf, size_t &recvcount) {
+
+	bool sent_bool = _mc.xmit(sendbuf, sendcount);
+
+	bool recv_bool = _mc.recv(recvbuf, recvcount);
+
+	return sent_bool && recv_bool;
+}
+
 MQStub::MQStub() :
 		_ms(1) {
 

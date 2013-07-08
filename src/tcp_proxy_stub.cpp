@@ -181,7 +181,7 @@ bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 	int sendcount = result.size();
 
 	/*send response to client over server sock fd*/
-	int sentsize = sendBack(addr, sendbuf, result.size());
+	int sentsize = sendBack(addr, sendbuf, sendcount);
 	bool sent_bool = sentsize == sendcount;
 
 	return sent_bool;

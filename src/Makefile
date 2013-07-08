@@ -1,6 +1,6 @@
 TARGETS = zhtben zhtserver
 CC = gcc
-CCFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB}
+CCFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB} -DPF_INET
 LIBFLAGS = -lstdc++ -lrt -lpthread -lm -lc -lprotobuf -lprotobuf-c
 COMMON = common/
 

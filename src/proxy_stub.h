@@ -28,6 +28,8 @@ public:
 	ProtoProxy();
 	virtual ~ProtoProxy();
 
+	virtual bool init(int argc, char **argv);
+
 	virtual bool send(const void *sendbuf, const size_t sendcount);
 
 	virtual bool recv(void *recvbuf, size_t &recvcount);
@@ -43,6 +45,8 @@ class ProtoStub {
 public:
 	ProtoStub();
 	virtual ~ProtoStub();
+
+	virtual bool init(int argc, char **argv);
 
 	virtual bool send(const void *sendbuf, const size_t sendcount);
 

@@ -284,11 +284,11 @@ int benchmark(string &zhtConf, string &neighborConf, int numOfOps) {
 
 	benchmarkInsert(pkgList, zc, numOfOps, 15);
 
-	benchmarkLookup(pkgList, zc);
+	/*benchmarkLookup(pkgList, zc);
 
 	benchmarkAppend(zc, numOfOps, 15);
 
-	benchmarkRemove(pkgList, zc);
+	benchmarkRemove(pkgList, zc);*/
 
 	zc.teardown();
 

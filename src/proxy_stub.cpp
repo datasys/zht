@@ -20,6 +20,11 @@ ProtoProxy::ProtoProxy() {
 ProtoProxy::~ProtoProxy() {
 }
 
+bool ProtoProxy::init(int argc, char **argv) {
+
+	return false;
+}
+
 bool ProtoProxy::send(const void *sendbuf, const size_t sendcount) {
 
 	return false;
@@ -45,6 +50,11 @@ ProtoStub::ProtoStub() {
 }
 
 ProtoStub::~ProtoStub() {
+}
+
+bool ProtoStub::init(int argc, char **argv) {
+
+	return false;
 }
 
 bool ProtoStub::send(const void *sendbuf, const size_t sendcount) {

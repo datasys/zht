@@ -32,6 +32,7 @@
 
 #include "Env.h"
 #include "Const-impl.h"
+#include "ConfHandler.h"
 
 #include <stdlib.h>
 #include <sys/epoll.h>
@@ -63,9 +64,23 @@ EpollData::~EpollData() {
 const int EpollServer::MAX_EVENTS = 1024;
 const uint EpollServer::MAX_MSG_SIZE = Env::MAX_MSG_SIZE; //transferd string maximum size
 
-EpollServer::EpollServer(ZProcessor *processor, bool tcp) :
-		_tcp(tcp), _ZProcessor(processor), pbrb(new BdRecvFromClient()) {
+EpollServer::EpollServer(const char *port, ZProcessor *processor) :
+		_port(port), _ZProcessor(processor), pbrb(new BdRecvFromClient()) {
 
+	string protocol = ConfHandler::getProtocolFromConf();
+	if (protocol == Const::PROTO_VAL_TCP) {
+
+		_tcp = true;
+	} else if (protocol == Const::PROTO_VAL_UDP) {
+
+		_tcp = false;
+	} else {
+
+		fprintf(stderr,
+				"EpollServer::EpollServer(): <%s>, unrecognized IP family protocol\n",
+				protocol.c_str());
+		exit(1);
+	}
 }
 
 EpollServer::~EpollServer() {
@@ -152,8 +167,9 @@ int EpollServer::make_socket_non_blocking(const int& sfd) {
 	return 0;
 }
 
-int EpollServer::makeSvrSocket(int port) { //only for svr
+int EpollServer::makeSvrSocket() { //only for svr
 
+	int port = atoi(_port);
 	struct sockaddr_in svrAdd_in; /* socket info about our server */
 	int svrSock = -1;
 
@@ -198,7 +214,7 @@ int EpollServer::makeSvrSocket(int port) { //only for svr
 		if (_tcp == true) { //TCP needs listen, UDP does not.
 
 			/* start listening, allowing a queue of up to 1 pending connection */
-			if (listen(svrSock, 1000) < 0) {
+			if (listen(svrSock, SOMAXCONN) < 0) {
 
 				printf(
 						"Error occurred while enabling listen on the socket:%d\n",
@@ -229,26 +245,20 @@ int EpollServer::reuseSock(int sock) {
 		return 0;
 }
 
-int EpollServer::serve(const char *port) {
+void EpollServer::serve() {
 
 	int sfd, s;
 	int efd;
 	struct epoll_event event;
 	struct epoll_event *events;
 
-	sfd = makeSvrSocket(atoi(port));
+	sfd = makeSvrSocket();
 	if (sfd == -1)
 		abort();
 
 	s = make_socket_non_blocking(sfd);
 	if (s == -1)
 		abort();
-
-	s = listen(sfd, SOMAXCONN);
-	if (s == -1) {
-		perror("listen");
-		abort();
-	}
 
 	reuseSock(sfd);
 
@@ -331,7 +341,7 @@ int EpollServer::serve(const char *port) {
 						/*if (s == 0) {
 
 						 printf("Accepted connection on descriptor %d "
-						 "(host=%s, port=%s)\n", infd, hbuf, sbuf);
+						 "(host=%s, _port=%s)\n", infd, hbuf, sbuf);
 						 }*/
 
 						/* Make the incoming socket non-blocking and add it to the
@@ -434,7 +444,7 @@ int EpollServer::serve(const char *port) {
 					if (done) {
 
 						/*printf("Closed connection on descriptor %d, done.\n",
-								edata->fd());*/
+						 edata->fd());*/
 
 						/* Closing the descriptor will make epoll remove it
 						 from the set of descriptors which are monitored. */
@@ -452,8 +462,6 @@ int EpollServer::serve(const char *port) {
 
 	EpollData *gedata = (EpollData*) event.data.ptr;
 	delete gedata;
-
-	return EXIT_SUCCESS;
 }
 
 } /* namespace dm */

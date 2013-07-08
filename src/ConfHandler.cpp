@@ -75,6 +75,55 @@ ConfHandler::~ConfHandler() {
 
 }
 
+string ConfHandler::getProtocolFromConf() {
+
+	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
+
+	ConfHandler::MIT it;
+
+	for (it = zpmap->begin(); it != zpmap->end(); it++) {
+
+		ConfEntry ce;
+		ce.assign(it->first);
+
+		if (ce.name() == Const::PROTO_NAME) {
+
+			return ce.value();
+		}
+	}
+
+	return "";
+}
+
+string ConfHandler::getPortFromConf() {
+
+	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
+
+	ConfHandler::MIT it;
+
+	for (it = zpmap->begin(); it != zpmap->end(); it++) {
+
+		ConfEntry ce;
+		ce.assign(it->first);
+
+		if (ce.name() == Const::PROTO_PORT) {
+
+			return ce.value();
+		}
+	}
+
+	return "";
+}
+
+void ConfHandler::initConf(string zhtConf, string neighborConf) {
+
+	ConfHandler::CONF_ZHT = zhtConf; //zht.conf
+	ConfHandler::CONF_NEIGHBOR = neighborConf; //neighbor.conf
+
+	ConfHandler::setZHTParameters(zhtConf);
+	ConfHandler::setNeighborSeeds(neighborConf);
+}
+
 void ConfHandler::setNeighborSeeds(const string& neighborCfg) {
 
 	setParametersInternal(neighborCfg, NeighborSeeds);

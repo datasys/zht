@@ -60,20 +60,23 @@ private:
  */
 class EpollServer {
 public:
-	EpollServer(ZProcessor *processor, bool tcp = true);
+	EpollServer(const char *port, ZProcessor *processor);
 	virtual ~EpollServer();
 
-	int serve(const char *port);
+	void serve();
 
 private:
 	int create_and_bind(const char *port);
 	int create_and_bind(const char *host, const char *port);
 	int make_socket_non_blocking(const int& sfd);
-	int makeSvrSocket(int port);
+	int makeSvrSocket();
 	int reuseSock(int sock);
 
 private:
 	EpollServer();
+
+private:
+	const char *_port;
 	bool _tcp;
 	static const int MAX_EVENTS;
 	static const uint MAX_MSG_SIZE;

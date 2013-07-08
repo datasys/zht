@@ -62,12 +62,16 @@ public:
 	ConfHandler();
 	virtual ~ConfHandler();
 
-	static void setNeighborSeeds(const string& neighborCfg);
-	static void setZHTParameters(const string& zhtConfig);
-	static void setNodeParameters(const string& nodeConfig);
+	static void initConf(string zhtConf, string neighborConf);
+	static string getPortFromConf();
+	static string getProtocolFromConf();
 
 private:
+	static void setNeighborSeeds(const string& neighborCfg);
+	static void setZHTParameters(const string& zhtConfig);
 	static void setNeighborVector(VEC &neighborVector);
+	static void setNodeParameters(const string& nodeConfig);
+
 	static void pickNodeParameters();
 	static void pickZHTParameters();
 

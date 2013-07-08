@@ -10,21 +10,16 @@
 
 #include "proxy_stub.h"
 
-#include "ipc_plus.h"
-using namespace IPC;
-
 /*
  *
  */
 class MPIProxy: public ProtoProxy {
 
-private:
-	MPIProxy();
-
 public:
-	MPIProxy(int argc, char **argv);
+	MPIProxy();
 	virtual ~MPIProxy();
 
+	virtual bool init(int argc, char **argv);
 	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
 			void *recvbuf, size_t &recvcount);
 
@@ -42,7 +37,11 @@ public:
 	MPIStub();
 	virtual ~MPIStub();
 
-	virtual bool recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
-			const size_t sendcount);
+	virtual bool init(int argc, char **argv);
+	virtual bool recvsend(ProtoAddr addr, const void *recvbuf);
+
+private:
+	int size;
+	int rank;
 };
 #endif /* MPI_PROXY_STUB_H_ */

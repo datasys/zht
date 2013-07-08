@@ -12,22 +12,20 @@
  *
  */
 class MPIServer {
-public:
+
+private:
 	MPIServer();
+
+public:
+	MPIServer(int argc, char **argv);
+
 	virtual ~MPIServer();
 
-private:
-	void init();
+	void serve();
 
 private:
-	MPI_Status status;
-
-	int size;
-	int rank;
-
-	size_t msz;
-	/*char req[IPC_MAX_MSG_SZ];
-	 char ans[IPC_MAX_MSG_SZ];*/
+	int _argc;
+	char ** _argv;
 };
 
 #endif /* MPISERVER_H_ */

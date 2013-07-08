@@ -60,11 +60,7 @@ ZHTClient::~ZHTClient() {
 
 int ZHTClient::init(const string& zhtConf, const string& neighborConf) {
 
-	ConfHandler::CONF_ZHT = zhtConf;
-	ConfHandler::CONF_NEIGHBOR = neighborConf;
-
-	ConfHandler::setZHTParameters(zhtConf);
-	ConfHandler::setNeighborSeeds(neighborConf);
+	ConfHandler::initConf(zhtConf, neighborConf);
 
 	proxy = ProxyStubFactory::createProxy();
 
