@@ -1,8 +1,29 @@
 /*
+ * Copyright 2010-2020 DatasysLab@iit.edu(http://datasys.cs.iit.edu/index.html)
+ *      Director: Ioan Raicu(iraicu@cs.iit.edu)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of ZHT library(http://datasys.cs.iit.edu/projects/ZHT/index.html).
+ *      Ioan Raicu(iraicu@cs.iit.edu),
+ *      Tonglin Li(tli13@hawk.iit.edu) with nickname Tony,
+ *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo.
+ *
  * mpi_proxy_stub.cpp
  *
  *  Created on: Jun 21, 2013
- *      Author: Xiaobing Zhou
+ *      Author: Xiaobingo
+ *      Contributor: Tony
  */
 
 #include "mpi_proxy_stub.h"
@@ -13,6 +34,11 @@
 
 #include "mpi.h"
 #include "HTWorker.h"
+
+#include  "Util.h"
+#include  "meta.pb.h"
+
+using namespace iit::datasys::zht::dm;
 
 MPIProxy::MPIProxy() :
 		size(0), rank(-1) {
@@ -37,7 +63,7 @@ bool MPIProxy::init(int argc, char **argv) {
 bool MPIProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 		void *recvbuf, size_t &recvcount) {
 
-	int mpi_dest = get_mpi_dest();
+	int mpi_dest = get_mpi_dest(sendbuf, sendcount);
 
 	int rs = MPI_Send(sendbuf, sendcount, MPI_CHAR, mpi_dest, 2,
 			MPI_COMM_WORLD );
@@ -57,10 +83,17 @@ bool MPIProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 }
 
-int MPIProxy::get_mpi_dest() {
+int MPIProxy::get_mpi_dest(const void *sendbuf, const size_t sendcount) {
 
 	//todo: to know which ZHT server as dest, same as TCP_Proxy and UDP_Proxy
-	return rand() % (size - 1);
+
+	Package pkg;
+	pkg.ParsePartialFromArray(sendbuf, sendcount);
+
+	int index = HashUtil::genHash(pkg.virtualpath()) % (size - 1);
+
+	return index;
+
 }
 
 MPIStub::MPIStub() :
@@ -89,11 +122,11 @@ bool MPIStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 	int again = 0;
 	char req[IPC_MAX_MSG_SZ];
 
+	fprintf(stderr, "[%d,%d] mpi server loop %d\n", size, rank, again);
+
 	for (;;) {
 
 		++again;
-
-		fprintf(stderr, "[%d] mpi server loop %d\n", rank, again);
 
 		int rr = MPI_Recv(req, sizeof(req), MPI_CHAR, MPI_ANY_SOURCE,
 				MPI_ANY_TAG, MPI_COMM_WORLD, &status);
