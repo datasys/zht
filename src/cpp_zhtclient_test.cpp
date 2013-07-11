@@ -29,6 +29,7 @@
 #include "ZHTClient.h"
 #include "meta.pb.h"
 
+#include  <getopt.h>
 #include   <stdio.h>
 #include   <string>
 #include   <exception>

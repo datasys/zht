@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <iostream>
+#include <unistd.h>
 
 #include "Env.h"
 #include "ZHTUtil.h"

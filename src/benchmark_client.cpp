@@ -31,6 +31,8 @@
 
 #include <vector>
 #include <error.h>
+#include <getopt.h>
+#include <unistd.h>
 
 #include "meta.pb.h"
 #include "Util.h"
@@ -98,7 +100,7 @@ int benchmarkAppend(ZHTClient &zc, int numOfOps, int lenString) {
 		package.set_isdir(true);
 		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
 		package.set_realfullpath(
-				"Some-Real-longer-longer-and-longer-Paths--------");
+				"Some-Real-longer#include<getopt.h>-longer-and-longer-Paths--------");
 		package.add_listitem("item-----2");
 		package.add_listitem("item-----3");
 		package.add_listitem("item-----4");
