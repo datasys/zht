@@ -1,12 +1,12 @@
-TARGETS = zht_ctest zht_cpptest zhtben zhtserver
+TARGETS = zht_ctest zht_cpptest zhtben zhtserver libzht.a
 CC = gcc
 CCFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB} -DPF_INET
 LIBFLAGS = -lstdc++ -lrt -lpthread -lm -lc -lprotobuf -lprotobuf-c
 COMMON = common/
 
 all:	$(TARGETS)
-	
-	
+
+
 zht_ctest: c_zhtclient_test.o c_zhtclient.o c_zhtclientStd.o lock_guard.o ZHTClient.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o bigdata_transfer.o\
 Const.o ConfHandler.o ConfEntry.o \
 ProxyStubFactory.o proxy_stub.o ip_proxy_stub.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o \
@@ -38,6 +38,9 @@ EpollServer.o ZProcessor.o ip_server.o HTWorker.o StrTokenizer.o
 	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
 
 
+libzht.a: 
+	ar r libzht.a *.o	
+		
 %.o: %.c
 	$(CC) $(CCFLAGS) -c $< $^ $(LIBFLAGS)
 	
