@@ -45,7 +45,7 @@ public:
 protected:
 	virtual int reuseSock(int sock);
 	virtual int recvFrom(int sock, void* recvbuf)= 0;
-	virtual int loopedrecv(int sock, string &srecv) = 0;
+	virtual int loopedrecv(int sock, void *senderAddr, string &srecv);
 };
 
 class IPProtoStub: public ProtoStub {

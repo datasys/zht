@@ -208,6 +208,7 @@ public:
 	 * Also see destroy().
 	 */
 	virtual ~TwoWayMsg() {
+
 		/*delete req;
 		 delete rep;*/ //zhouxb
 	}
@@ -219,6 +220,7 @@ public:
 	 * \return False if either of the sub-destroys failed.
 	 */
 	virtual bool destroy() {
+
 		bool r1 = false;
 		if (req) {
 			r1 = req->destroy();

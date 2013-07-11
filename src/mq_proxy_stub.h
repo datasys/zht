@@ -64,6 +64,8 @@ public:
 
 	virtual bool recv(void *recvbuf, size_t &recvcount);
 
+	virtual bool teardown();
+
 private:
 	MsgServer _ms;
 };

@@ -40,8 +40,8 @@
 #include "Env.h"
 #include "Util.h"
 #include "ZHTUtil.h"
-#include "bigdata_transfer.h"
 #include "HTWorker.h"
+#include "bigdata_transfer.h"
 
 using namespace iit::datasys::zht::dm;
 
@@ -192,44 +192,7 @@ int TCPProxy::recvFrom(int sock, void* recvbuf) {
 
 int TCPProxy::loopedrecv(int sock, string &srecv) {
 
-	ssize_t recvcount = -2;
-
-	BdRecvBase *pbrb = new BdRecvFromServer();
-
-	char buf[Env::BUF_SIZE];
-
-	while (1) {
-
-		memset(buf, '\0', sizeof(buf));
-
-		ssize_t count = ::recv(sock, buf, sizeof(buf), 0);
-
-		if (count == -1 || count == 0) {
-
-			recvcount = count;
-
-			break;
-		}
-
-		bool ready = false;
-
-		string bd = pbrb->getBdStr(sock, buf, count, ready);
-
-		if (ready) {
-
-			srecv = bd;
-			recvcount = srecv.size();
-
-			break;
-		}
-
-		memset(buf, '\0', sizeof(buf));
-	}
-
-	delete pbrb;
-	pbrb = NULL;
-
-	return recvcount;
+	return IPProtoProxy::loopedrecv(sock, NULL, srecv);
 }
 
 TCPStub::TCPStub() {

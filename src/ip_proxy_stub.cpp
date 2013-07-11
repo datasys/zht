@@ -27,6 +27,8 @@
  */
 
 #include "ip_proxy_stub.h"
+#include "Env.h"
+#include "bigdata_transfer.h"
 
 #include <sys/socket.h>
 #include <string.h>
@@ -51,6 +53,54 @@ int IPProtoProxy::reuseSock(int sock) {
 		return -1;
 	} else
 		return 0;
+}
+
+int IPProtoProxy::loopedrecv(int sock, void *senderAddr, string &srecv) {
+
+	ssize_t recvcount = -2;
+	socklen_t addr_len = sizeof(struct sockaddr);
+
+	BdRecvBase *pbrb = new BdRecvFromServer();
+
+	char buf[Env::BUF_SIZE];
+
+	while (1) {
+
+		memset(buf, '\0', sizeof(buf));
+
+		ssize_t count;
+		if (senderAddr == NULL)
+			count = ::recv(sock, buf, sizeof(buf), 0);
+		else
+			count = ::recvfrom(sock, buf, sizeof(buf), 0,
+					(struct sockaddr *) senderAddr, &addr_len);
+
+		if (count == -1 || count == 0) {
+
+			recvcount = count;
+
+			break;
+		}
+
+		bool ready = false;
+
+		string bd = pbrb->getBdStr(sock, buf, count, ready);
+
+		if (ready) {
+
+			srecv = bd;
+			recvcount = srecv.size();
+
+			break;
+		}
+
+		memset(buf, '\0', sizeof(buf));
+	}
+
+	delete pbrb;
+	pbrb = NULL;
+
+	return recvcount;
 }
 
 IPProtoStub::IPProtoStub() {

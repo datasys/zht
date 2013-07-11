@@ -192,14 +192,29 @@ BdSendBase::BdSendBase(const string& msg) :
 
 int BdSendBase::bsend(int sock) const {
 
+	bsend(sock, NULL);
+}
+
+int BdSendBase::bsend(const char* host, int port, int sock) const {
+
+	return bsend(sock);
+}
+
+int BdSendBase::bsend(int sock, void *senderAddr) const {
+
 	int count = 0;
+	socklen_t addr_len = sizeof(struct sockaddr);
 
 	int i = 0;
 	for (VI it = _blobs.begin(); it != _blobs.end(); it++) {
 
 		string bstr = it->toString();
 
-		count += send(sock, bstr.c_str(), bstr.size(), 0);
+		if (senderAddr == NULL)
+			count += send(sock, bstr.c_str(), bstr.size(), 0);
+		else
+			count += sendto(sock, bstr.c_str(), bstr.size(), 0,
+					(struct sockaddr *) senderAddr, sizeof(struct sockaddr));
 
 		/*remove the header, since the caller probably wants knowing real-sent-size*/
 		count -= it->getHeaderLen();
@@ -211,11 +226,6 @@ int BdSendBase::bsend(int sock) const {
 	}
 
 	return count;
-}
-
-int BdSendBase::bsend(const char* host, int port, int sock) const {
-
-	return bsend(sock);
 }
 
 BdSendBase::~BdSendBase() {

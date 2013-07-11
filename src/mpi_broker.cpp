@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 
 #include "mq_proxy_stub.h"
 #include "mpi_proxy_stub.h"
@@ -39,7 +40,36 @@
 MQStub mqstub;
 MPIProxy mpiproxy;
 
+void sigint_handler(int sig) {
+
+//	printf("sigint_handler called\n");
+
+	mqstub.teardown();
+}
+
+void init_sig_handler() {
+
+	struct sigaction sa;
+	sa.sa_handler = sigint_handler;
+	sa.sa_flags = 0; // or SA_RESTART
+
+	sigemptyset(&sa.sa_mask);
+
+	if (sigaction(SIGINT, &sa, NULL) == -1) {
+
+		perror("sigaction");
+		exit(1);
+	}
+}
+
+void init_me(void) {
+
+	init_sig_handler();
+}
+
 int main(int argc, char **argv) {
+
+	init_me();
 
 	size_t msz;
 	char req[IPC_MAX_MSG_SZ];

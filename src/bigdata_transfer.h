@@ -100,8 +100,9 @@ public:
 	BdSendBase(const string& msg);
 	virtual ~BdSendBase();
 
-	int bsend(int sock) const;
-	int bsend(const char* host, int port, int sock) const;
+	virtual int bsend(int sock) const;
+	virtual int bsend(int sock, void *senderAddr) const;
+	virtual int bsend(const char* host, int port, int sock) const;
 
 protected:
 	virtual int recAck(int sock, const uint64_t& ackid,

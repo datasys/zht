@@ -37,9 +37,10 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "Env.h"
 #include "ZHTUtil.h"
 #include "HTWorker.h"
+
+#include "Env.h"
 #include "bigdata_transfer.h"
 
 int UDPProxy::UDP_SOCKET = -1;
@@ -122,47 +123,8 @@ int UDPProxy::recvFrom(int sock, void* recvbuf) {
 int UDPProxy::loopedrecv(int sock, string &srecv) {
 
 	struct sockaddr_in recvAddr;
-	socklen_t addr_len = sizeof(struct sockaddr);
 
-	ssize_t recvcount = -2;
-
-	BdRecvBase *pbrb = new BdRecvFromServer();
-
-	char buf[Env::BUF_SIZE];
-
-	while (1) {
-
-		memset(buf, '\0', sizeof(buf));
-
-		ssize_t count = ::recvfrom(sock, buf, sizeof(buf), 0,
-				(struct sockaddr *) &recvAddr, &addr_len);
-
-		if (count == -1 || count == 0) {
-
-			recvcount = count;
-
-			break;
-		}
-
-		bool ready = false;
-
-		string bd = pbrb->getBdStr(sock, buf, count, ready);
-
-		if (ready) {
-
-			srecv = bd;
-			recvcount = srecv.size();
-
-			break;
-		}
-
-		memset(buf, '\0', sizeof(buf));
-	}
-
-	delete pbrb;
-	pbrb = NULL;
-
-	return recvcount;
+	return IPProtoProxy::loopedrecv(sock, &recvAddr, srecv);
 }
 
 bool UDPProxy::teardown() {
@@ -232,13 +194,19 @@ bool UDPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 
-	int sentsize = sendto(addr.fd, sendbuf, sendcount, 0,
-			(struct sockaddr *) addr.sender, sizeof(struct sockaddr));
+	/*send response to client over server sock fd*/
+	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
+	int sentsize = pbsb->bsend(addr.fd, addr.sender);
 
+	delete pbsb;
+	pbsb = NULL;
+
+	/*prompt errors*/
 	if (sentsize < sendcount) {
 
-		cerr << "UDPStub::sendBack(): error on ::sendto(...)" << strerror(errno)
-				<< endl;
+		cerr << "UDPStub::sendBack():  error on BdSendToClient::bsend(...): "
+				<< strerror(errno) << endl;
 	}
+
 	return sentsize;
 }
