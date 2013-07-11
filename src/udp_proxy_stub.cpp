@@ -36,8 +36,10 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "Env.h"
 #include "ZHTUtil.h"
 #include "HTWorker.h"
+#include "bigdata_transfer.h"
 
 int UDPProxy::UDP_SOCKET = -1;
 
@@ -66,7 +68,7 @@ bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 	int sent_bool = sentSize == sendcount;
 
 	/*receive response from server over client sock fd*/ //todo: loopedReceive for zht_lookup
-	recvcount = recvFrom(sock, recvbuf, recvcount);
+	recvcount = recvFrom(sock, recvbuf);
 	int recv_bool = recvcount >= 0;
 
 	/*combine flags as value to be returned*/
@@ -99,13 +101,12 @@ int UDPProxy::sendTo(int sock, const string &host, uint port,
 	return sentSize;
 }
 
-int UDPProxy::recvFrom(int sock, void* recvbuf, int recvbufsize) {
+int UDPProxy::recvFrom(int sock, void* recvbuf) {
 
-	struct sockaddr_in recvAddr;
-	socklen_t addr_len = sizeof(struct sockaddr);
+	string result;
+	int recvcount = loopedrecv(sock, result);
 
-	int recvcount = recvfrom(sock, recvbuf, recvbufsize, 0,
-			(struct sockaddr *) &recvAddr, &addr_len);
+	memcpy(recvbuf, result.c_str(), result.size() + 1);
 
 	/*prompt errors*/
 	if (recvcount < 0) {
@@ -113,6 +114,52 @@ int UDPProxy::recvFrom(int sock, void* recvbuf, int recvbufsize) {
 		cerr << "UDPProxy::recvFrom(): error on ::recvfrom(...): "
 				<< strerror(errno) << endl;
 	}
+
+	return recvcount;
+}
+
+int UDPProxy::loopedrecv(int sock, string &srecv) {
+
+	struct sockaddr_in recvAddr;
+	socklen_t addr_len = sizeof(struct sockaddr);
+
+	ssize_t recvcount = -2;
+
+	BdRecvBase *pbrb = new BdRecvFromServer();
+
+	char buf[Env::BUF_SIZE];
+
+	while (1) {
+
+		memset(buf, '\0', sizeof(buf));
+
+		ssize_t count = ::recvfrom(sock, buf, sizeof(buf), 0,
+				(struct sockaddr *) &recvAddr, &addr_len);
+
+		if (count == -1 || count == 0) {
+
+			recvcount = count;
+
+			break;
+		}
+
+		bool ready = false;
+
+		string bd = pbrb->getBdStr(sock, buf, count, ready);
+
+		if (ready) {
+
+			srecv = bd;
+			recvcount = srecv.size();
+
+			break;
+		}
+
+		memset(buf, '\0', sizeof(buf));
+	}
+
+	delete pbrb;
+	pbrb = NULL;
 
 	return recvcount;
 }

@@ -19,44 +19,36 @@
  *      Tonglin Li(tli13@hawk.iit.edu) with nickname Tony,
  *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo.
  *
- * ip_proxy_stub.h
+ * lock_guard.cpp
  *
- *  Created on: Jun 25, 2013
+ *  Created on: Apr 24, 2013
  *      Author: Xiaobingo
  *      Contributor: Tony
  */
 
-#ifndef IPPROTOCOL_H_
-#define IPPROTOCOL_H_
+#include "lock_guard.h"
 
-#include "proxy_stub.h"
+lock_guard::lock_guard(pthread_mutex_t *mutex) :
+		_mutex(mutex) {
 
-#include <string>
-using namespace std;
+	lock();
+}
 
-/*
- *
- */
-class IPProtoProxy: public ProtoProxy {
-public:
-	IPProtoProxy();
-	virtual ~IPProtoProxy();
+lock_guard::~lock_guard() {
 
-protected:
-	virtual int reuseSock(int sock);
-	virtual int recvFrom(int sock, void* recvbuf)= 0;
-	virtual int loopedrecv(int sock, string &srecv) = 0;
-};
+	unlock();
+}
 
-class IPProtoStub: public ProtoStub {
-public:
-	IPProtoStub();
-	virtual ~IPProtoStub();
+bool lock_guard::lock() {
 
-protected:
-	virtual int sendBack(ProtoAddr addr, const void* sendbuf,
-			int sendcount) = 0;
+	pthread_mutex_lock(_mutex);
 
-};
+	return true;
+}
 
-#endif /* IPPROTOCOL_H_ */
+bool lock_guard::unlock() {
+
+	pthread_mutex_unlock(_mutex);
+
+	return true;
+}

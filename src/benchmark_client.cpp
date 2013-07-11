@@ -50,7 +50,6 @@ int benchmarkInsert(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
 		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
 		package.set_isdir(true);
 		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
-		package.set_operation(3); // 3 for insert, 1 for look up, 2 for remove
 		package.set_realfullpath(
 				"Some-Real-longer-longer-and-longer-Paths--------");
 		package.add_listitem("item-----2");
@@ -98,7 +97,6 @@ int benchmarkAppend(ZHTClient &zc, int numOfOps, int lenString) {
 				HashUtil::randomString(lenString).append("-append")); //as key
 		package.set_isdir(true);
 		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
-		package.set_operation(4); // 3 for insert, 1 for look up, 2 for remove
 		package.set_realfullpath(
 				"Some-Real-longer-longer-and-longer-Paths--------");
 		package.add_listitem("item-----2");
@@ -146,7 +144,6 @@ int benmarkTimeAnalize(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
 		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
 		package.set_isdir(true);
 		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
-		package.set_operation(3); // 3 for insert, 1 for look up, 2 for remove
 		package.set_realfullpath(
 				"Some-Real-longer-longer-and-longer-Paths--------");
 		package.add_listitem("item-----1");
@@ -237,7 +234,6 @@ float benchmarkRemove(vector<string> strList, ZHTClient &zc) {
 
 		Package package;
 		package.ParseFromString((*it));
-		package.set_operation(2); // 3 for insert, 1 for look up, 2 for remove
 		package.set_replicano(5); //5: original, 3 not original
 
 		string newStr = package.SerializeAsString();

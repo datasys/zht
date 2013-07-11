@@ -23,6 +23,7 @@ struct  _Package
   protobuf_c_boolean has_num;
   int32_t num;
   char *realfullpath;
+  char *newfullpath;
   protobuf_c_boolean has_isdir;
   protobuf_c_boolean isdir;
   size_t n_listitem;
@@ -53,9 +54,9 @@ struct  _Package
   char *asneighbor;
   char *wifecode;
   protobuf_c_boolean has_ackid;
-  uint64_t ackid;
-  size_t n_tid;
-  uint32_t *tid;
+  protobuf_c_boolean ackid;
+  size_t n_t_id;
+  uint32_t *t_id;
   size_t n_cid;
   char **cid;
   size_t n_desc;
@@ -65,7 +66,7 @@ struct  _Package
 };
 #define PACKAGE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&package__descriptor) \
-    , NULL, 0,0, NULL, 0,0, 0,NULL, 0,0, 0,0, 0,0, 0,0, NULL, NULL, 0,0, 0,0, NULL, NULL, NULL, NULL, 0,NULL, NULL, 0,0, NULL, NULL, 0,0, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
+    , NULL, 0,0, NULL, NULL, 0,0, 0,NULL, 0,0, 0,0, 0,0, 0,0, NULL, NULL, 0,0, 0,0, NULL, NULL, NULL, NULL, 0,NULL, NULL, 0,0, NULL, NULL, 0,0, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
 
 
 /* Package methods */

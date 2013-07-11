@@ -117,17 +117,28 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_realfullpath();
   inline ::std::string* release_realfullpath();
   
-  // optional bool isDir = 4;
+  // optional string newFullPath = 4;
+  inline bool has_newfullpath() const;
+  inline void clear_newfullpath();
+  static const int kNewFullPathFieldNumber = 4;
+  inline const ::std::string& newfullpath() const;
+  inline void set_newfullpath(const ::std::string& value);
+  inline void set_newfullpath(const char* value);
+  inline void set_newfullpath(const char* value, size_t size);
+  inline ::std::string* mutable_newfullpath();
+  inline ::std::string* release_newfullpath();
+  
+  // optional bool isDir = 5;
   inline bool has_isdir() const;
   inline void clear_isdir();
-  static const int kIsDirFieldNumber = 4;
+  static const int kIsDirFieldNumber = 5;
   inline bool isdir() const;
   inline void set_isdir(bool value);
   
-  // repeated string listItem = 5;
+  // repeated string listItem = 6;
   inline int listitem_size() const;
   inline void clear_listitem();
-  static const int kListItemFieldNumber = 5;
+  static const int kListItemFieldNumber = 6;
   inline const ::std::string& listitem(int index) const;
   inline ::std::string* mutable_listitem(int index);
   inline void set_listitem(int index, const ::std::string& value);
@@ -140,38 +151,38 @@ class Package : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& listitem() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_listitem();
   
-  // optional int32 openMode = 6;
+  // optional int32 openMode = 7;
   inline bool has_openmode() const;
   inline void clear_openmode();
-  static const int kOpenModeFieldNumber = 6;
+  static const int kOpenModeFieldNumber = 7;
   inline ::google::protobuf::int32 openmode() const;
   inline void set_openmode(::google::protobuf::int32 value);
   
-  // optional int32 mode = 7;
+  // optional int32 mode = 8;
   inline bool has_mode() const;
   inline void clear_mode();
-  static const int kModeFieldNumber = 7;
+  static const int kModeFieldNumber = 8;
   inline ::google::protobuf::int32 mode() const;
   inline void set_mode(::google::protobuf::int32 value);
   
-  // optional int32 Operation = 8;
+  // optional int32 Operation = 9;
   inline bool has_operation() const;
   inline void clear_operation();
-  static const int kOperationFieldNumber = 8;
+  static const int kOperationFieldNumber = 9;
   inline ::google::protobuf::int32 operation() const;
   inline void set_operation(::google::protobuf::int32 value);
   
-  // optional int32 replicaNo = 9;
+  // optional int32 replicaNo = 10;
   inline bool has_replicano() const;
   inline void clear_replicano();
-  static const int kReplicaNoFieldNumber = 9;
+  static const int kReplicaNoFieldNumber = 10;
   inline ::google::protobuf::int32 replicano() const;
   inline void set_replicano(::google::protobuf::int32 value);
   
-  // optional string opcode = 10;
+  // optional string opcode = 11;
   inline bool has_opcode() const;
   inline void clear_opcode();
-  static const int kOpcodeFieldNumber = 10;
+  static const int kOpcodeFieldNumber = 11;
   inline const ::std::string& opcode() const;
   inline void set_opcode(const ::std::string& value);
   inline void set_opcode(const char* value);
@@ -179,10 +190,10 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_opcode();
   inline ::std::string* release_opcode();
   
-  // optional string rcode = 11;
+  // optional string rcode = 12;
   inline bool has_rcode() const;
   inline void clear_rcode();
-  static const int kRcodeFieldNumber = 11;
+  static const int kRcodeFieldNumber = 12;
   inline const ::std::string& rcode() const;
   inline void set_rcode(const ::std::string& value);
   inline void set_rcode(const char* value);
@@ -190,24 +201,24 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_rcode();
   inline ::std::string* release_rcode();
   
-  // optional uint32 migrateInst = 12;
+  // optional uint32 migrateInst = 13;
   inline bool has_migrateinst() const;
   inline void clear_migrateinst();
-  static const int kMigrateInstFieldNumber = 12;
+  static const int kMigrateInstFieldNumber = 13;
   inline ::google::protobuf::uint32 migrateinst() const;
   inline void set_migrateinst(::google::protobuf::uint32 value);
   
-  // optional bool uprange = 13;
+  // optional bool uprange = 14;
   inline bool has_uprange() const;
   inline void clear_uprange();
-  static const int kUprangeFieldNumber = 13;
+  static const int kUprangeFieldNumber = 14;
   inline bool uprange() const;
   inline void set_uprange(bool value);
   
-  // optional string sourceZHT = 14;
+  // optional string sourceZHT = 15;
   inline bool has_sourcezht() const;
   inline void clear_sourcezht();
-  static const int kSourceZHTFieldNumber = 14;
+  static const int kSourceZHTFieldNumber = 15;
   inline const ::std::string& sourcezht() const;
   inline void set_sourcezht(const ::std::string& value);
   inline void set_sourcezht(const char* value);
@@ -215,10 +226,10 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_sourcezht();
   inline ::std::string* release_sourcezht();
   
-  // optional string targetZHT = 15;
+  // optional string targetZHT = 16;
   inline bool has_targetzht() const;
   inline void clear_targetzht();
-  static const int kTargetZHTFieldNumber = 15;
+  static const int kTargetZHTFieldNumber = 16;
   inline const ::std::string& targetzht() const;
   inline void set_targetzht(const ::std::string& value);
   inline void set_targetzht(const char* value);
@@ -226,10 +237,10 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_targetzht();
   inline ::std::string* release_targetzht();
   
-  // optional string rfname = 16;
+  // optional string rfname = 17;
   inline bool has_rfname() const;
   inline void clear_rfname();
-  static const int kRfnameFieldNumber = 16;
+  static const int kRfnameFieldNumber = 17;
   inline const ::std::string& rfname() const;
   inline void set_rfname(const ::std::string& value);
   inline void set_rfname(const char* value);
@@ -237,10 +248,10 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_rfname();
   inline ::std::string* release_rfname();
   
-  // optional string lfname = 17;
+  // optional string lfname = 18;
   inline bool has_lfname() const;
   inline void clear_lfname();
-  static const int kLfnameFieldNumber = 17;
+  static const int kLfnameFieldNumber = 18;
   inline const ::std::string& lfname() const;
   inline void set_lfname(const ::std::string& value);
   inline void set_lfname(const char* value);
@@ -248,10 +259,10 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_lfname();
   inline ::std::string* release_lfname();
   
-  // repeated uint64 migringpos = 18;
+  // repeated uint64 migringpos = 19;
   inline int migringpos_size() const;
   inline void clear_migringpos();
-  static const int kMigringposFieldNumber = 18;
+  static const int kMigringposFieldNumber = 19;
   inline ::google::protobuf::uint64 migringpos(int index) const;
   inline void set_migringpos(int index, ::google::protobuf::uint64 value);
   inline void add_migringpos(::google::protobuf::uint64 value);
@@ -260,10 +271,10 @@ class Package : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
       mutable_migringpos();
   
-  // optional string gmembership = 19;
+  // optional string gmembership = 20;
   inline bool has_gmembership() const;
   inline void clear_gmembership();
-  static const int kGmembershipFieldNumber = 19;
+  static const int kGmembershipFieldNumber = 20;
   inline const ::std::string& gmembership() const;
   inline void set_gmembership(const ::std::string& value);
   inline void set_gmembership(const char* value);
@@ -271,17 +282,17 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_gmembership();
   inline ::std::string* release_gmembership();
   
-  // optional bool isfwdmsg = 20;
+  // optional bool isfwdmsg = 21;
   inline bool has_isfwdmsg() const;
   inline void clear_isfwdmsg();
-  static const int kIsfwdmsgFieldNumber = 20;
+  static const int kIsfwdmsgFieldNumber = 21;
   inline bool isfwdmsg() const;
   inline void set_isfwdmsg(bool value);
   
-  // optional string asneighbor = 21;
+  // optional string asneighbor = 22;
   inline bool has_asneighbor() const;
   inline void clear_asneighbor();
-  static const int kAsneighborFieldNumber = 21;
+  static const int kAsneighborFieldNumber = 22;
   inline const ::std::string& asneighbor() const;
   inline void set_asneighbor(const ::std::string& value);
   inline void set_asneighbor(const char* value);
@@ -289,10 +300,10 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_asneighbor();
   inline ::std::string* release_asneighbor();
   
-  // optional string wifecode = 22;
+  // optional string wifecode = 23;
   inline bool has_wifecode() const;
   inline void clear_wifecode();
-  static const int kWifecodeFieldNumber = 22;
+  static const int kWifecodeFieldNumber = 23;
   inline const ::std::string& wifecode() const;
   inline void set_wifecode(const ::std::string& value);
   inline void set_wifecode(const char* value);
@@ -300,29 +311,29 @@ class Package : public ::google::protobuf::Message {
   inline ::std::string* mutable_wifecode();
   inline ::std::string* release_wifecode();
   
-  // optional uint64 ackid = 23;
+  // optional bool ackid = 24;
   inline bool has_ackid() const;
   inline void clear_ackid();
-  static const int kAckidFieldNumber = 23;
-  inline ::google::protobuf::uint64 ackid() const;
-  inline void set_ackid(::google::protobuf::uint64 value);
+  static const int kAckidFieldNumber = 24;
+  inline bool ackid() const;
+  inline void set_ackid(bool value);
   
-  // repeated uint32 tid = 24;
-  inline int tid_size() const;
-  inline void clear_tid();
-  static const int kTidFieldNumber = 24;
-  inline ::google::protobuf::uint32 tid(int index) const;
-  inline void set_tid(int index, ::google::protobuf::uint32 value);
-  inline void add_tid(::google::protobuf::uint32 value);
+  // repeated uint32 t_id = 25;
+  inline int t_id_size() const;
+  inline void clear_t_id();
+  static const int kTIdFieldNumber = 25;
+  inline ::google::protobuf::uint32 t_id(int index) const;
+  inline void set_t_id(int index, ::google::protobuf::uint32 value);
+  inline void add_t_id(::google::protobuf::uint32 value);
   inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-      tid() const;
+      t_id() const;
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-      mutable_tid();
+      mutable_t_id();
   
-  // repeated string cid = 25;
+  // repeated string cid = 26;
   inline int cid_size() const;
   inline void clear_cid();
-  static const int kCidFieldNumber = 25;
+  static const int kCidFieldNumber = 26;
   inline const ::std::string& cid(int index) const;
   inline ::std::string* mutable_cid(int index);
   inline void set_cid(int index, const ::std::string& value);
@@ -335,10 +346,10 @@ class Package : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& cid() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_cid();
   
-  // repeated string desc = 26;
+  // repeated string desc = 27;
   inline int desc_size() const;
   inline void clear_desc();
-  static const int kDescFieldNumber = 26;
+  static const int kDescFieldNumber = 27;
   inline const ::std::string& desc(int index) const;
   inline ::std::string* mutable_desc(int index);
   inline void set_desc(int index, const ::std::string& value);
@@ -351,10 +362,10 @@ class Package : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& desc() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_desc();
   
-  // repeated uint32 nmoves = 27;
+  // repeated uint32 nmoves = 28;
   inline int nmoves_size() const;
   inline void clear_nmoves();
-  static const int kNmovesFieldNumber = 27;
+  static const int kNmovesFieldNumber = 28;
   inline ::google::protobuf::uint32 nmoves(int index) const;
   inline void set_nmoves(int index, ::google::protobuf::uint32 value);
   inline void add_nmoves(::google::protobuf::uint32 value);
@@ -371,6 +382,8 @@ class Package : public ::google::protobuf::Message {
   inline void clear_has_num();
   inline void set_has_realfullpath();
   inline void clear_has_realfullpath();
+  inline void set_has_newfullpath();
+  inline void clear_has_newfullpath();
   inline void set_has_isdir();
   inline void clear_has_isdir();
   inline void set_has_openmode();
@@ -412,6 +425,7 @@ class Package : public ::google::protobuf::Message {
   
   ::std::string* virtualpath_;
   ::std::string* realfullpath_;
+  ::std::string* newfullpath_;
   ::google::protobuf::int32 num_;
   ::google::protobuf::int32 openmode_;
   ::google::protobuf::RepeatedPtrField< ::std::string> listitem_;
@@ -429,17 +443,17 @@ class Package : public ::google::protobuf::Message {
   ::std::string* gmembership_;
   ::std::string* asneighbor_;
   ::std::string* wifecode_;
-  ::google::protobuf::uint64 ackid_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > tid_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > t_id_;
   ::google::protobuf::RepeatedPtrField< ::std::string> cid_;
   ::google::protobuf::RepeatedPtrField< ::std::string> desc_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > nmoves_;
   bool isdir_;
   bool uprange_;
   bool isfwdmsg_;
+  bool ackid_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(27 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(28 + 31) / 32];
   
   friend void  protobuf_AddDesc_meta_2eproto();
   friend void protobuf_AssignDesc_meta_2eproto();
@@ -593,15 +607,73 @@ inline ::std::string* Package::release_realfullpath() {
   }
 }
 
-// optional bool isDir = 4;
-inline bool Package::has_isdir() const {
+// optional string newFullPath = 4;
+inline bool Package::has_newfullpath() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void Package::set_has_isdir() {
+inline void Package::set_has_newfullpath() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void Package::clear_has_isdir() {
+inline void Package::clear_has_newfullpath() {
   _has_bits_[0] &= ~0x00000008u;
+}
+inline void Package::clear_newfullpath() {
+  if (newfullpath_ != &::google::protobuf::internal::kEmptyString) {
+    newfullpath_->clear();
+  }
+  clear_has_newfullpath();
+}
+inline const ::std::string& Package::newfullpath() const {
+  return *newfullpath_;
+}
+inline void Package::set_newfullpath(const ::std::string& value) {
+  set_has_newfullpath();
+  if (newfullpath_ == &::google::protobuf::internal::kEmptyString) {
+    newfullpath_ = new ::std::string;
+  }
+  newfullpath_->assign(value);
+}
+inline void Package::set_newfullpath(const char* value) {
+  set_has_newfullpath();
+  if (newfullpath_ == &::google::protobuf::internal::kEmptyString) {
+    newfullpath_ = new ::std::string;
+  }
+  newfullpath_->assign(value);
+}
+inline void Package::set_newfullpath(const char* value, size_t size) {
+  set_has_newfullpath();
+  if (newfullpath_ == &::google::protobuf::internal::kEmptyString) {
+    newfullpath_ = new ::std::string;
+  }
+  newfullpath_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Package::mutable_newfullpath() {
+  set_has_newfullpath();
+  if (newfullpath_ == &::google::protobuf::internal::kEmptyString) {
+    newfullpath_ = new ::std::string;
+  }
+  return newfullpath_;
+}
+inline ::std::string* Package::release_newfullpath() {
+  clear_has_newfullpath();
+  if (newfullpath_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = newfullpath_;
+    newfullpath_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+
+// optional bool isDir = 5;
+inline bool Package::has_isdir() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Package::set_has_isdir() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Package::clear_has_isdir() {
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void Package::clear_isdir() {
   isdir_ = false;
@@ -615,7 +687,7 @@ inline void Package::set_isdir(bool value) {
   isdir_ = value;
 }
 
-// repeated string listItem = 5;
+// repeated string listItem = 6;
 inline int Package::listitem_size() const {
   return listitem_.size();
 }
@@ -659,15 +731,15 @@ Package::mutable_listitem() {
   return &listitem_;
 }
 
-// optional int32 openMode = 6;
+// optional int32 openMode = 7;
 inline bool Package::has_openmode() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000040u) != 0;
 }
 inline void Package::set_has_openmode() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000040u;
 }
 inline void Package::clear_has_openmode() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void Package::clear_openmode() {
   openmode_ = 0;
@@ -681,15 +753,15 @@ inline void Package::set_openmode(::google::protobuf::int32 value) {
   openmode_ = value;
 }
 
-// optional int32 mode = 7;
+// optional int32 mode = 8;
 inline bool Package::has_mode() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void Package::set_has_mode() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void Package::clear_has_mode() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void Package::clear_mode() {
   mode_ = 0;
@@ -703,15 +775,15 @@ inline void Package::set_mode(::google::protobuf::int32 value) {
   mode_ = value;
 }
 
-// optional int32 Operation = 8;
+// optional int32 Operation = 9;
 inline bool Package::has_operation() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void Package::set_has_operation() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void Package::clear_has_operation() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void Package::clear_operation() {
   operation_ = 0;
@@ -725,15 +797,15 @@ inline void Package::set_operation(::google::protobuf::int32 value) {
   operation_ = value;
 }
 
-// optional int32 replicaNo = 9;
+// optional int32 replicaNo = 10;
 inline bool Package::has_replicano() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void Package::set_has_replicano() {
-  _has_bits_[0] |= 0x00000100u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void Package::clear_has_replicano() {
-  _has_bits_[0] &= ~0x00000100u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void Package::clear_replicano() {
   replicano_ = 0;
@@ -747,15 +819,15 @@ inline void Package::set_replicano(::google::protobuf::int32 value) {
   replicano_ = value;
 }
 
-// optional string opcode = 10;
+// optional string opcode = 11;
 inline bool Package::has_opcode() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
+  return (_has_bits_[0] & 0x00000400u) != 0;
 }
 inline void Package::set_has_opcode() {
-  _has_bits_[0] |= 0x00000200u;
+  _has_bits_[0] |= 0x00000400u;
 }
 inline void Package::clear_has_opcode() {
-  _has_bits_[0] &= ~0x00000200u;
+  _has_bits_[0] &= ~0x00000400u;
 }
 inline void Package::clear_opcode() {
   if (opcode_ != &::google::protobuf::internal::kEmptyString) {
@@ -805,15 +877,15 @@ inline ::std::string* Package::release_opcode() {
   }
 }
 
-// optional string rcode = 11;
+// optional string rcode = 12;
 inline bool Package::has_rcode() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
+  return (_has_bits_[0] & 0x00000800u) != 0;
 }
 inline void Package::set_has_rcode() {
-  _has_bits_[0] |= 0x00000400u;
+  _has_bits_[0] |= 0x00000800u;
 }
 inline void Package::clear_has_rcode() {
-  _has_bits_[0] &= ~0x00000400u;
+  _has_bits_[0] &= ~0x00000800u;
 }
 inline void Package::clear_rcode() {
   if (rcode_ != &::google::protobuf::internal::kEmptyString) {
@@ -863,15 +935,15 @@ inline ::std::string* Package::release_rcode() {
   }
 }
 
-// optional uint32 migrateInst = 12;
+// optional uint32 migrateInst = 13;
 inline bool Package::has_migrateinst() const {
-  return (_has_bits_[0] & 0x00000800u) != 0;
+  return (_has_bits_[0] & 0x00001000u) != 0;
 }
 inline void Package::set_has_migrateinst() {
-  _has_bits_[0] |= 0x00000800u;
+  _has_bits_[0] |= 0x00001000u;
 }
 inline void Package::clear_has_migrateinst() {
-  _has_bits_[0] &= ~0x00000800u;
+  _has_bits_[0] &= ~0x00001000u;
 }
 inline void Package::clear_migrateinst() {
   migrateinst_ = 0u;
@@ -885,15 +957,15 @@ inline void Package::set_migrateinst(::google::protobuf::uint32 value) {
   migrateinst_ = value;
 }
 
-// optional bool uprange = 13;
+// optional bool uprange = 14;
 inline bool Package::has_uprange() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
+  return (_has_bits_[0] & 0x00002000u) != 0;
 }
 inline void Package::set_has_uprange() {
-  _has_bits_[0] |= 0x00001000u;
+  _has_bits_[0] |= 0x00002000u;
 }
 inline void Package::clear_has_uprange() {
-  _has_bits_[0] &= ~0x00001000u;
+  _has_bits_[0] &= ~0x00002000u;
 }
 inline void Package::clear_uprange() {
   uprange_ = false;
@@ -907,15 +979,15 @@ inline void Package::set_uprange(bool value) {
   uprange_ = value;
 }
 
-// optional string sourceZHT = 14;
+// optional string sourceZHT = 15;
 inline bool Package::has_sourcezht() const {
-  return (_has_bits_[0] & 0x00002000u) != 0;
+  return (_has_bits_[0] & 0x00004000u) != 0;
 }
 inline void Package::set_has_sourcezht() {
-  _has_bits_[0] |= 0x00002000u;
+  _has_bits_[0] |= 0x00004000u;
 }
 inline void Package::clear_has_sourcezht() {
-  _has_bits_[0] &= ~0x00002000u;
+  _has_bits_[0] &= ~0x00004000u;
 }
 inline void Package::clear_sourcezht() {
   if (sourcezht_ != &::google::protobuf::internal::kEmptyString) {
@@ -965,15 +1037,15 @@ inline ::std::string* Package::release_sourcezht() {
   }
 }
 
-// optional string targetZHT = 15;
+// optional string targetZHT = 16;
 inline bool Package::has_targetzht() const {
-  return (_has_bits_[0] & 0x00004000u) != 0;
+  return (_has_bits_[0] & 0x00008000u) != 0;
 }
 inline void Package::set_has_targetzht() {
-  _has_bits_[0] |= 0x00004000u;
+  _has_bits_[0] |= 0x00008000u;
 }
 inline void Package::clear_has_targetzht() {
-  _has_bits_[0] &= ~0x00004000u;
+  _has_bits_[0] &= ~0x00008000u;
 }
 inline void Package::clear_targetzht() {
   if (targetzht_ != &::google::protobuf::internal::kEmptyString) {
@@ -1023,15 +1095,15 @@ inline ::std::string* Package::release_targetzht() {
   }
 }
 
-// optional string rfname = 16;
+// optional string rfname = 17;
 inline bool Package::has_rfname() const {
-  return (_has_bits_[0] & 0x00008000u) != 0;
+  return (_has_bits_[0] & 0x00010000u) != 0;
 }
 inline void Package::set_has_rfname() {
-  _has_bits_[0] |= 0x00008000u;
+  _has_bits_[0] |= 0x00010000u;
 }
 inline void Package::clear_has_rfname() {
-  _has_bits_[0] &= ~0x00008000u;
+  _has_bits_[0] &= ~0x00010000u;
 }
 inline void Package::clear_rfname() {
   if (rfname_ != &::google::protobuf::internal::kEmptyString) {
@@ -1081,15 +1153,15 @@ inline ::std::string* Package::release_rfname() {
   }
 }
 
-// optional string lfname = 17;
+// optional string lfname = 18;
 inline bool Package::has_lfname() const {
-  return (_has_bits_[0] & 0x00010000u) != 0;
+  return (_has_bits_[0] & 0x00020000u) != 0;
 }
 inline void Package::set_has_lfname() {
-  _has_bits_[0] |= 0x00010000u;
+  _has_bits_[0] |= 0x00020000u;
 }
 inline void Package::clear_has_lfname() {
-  _has_bits_[0] &= ~0x00010000u;
+  _has_bits_[0] &= ~0x00020000u;
 }
 inline void Package::clear_lfname() {
   if (lfname_ != &::google::protobuf::internal::kEmptyString) {
@@ -1139,7 +1211,7 @@ inline ::std::string* Package::release_lfname() {
   }
 }
 
-// repeated uint64 migringpos = 18;
+// repeated uint64 migringpos = 19;
 inline int Package::migringpos_size() const {
   return migringpos_.size();
 }
@@ -1164,15 +1236,15 @@ Package::mutable_migringpos() {
   return &migringpos_;
 }
 
-// optional string gmembership = 19;
+// optional string gmembership = 20;
 inline bool Package::has_gmembership() const {
-  return (_has_bits_[0] & 0x00040000u) != 0;
+  return (_has_bits_[0] & 0x00080000u) != 0;
 }
 inline void Package::set_has_gmembership() {
-  _has_bits_[0] |= 0x00040000u;
+  _has_bits_[0] |= 0x00080000u;
 }
 inline void Package::clear_has_gmembership() {
-  _has_bits_[0] &= ~0x00040000u;
+  _has_bits_[0] &= ~0x00080000u;
 }
 inline void Package::clear_gmembership() {
   if (gmembership_ != &::google::protobuf::internal::kEmptyString) {
@@ -1222,15 +1294,15 @@ inline ::std::string* Package::release_gmembership() {
   }
 }
 
-// optional bool isfwdmsg = 20;
+// optional bool isfwdmsg = 21;
 inline bool Package::has_isfwdmsg() const {
-  return (_has_bits_[0] & 0x00080000u) != 0;
+  return (_has_bits_[0] & 0x00100000u) != 0;
 }
 inline void Package::set_has_isfwdmsg() {
-  _has_bits_[0] |= 0x00080000u;
+  _has_bits_[0] |= 0x00100000u;
 }
 inline void Package::clear_has_isfwdmsg() {
-  _has_bits_[0] &= ~0x00080000u;
+  _has_bits_[0] &= ~0x00100000u;
 }
 inline void Package::clear_isfwdmsg() {
   isfwdmsg_ = false;
@@ -1244,15 +1316,15 @@ inline void Package::set_isfwdmsg(bool value) {
   isfwdmsg_ = value;
 }
 
-// optional string asneighbor = 21;
+// optional string asneighbor = 22;
 inline bool Package::has_asneighbor() const {
-  return (_has_bits_[0] & 0x00100000u) != 0;
+  return (_has_bits_[0] & 0x00200000u) != 0;
 }
 inline void Package::set_has_asneighbor() {
-  _has_bits_[0] |= 0x00100000u;
+  _has_bits_[0] |= 0x00200000u;
 }
 inline void Package::clear_has_asneighbor() {
-  _has_bits_[0] &= ~0x00100000u;
+  _has_bits_[0] &= ~0x00200000u;
 }
 inline void Package::clear_asneighbor() {
   if (asneighbor_ != &::google::protobuf::internal::kEmptyString) {
@@ -1302,15 +1374,15 @@ inline ::std::string* Package::release_asneighbor() {
   }
 }
 
-// optional string wifecode = 22;
+// optional string wifecode = 23;
 inline bool Package::has_wifecode() const {
-  return (_has_bits_[0] & 0x00200000u) != 0;
+  return (_has_bits_[0] & 0x00400000u) != 0;
 }
 inline void Package::set_has_wifecode() {
-  _has_bits_[0] |= 0x00200000u;
+  _has_bits_[0] |= 0x00400000u;
 }
 inline void Package::clear_has_wifecode() {
-  _has_bits_[0] &= ~0x00200000u;
+  _has_bits_[0] &= ~0x00400000u;
 }
 inline void Package::clear_wifecode() {
   if (wifecode_ != &::google::protobuf::internal::kEmptyString) {
@@ -1360,54 +1432,54 @@ inline ::std::string* Package::release_wifecode() {
   }
 }
 
-// optional uint64 ackid = 23;
+// optional bool ackid = 24;
 inline bool Package::has_ackid() const {
-  return (_has_bits_[0] & 0x00400000u) != 0;
+  return (_has_bits_[0] & 0x00800000u) != 0;
 }
 inline void Package::set_has_ackid() {
-  _has_bits_[0] |= 0x00400000u;
+  _has_bits_[0] |= 0x00800000u;
 }
 inline void Package::clear_has_ackid() {
-  _has_bits_[0] &= ~0x00400000u;
+  _has_bits_[0] &= ~0x00800000u;
 }
 inline void Package::clear_ackid() {
-  ackid_ = GOOGLE_ULONGLONG(0);
+  ackid_ = false;
   clear_has_ackid();
 }
-inline ::google::protobuf::uint64 Package::ackid() const {
+inline bool Package::ackid() const {
   return ackid_;
 }
-inline void Package::set_ackid(::google::protobuf::uint64 value) {
+inline void Package::set_ackid(bool value) {
   set_has_ackid();
   ackid_ = value;
 }
 
-// repeated uint32 tid = 24;
-inline int Package::tid_size() const {
-  return tid_.size();
+// repeated uint32 t_id = 25;
+inline int Package::t_id_size() const {
+  return t_id_.size();
 }
-inline void Package::clear_tid() {
-  tid_.Clear();
+inline void Package::clear_t_id() {
+  t_id_.Clear();
 }
-inline ::google::protobuf::uint32 Package::tid(int index) const {
-  return tid_.Get(index);
+inline ::google::protobuf::uint32 Package::t_id(int index) const {
+  return t_id_.Get(index);
 }
-inline void Package::set_tid(int index, ::google::protobuf::uint32 value) {
-  tid_.Set(index, value);
+inline void Package::set_t_id(int index, ::google::protobuf::uint32 value) {
+  t_id_.Set(index, value);
 }
-inline void Package::add_tid(::google::protobuf::uint32 value) {
-  tid_.Add(value);
+inline void Package::add_t_id(::google::protobuf::uint32 value) {
+  t_id_.Add(value);
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-Package::tid() const {
-  return tid_;
+Package::t_id() const {
+  return t_id_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-Package::mutable_tid() {
-  return &tid_;
+Package::mutable_t_id() {
+  return &t_id_;
 }
 
-// repeated string cid = 25;
+// repeated string cid = 26;
 inline int Package::cid_size() const {
   return cid_.size();
 }
@@ -1451,7 +1523,7 @@ Package::mutable_cid() {
   return &cid_;
 }
 
-// repeated string desc = 26;
+// repeated string desc = 27;
 inline int Package::desc_size() const {
   return desc_.size();
 }
@@ -1495,7 +1567,7 @@ Package::mutable_desc() {
   return &desc_;
 }
 
-// repeated uint32 nmoves = 27;
+// repeated uint32 nmoves = 28;
 inline int Package::nmoves_size() const {
   return nmoves_.size();
 }

@@ -1,0 +1,33 @@
+message Package{
+	optional string virtualPath = 1;
+	optional int32 num = 2;
+	optional string realFullPath = 3;
+	optional string newFullPath = 4;
+	optional bool isDir = 5;
+	repeated string listItem = 6;
+	optional int32 openMode = 7;
+	optional int32 mode = 8;
+
+	optional int32 Operation = 9; //1 for look up, 2 for remove, 3 for insert	
+	optional int32 replicaNo =10; //nagative number means it's not an original request.
+	
+	optional string opcode  = 11; //opeartion code
+	optional string rcode  = 12; //return code
+	optional uint32 migrateInst = 13; //number of novoht instances to be migrated
+	optional bool uprange = 14; //tell if migrate upper range of source zht' novoht(s) 
+	optional string sourceZHT = 15; //ip:port of source zht
+	optional string targetZHT = 16; //ip:port of target zht
+	optional string rfname = 17; //remote file name
+	optional string lfname = 18; //local file name
+	repeated uint64 migringpos = 19; //ring positions for newly added nodes while migrating
+	optional string gmembership = 20; //global membership to be broadcasted
+	optional bool isfwdmsg = 21; //shows if the msg is forward while migrating
+	optional string asneighbor = 22; //infomation of ZHTNode as a neighbor
+	optional string wifecode = 23; //auxiliary code to say the meaning of opcode
+	
+	optional bool ackid = 24;
+	repeated uint32 t_id = 25;
+	repeated string cid = 26;
+	repeated string desc = 27;
+	repeated uint32 nmoves = 28;
+}

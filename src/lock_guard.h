@@ -19,54 +19,33 @@
  *      Tonglin Li(tli13@hawk.iit.edu) with nickname Tony,
  *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo.
  *
- * tcp_proxy_stub.h
+ * lock_guard.h
  *
- *  Created on: Jun 21, 2013
+ *  Created on: Apr 24, 2013
  *      Author: Xiaobingo
  *      Contributor: Tony
  */
 
-#ifndef TCP_PROXY_STUB_H_
-#define TCP_PROXY_STUB_H_
+#ifndef LOCK_GUARD_H_
+#define LOCK_GUARD_H_
 
-#include "ip_proxy_stub.h"
+#include <pthread.h>
+#include <stdlib.h>
 
-#include "lru_cache.h"
 /*
  *
  */
-class TCPProxy: public IPProtoProxy {
+class lock_guard {
 public:
-	TCPProxy();
-	virtual ~TCPProxy();
-
-	virtual bool sendrecv(const void *sendbuf, const size_t sendcount,
-			void *recvbuf, size_t &recvcount);
-	virtual bool teardown();
-
-protected:
-	virtual int getSockCached(const string& host, const uint& port);
-	virtual int makeClientSocket(const string& host, const uint& port);
-	virtual int recvFrom(int sock, void* recvbuf);
-	virtual int loopedrecv(int sock, string &srecv);
+	lock_guard(pthread_mutex_t *mutex);
+	virtual ~lock_guard();
 
 private:
-	int sendTo(int sock, const void* sendbuf, int sendcount);
+	bool lock();
+	bool unlock();
 
 private:
-	static int CACHE_SIZE;
-	static LRUCache<string, int> CONN_CACHE;
+	pthread_mutex_t *_mutex;
 };
 
-class TCPStub: public IPProtoStub {
-public:
-	TCPStub();
-	virtual ~TCPStub();
-
-	virtual bool recvsend(ProtoAddr addr, const void *recvbuf);
-
-protected:
-	virtual int sendBack(ProtoAddr addr, const void* sendbuf, int sendcount);
-};
-
-#endif /* TCP_PROXY_STUB_H_ */
+#endif /* LOCK_GUARD_H_ */

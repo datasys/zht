@@ -46,7 +46,8 @@ public:
 protected:
 	virtual int getSockCached(const string& host, const uint& port);
 	virtual int makeClientSocket(const string& host, const uint& port);
-	virtual int recvFrom(int sock, void* recvbuf, int recvbufsize);
+	virtual int recvFrom(int sock, void* recvbuf);
+	virtual int loopedrecv(int sock, string &srecv);
 
 private:
 	int sendTo(int sock, const string &host, uint port, const void* sendbuf,

@@ -1,0 +1,75 @@
+-------------------SOFTWARE REQUIREMENTS-------------------
+Google protocol buffers c binding, VERSION 0.15 or later
+		http://code.google.com/p/protobuf-c/downloads/list
+
+
+Google protocol buffers c++ binding, VERSION 2.4.1
+		http://code.google.com/p/protobuf/downloads/list
+
+
+-------------------COMPILE AND INSTALL-------------------
+Assuming that Google protocol buffers c and c++ bindings are installed to default directory, that is, /usr/local
+
+To compile and install ZHT:
+	make
+
+If you installed Google protocol buffers c and c++ bindings to customized directory, e.g./home/xiaobingo/install, MAKE SURE TO EXPORT them, e.g.
+1. cd to your home directory
+2. vim/gedit .bashrc
+3. append the following lines to the end,
+	export USER_LIB=/home/xiaobingo/install/lib/:$USER_LIB
+	export USER_INCLUDE=/home/xiaobingo/install/include/:$USER_INCLUDE
+	export LD_LIBRARY_PATH=$USER_LIB
+4. source .bashrc
+5. COMPILE/INSTALL ZHT
+
+, otherwise, you probably fail to compile ZHT or locate dependencies required by ZHT runtime.
+
+
+-------------------RUN THE BENCHMARK-------------------
+To run benchmark:
+1. ./zhtserver -z zht.conf -n neighbor.conf, OR
+   ./zhtserver -z zht.conf -n neighbor.conf -p 40000, to define your own port, which overrides PORT in zht.conf
+
+2. ./zhtben -z zht.conf -n neighbor.conf -o 1000
+
+NOTE that:
+	The port you defined to listen on at zhtserver(e.g. the PORT in zht.conf, or ./zhtserver -z zht.conf -n neighbor.conf -p 40000)
+	MUST BE CONSISTENT WITH the port of that machine in neighbor.conf, otherwise, the zhtclient CANNOT reach the zhtserver by that port.
+		
+In ./zhtserver -z zht.conf -n neighbor.conf -p 40000 	
+	zht.conf is to configure PROTOCOL and PORT, and other parameters,
+	neighbor.conf is to configure neighbored nodes in ZHT overlay network,
+	40000 means zhtserver PORT to listen on, which overrides PORT in zht.conf, if missing, that PORT will be used. 
+	
+In ./zhtben -z zht.conf -n neighbor.conf -o 1000 
+	zht.conf is to configure PROTOCOL and PORT, and other parameters,
+	neighbor.conf is to configure neighbored nodes in ZHT overlay network,
+	1000 means running 1000 iterations of INSERT, LOOKUP, REMOVE and APPEND,
+
+NOTE that:
+The parameter ID and VALUE(e.g. PROTOCOL TCP) for both zht.conf and neighbor.conf is SPACE delimited.
+The conf files support #-style comment-out.
+The empty lines will be ignored as comment-outs while parsing the conf files.
+	
+-------------------STANDALONE DEPLOYMENT-------------------
+To deploy ZHT on a single node and run your own ZHT application:
+1. ./zhtserver -z zht.conf -n neighbor.conf
+2. ./your_zht_app -z zht.conf -n neighbor.conf
+
+NOTE that your_zht_app is your binary that invokes ZHT client to INSERT/LOOKUP/REMOVE/APPEND key/value pairs.
+
+-------------------CLUSTER DEPLOYMENT-------------------
+To deploye ZHT on a cluster of nodes and run your own ZHT application:
+1. copy zht binary(e.g. zhtserver) to every node.
+2. edit neighbor.conf to contain IP(s) and PORT(s)(e.g. assuming <PORT 50000> in zht.conf is used.) of all these nodes, DO NOT USE localhost.
+3. copy zht.conf and neighbor.conf, to every node.
+4. In every node, run ./zhtserver -z zht.conf -n neighbor.conf, assuming <PORT 50000> in zht.conf is used. 
+5. run your ZHT applications.
+
+
+-------------------DEVELOPE YOUR ZHT APPLICATIONS-------------------
+To develope your own ZHT applications, please refer to <c_zhtclient_test.c>, which extensively tests ZHT client c binding, internally invoking c++ binding.
+OR see also <cpp_zhtclient_test.cpp> on how to use ZHT in c++ programs.
+
+To compile your own ZHT applications, link to <libzht.a> and include ZHTClient.h and c_zhtclient.h for C++ and C programs, respectively.

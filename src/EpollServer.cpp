@@ -432,7 +432,7 @@ void EpollServer::serve() {
 
 							if (ready) {
 
-								_ZProcessor->process(edata->fd(), buf,
+								_ZProcessor->process(edata->fd(), bd.c_str(),
 										*edata->sender());
 							}
 						}

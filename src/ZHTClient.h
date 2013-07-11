@@ -38,11 +38,6 @@ using namespace std;
 
 #include "ProxyStubFactory.h"
 
-namespace iit {
-namespace datasys {
-namespace zht {
-namespace dm {
-
 /*
  *
  */
@@ -70,8 +65,4 @@ private:
 	ProtoProxy *_proxy;
 };
 
-} /* namespace dm */
-} /* namespace zht */
-} /* namespace datasys */
-} /* namespace iit */
 #endif /* ZHTCLIENT_H_ */

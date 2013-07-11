@@ -32,10 +32,7 @@
 #include "ConfHandler.h"
 #include "Env.h"
 
-namespace iit {
-namespace datasys {
-namespace zht {
-namespace dm {
+using namespace iit::datasys::zht::dm;
 
 ZHTClient::ZHTClient() :
 		_proxy(0) {
@@ -180,8 +177,3 @@ int ZHTClient::teardown() {
 	else
 		return -1;
 }
-
-} /* namespace dm */
-} /* namespace zht */
-} /* namespace datasys */
-} /* namespace iit */

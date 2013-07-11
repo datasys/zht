@@ -1,10 +1,25 @@
-TARGETS = zhtben zhtserver
+TARGETS = zht_ctest zht_cpptest zhtben zhtserver
 CC = gcc
 CCFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB} -DPF_INET
 LIBFLAGS = -lstdc++ -lrt -lpthread -lm -lc -lprotobuf -lprotobuf-c
 COMMON = common/
 
 all:	$(TARGETS)
+	
+	
+zht_ctest: c_zhtclient_test.o c_zhtclient.o c_zhtclientStd.o lock_guard.o ZHTClient.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o bigdata_transfer.o\
+Const.o ConfHandler.o ConfEntry.o \
+ProxyStubFactory.o proxy_stub.o ip_proxy_stub.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o \
+ZHTUtil.o Env.o Util.o \
+HTWorker.o StrTokenizer.o
+	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
+
+zht_cpptest: cpp_zhtclient_test.o ZHTClient.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o bigdata_transfer.o\
+Const.o ConfHandler.o ConfEntry.o \
+ProxyStubFactory.o proxy_stub.o ip_proxy_stub.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o \
+ZHTUtil.o Env.o Util.o \
+HTWorker.o StrTokenizer.o
+	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
 	
 
 zhtben: benchmark_client.o ZHTClient.o meta.pb-c.o lru_cache.o meta.pb.o novoht.o bigdata_transfer.o\
@@ -34,9 +49,14 @@ EpollServer.o ZProcessor.o ip_server.o HTWorker.o StrTokenizer.o
 
 
 
-
+c_zhtclient_test.o: c_zhtclient_test.c
+cpp_zhtclient_test.o: cpp_zhtclient_test.cpp
 benchmark_client.o: benchmark_client.cpp
 ZHTClient.o: ZHTClient.cpp
+
+c_zhtclient.o: c_zhtclient.cpp
+c_zhtclientStd.o: c_zhtclientStd.cpp
+lock_guard.o: lock_guard.cpp
 
 
 meta.pb-c.o: meta.pb-c.c

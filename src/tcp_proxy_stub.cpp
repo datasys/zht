@@ -15,15 +15,16 @@
  * limitations under the License.
  *
  * This file is part of ZHT library(http://datasys.cs.iit.edu/projects/ZHT/index.html).
- *      Ioan Raicu(iraicu@cs.iit.edu),
  *      Tonglin Li(tli13@hawk.iit.edu) with nickname Tony,
  *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo.
+ *      Ke Wang(kwang22@hawk.iit.edu) with nickname KWang.
+ *      Ioan Raicu(iraicu@cs.iit.edu),
  *
  * tcp_proxy_stub.cpp
  *
  *  Created on: Jun 21, 2013
  *      Author: Xiaobingo
- *      Contributor: Tony
+ *      Contributor: Tony, KWang
  */
 
 #include "tcp_proxy_stub.h"
@@ -35,6 +36,7 @@
 #include <errno.h>
 #include <stdio.h>
 
+#include "Env.h"
 #include "Util.h"
 #include "ZHTUtil.h"
 #include "bigdata_transfer.h"
@@ -71,7 +73,7 @@ bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 	int sent_bool = sentSize == sendcount;
 
 	/*receive response from server over client sock fd*/
-	recvcount = recvFrom(sock, recvbuf, recvcount);
+	recvcount = recvFrom(sock, recvbuf);
 	int recv_bool = recvcount >= 0;
 
 	/*combine flags as value to be returned*/
@@ -170,10 +172,12 @@ int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
 	return sentSize;
 }
 
-int TCPProxy::recvFrom(int sock, void* recvbuf, int recvbufsize) {
+int TCPProxy::recvFrom(int sock, void* recvbuf) {
 
-	//todo: loopedReceive for zht_lookup
-	int recvcount = ::recv(sock, recvbuf, recvbufsize, 0);
+	string result;
+	int recvcount = loopedrecv(sock, result);
+
+	memcpy(recvbuf, result.c_str(), result.size() + 1);
 
 	/*prompt errors*/
 	if (recvcount < 0) {
@@ -181,6 +185,48 @@ int TCPProxy::recvFrom(int sock, void* recvbuf, int recvbufsize) {
 		cerr << "TCPProxy::recvFrom: error on ::recv(...): " << strerror(errno)
 				<< endl;
 	}
+
+	return recvcount;
+}
+
+int TCPProxy::loopedrecv(int sock, string &srecv) {
+
+	ssize_t recvcount = -2;
+
+	BdRecvBase *pbrb = new BdRecvFromServer();
+
+	char buf[Env::BUF_SIZE];
+
+	while (1) {
+
+		memset(buf, '\0', sizeof(buf));
+
+		ssize_t count = ::recv(sock, buf, sizeof(buf), 0);
+
+		if (count == -1 || count == 0) {
+
+			recvcount = count;
+
+			break;
+		}
+
+		bool ready = false;
+
+		string bd = pbrb->getBdStr(sock, buf, count, ready);
+
+		if (ready) {
+
+			srecv = bd;
+			recvcount = srecv.size();
+
+			break;
+		}
+
+		memset(buf, '\0', sizeof(buf));
+	}
+
+	delete pbrb;
+	pbrb = NULL;
 
 	return recvcount;
 }
