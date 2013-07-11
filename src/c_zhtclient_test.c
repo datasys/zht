@@ -99,11 +99,11 @@ int main(int argc, char **argv) {
 
 //		test_large_keyvalue();
 
-//		test_common_usecase();
+		test_common_usecase();
 
 		//	test_pass_package();
 
-		test_simple_largevalue();
+//		test_simple_largevalue();
 
 		c_zht_teardown();
 

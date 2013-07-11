@@ -52,6 +52,18 @@ The parameter ID and VALUE(e.g. PROTOCOL TCP) for both zht.conf and neighbor.con
 The conf files support #-style comment-out.
 The empty lines will be ignored as comment-outs while parsing the conf files.
 	
+-------------------RUN TEST CASES FOR C++ BINDING-------------------
+To run test cases for zht c++ binding:
+1. make
+2. ./zhtserver -z zht.conf -n neighbor.conf
+3. ./zht_cpptest -z zht.conf -n neighbor.conf
+
+-------------------RUN TEST CASES FOR C BINDING-------------------
+To run test cases for zht c binding:
+1. make
+2. ./zhtserver -z zht.conf -n neighbor.conf
+3. ./zht_ctest -z zht.conf -n neighbor.conf
+
 -------------------STANDALONE DEPLOYMENT-------------------
 To deploy ZHT on a single node and run your own ZHT application:
 1. ./zhtserver -z zht.conf -n neighbor.conf
