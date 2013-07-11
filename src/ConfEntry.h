@@ -15,15 +15,17 @@
  * limitations under the License.
  *
  * This file is part of ZHT library(http://datasys.cs.iit.edu/projects/ZHT/index.html).
- *      Ioan Raicu(iraicu@cs.iit.edu),
  *      Tonglin Li(tli13@hawk.iit.edu) with nickname Tony,
- *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo.
+ *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo,
+ *      Ke Wang(kwang22@hawk.iit.edu) with nickname KWang,
+ *      Dongfang Zhao(dzhao8@@hawk.iit.edu) with nickname DZhao,
+ *      Ioan Raicu(iraicu@cs.iit.edu).
  *
  * ConfEntry.h
  *
  *  Created on: Aug 7, 2012
  *      Author: Xiaobingo
- *      Contributor: Tony
+ *      Contributor: Tony, KWang, DZhao
  */
 
 #ifndef CONFIGENTRY_H_

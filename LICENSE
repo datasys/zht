@@ -21,29 +21,4 @@
  *      Dongfang Zhao(dzhao8@@hawk.iit.edu) with nickname DZhao,
  *      Ioan Raicu(iraicu@cs.iit.edu).
  *
- * mpi_server.cpp
- *
- *  Created on: Jul 5, 2013
- *      Author: Xiaobingo
- *      Contributor: Tony, KWang, DZhao
  */
-
-#include "mpi_server.h"
-#include "ProxyStubFactory.h"
-
-MPIServer::MPIServer(int argc, char **argv) :
-		_argc(argc), _argv(argv) {
-}
-
-MPIServer::~MPIServer() {
-}
-
-void MPIServer::serve() {
-
-	ProtoStub *stub = ProxyStubFactory::createStub();
-	stub->init(_argc, _argv);
-
-	ProtoAddr pa;
-	stub->recvsend(pa, 0);
-}
-

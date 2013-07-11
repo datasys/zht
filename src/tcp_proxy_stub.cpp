@@ -16,15 +16,16 @@
  *
  * This file is part of ZHT library(http://datasys.cs.iit.edu/projects/ZHT/index.html).
  *      Tonglin Li(tli13@hawk.iit.edu) with nickname Tony,
- *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo.
- *      Ke Wang(kwang22@hawk.iit.edu) with nickname KWang.
- *      Ioan Raicu(iraicu@cs.iit.edu),
+ *      Xiaobing Zhou(xzhou40@hawk.iit.edu) with nickname Xiaobingo,
+ *      Ke Wang(kwang22@hawk.iit.edu) with nickname KWang,
+ *      Dongfang Zhao(dzhao8@@hawk.iit.edu) with nickname DZhao,
+ *      Ioan Raicu(iraicu@cs.iit.edu).
  *
  * tcp_proxy_stub.cpp
  *
  *  Created on: Jun 21, 2013
  *      Author: Xiaobingo
- *      Contributor: Tony, KWang
+ *      Contributor: Tony, KWang, DZhao
  */
 
 #include "tcp_proxy_stub.h"
