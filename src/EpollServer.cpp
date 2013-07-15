@@ -368,32 +368,21 @@ void EpollServer::serve() {
 					continue;
 				} else {
 
-					while (1) {
+					ssize_t count;
+					char buf[MAX_MSG_SIZE];
+					memset(buf, 0, sizeof(buf));
 
-						ssize_t count;
-						char buf[MAX_MSG_SIZE];
-						memset(buf, 0, sizeof(buf));
+					sockaddr_in fromaddr;
+					socklen_t sender_len = sizeof(struct sockaddr);
+					count = recvfrom(edata->fd(), buf, sizeof buf, 0,
+							(struct sockaddr*) &fromaddr, &sender_len);
 
-						sockaddr_in fromaddr;
-						socklen_t sender_len = sizeof(struct sockaddr);
-						count = recvfrom(edata->fd(), buf, sizeof buf, 0,
-								(struct sockaddr*) &fromaddr, &sender_len);
+					sockaddr *sender = (struct sockaddr*) &fromaddr;
 
-						bool ready = false;
-						string bd = pbrb->getBdStr(sfd, buf, count, ready);
+					string str(buf);
+					_ZProcessor->process(edata->fd(), buf, *sender); //todo: problem maybe
 
-						if (ready) {
-
-							sockaddr *sender = (struct sockaddr*) &fromaddr;
-
-							string str(buf);
-							_ZProcessor->process(edata->fd(), buf, *sender); //todo: problem maybe
-						}
-
-						memset(buf, 0, sizeof(buf));
-
-						break;
-					}
+					memset(buf, 0, sizeof(buf));
 				}
 
 			} else {

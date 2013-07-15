@@ -67,7 +67,7 @@ bool MPIProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 	int mpi_dest = get_mpi_dest(sendbuf, sendcount);
 
-	int rs = MPI_Send(sendbuf, sendcount, MPI_CHAR, mpi_dest, 2,
+	int rs = MPI_Send((void*) sendbuf, sendcount, MPI_CHAR, mpi_dest, 2,
 			MPI_COMM_WORLD );
 
 	//printf("spock, sent to [%d] %lu char(s): \"%s\"\n", mpi_dest, sendcount, (char*) sendbuf);
@@ -141,8 +141,8 @@ bool MPIStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 		int sendcount = result.size();
 
 		/*send response to client over MPI_SOURCE*/
-		int rs = MPI_Send(sendbuf, sendcount, MPI_CHAR, status.MPI_SOURCE, 0,
-				MPI_COMM_WORLD );
+		int rs = MPI_Send((void*) sendbuf, sendcount, MPI_CHAR,
+				status.MPI_SOURCE, 0, MPI_COMM_WORLD );
 
 		memset(req, 0, sizeof(req));
 
