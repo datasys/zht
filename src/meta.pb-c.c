@@ -49,7 +49,7 @@ void   package__free_unpacked
   PROTOBUF_C_ASSERT (message->base.descriptor == &package__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor package__field_descriptors[28] =
+static const ProtobufCFieldDescriptor package__field_descriptors[5] =
 {
   {
     "virtualPath",
@@ -64,20 +64,8 @@ static const ProtobufCFieldDescriptor package__field_descriptors[28] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "num",
-    2,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_INT32,
-    PROTOBUF_C_OFFSETOF(Package, has_num),
-    PROTOBUF_C_OFFSETOF(Package, num),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
     "realFullPath",
-    3,
+    2,
     PROTOBUF_C_LABEL_OPTIONAL,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
@@ -88,20 +76,8 @@ static const ProtobufCFieldDescriptor package__field_descriptors[28] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "newFullPath",
-    4,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, newfullpath),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
     "isDir",
-    5,
+    3,
     PROTOBUF_C_LABEL_OPTIONAL,
     PROTOBUF_C_TYPE_BOOL,
     PROTOBUF_C_OFFSETOF(Package, has_isdir),
@@ -112,8 +88,20 @@ static const ProtobufCFieldDescriptor package__field_descriptors[28] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "replicanum",
+    4,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_INT32,
+    PROTOBUF_C_OFFSETOF(Package, has_replicanum),
+    PROTOBUF_C_OFFSETOF(Package, replicanum),
+    NULL,
+    NULL,
+    0,            /* packed */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "listItem",
-    6,
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_STRING,
     PROTOBUF_C_OFFSETOF(Package, n_listitem),
@@ -123,305 +111,18 @@ static const ProtobufCFieldDescriptor package__field_descriptors[28] =
     0,            /* packed */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
-  {
-    "openMode",
-    7,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_INT32,
-    PROTOBUF_C_OFFSETOF(Package, has_openmode),
-    PROTOBUF_C_OFFSETOF(Package, openmode),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "mode",
-    8,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_INT32,
-    PROTOBUF_C_OFFSETOF(Package, has_mode),
-    PROTOBUF_C_OFFSETOF(Package, mode),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "Operation",
-    9,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_INT32,
-    PROTOBUF_C_OFFSETOF(Package, has_operation),
-    PROTOBUF_C_OFFSETOF(Package, operation),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "replicaNo",
-    10,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_INT32,
-    PROTOBUF_C_OFFSETOF(Package, has_replicano),
-    PROTOBUF_C_OFFSETOF(Package, replicano),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "opcode",
-    11,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, opcode),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "rcode",
-    12,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, rcode),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "migrateInst",
-    13,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_UINT32,
-    PROTOBUF_C_OFFSETOF(Package, has_migrateinst),
-    PROTOBUF_C_OFFSETOF(Package, migrateinst),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "uprange",
-    14,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_BOOL,
-    PROTOBUF_C_OFFSETOF(Package, has_uprange),
-    PROTOBUF_C_OFFSETOF(Package, uprange),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "sourceZHT",
-    15,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, sourcezht),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "targetZHT",
-    16,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, targetzht),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "rfname",
-    17,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, rfname),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "lfname",
-    18,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, lfname),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "migringpos",
-    19,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_UINT64,
-    PROTOBUF_C_OFFSETOF(Package, n_migringpos),
-    PROTOBUF_C_OFFSETOF(Package, migringpos),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "gmembership",
-    20,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, gmembership),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "isfwdmsg",
-    21,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_BOOL,
-    PROTOBUF_C_OFFSETOF(Package, has_isfwdmsg),
-    PROTOBUF_C_OFFSETOF(Package, isfwdmsg),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "asneighbor",
-    22,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, asneighbor),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "wifecode",
-    23,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Package, wifecode),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "ackid",
-    24,
-    PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_BOOL,
-    PROTOBUF_C_OFFSETOF(Package, has_ackid),
-    PROTOBUF_C_OFFSETOF(Package, ackid),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "t_id",
-    25,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_UINT32,
-    PROTOBUF_C_OFFSETOF(Package, n_t_id),
-    PROTOBUF_C_OFFSETOF(Package, t_id),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "cid",
-    26,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_STRING,
-    PROTOBUF_C_OFFSETOF(Package, n_cid),
-    PROTOBUF_C_OFFSETOF(Package, cid),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "desc",
-    27,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_STRING,
-    PROTOBUF_C_OFFSETOF(Package, n_desc),
-    PROTOBUF_C_OFFSETOF(Package, desc),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "nmoves",
-    28,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_UINT32,
-    PROTOBUF_C_OFFSETOF(Package, n_nmoves),
-    PROTOBUF_C_OFFSETOF(Package, nmoves),
-    NULL,
-    NULL,
-    0,            /* packed */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
 };
 static const unsigned package__field_indices_by_name[] = {
-  8,   /* field[8] = Operation */
-  23,   /* field[23] = ackid */
-  21,   /* field[21] = asneighbor */
-  25,   /* field[25] = cid */
-  26,   /* field[26] = desc */
-  19,   /* field[19] = gmembership */
-  4,   /* field[4] = isDir */
-  20,   /* field[20] = isfwdmsg */
-  17,   /* field[17] = lfname */
-  5,   /* field[5] = listItem */
-  12,   /* field[12] = migrateInst */
-  18,   /* field[18] = migringpos */
-  7,   /* field[7] = mode */
-  3,   /* field[3] = newFullPath */
-  27,   /* field[27] = nmoves */
-  1,   /* field[1] = num */
-  10,   /* field[10] = opcode */
-  6,   /* field[6] = openMode */
-  11,   /* field[11] = rcode */
-  2,   /* field[2] = realFullPath */
-  9,   /* field[9] = replicaNo */
-  16,   /* field[16] = rfname */
-  14,   /* field[14] = sourceZHT */
-  24,   /* field[24] = t_id */
-  15,   /* field[15] = targetZHT */
-  13,   /* field[13] = uprange */
+  2,   /* field[2] = isDir */
+  4,   /* field[4] = listItem */
+  1,   /* field[1] = realFullPath */
+  3,   /* field[3] = replicanum */
   0,   /* field[0] = virtualPath */
-  22,   /* field[22] = wifecode */
 };
 static const ProtobufCIntRange package__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 28 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor package__descriptor =
 {
@@ -431,7 +132,7 @@ const ProtobufCMessageDescriptor package__descriptor =
   "Package",
   "",
   sizeof(Package),
-  28,
+  5,
   package__field_descriptors,
   package__field_indices_by_name,
   1,  package__number_ranges,

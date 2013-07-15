@@ -21,7 +21,7 @@
  *      Dongfang Zhao(dzhao8@@hawk.iit.edu) with nickname DZhao,
  *      Ioan Raicu(iraicu@cs.iit.edu).
  *
- * ZHTClient.h
+ * cpp_zhtclient.h
  *
  *  Created on: Sep 16, 2012
  *      Author: Xiaobingo
@@ -48,20 +48,24 @@ class ZHTClient {
 public:
 	ZHTClient();
 
-	ZHTClient(const string& zht_conf, const string& neighbor_conf);
+	ZHTClient(const string &zhtConf, const string &neighborConf);
 	virtual ~ZHTClient();
 
-	int init(const string& zht_conf, const string& neighbor_conf);
-	int lookup(const string& pair, string& result);
-	int remove(const string& pair);
-	int insert(const string& pair);
-	int append(const string& pair);
+	int init(const string &zhtConf, const string &neighborConf);
+	int lookup(const string &key, string &result);
+	int remove(const string &key);
+	int insert(const string &key, const string &val);
+	int append(const string &key, const string &val);
+	int compare_swap(const string &key, const string &seen_val,
+			const string &new_val, string &result);
 	int teardown();
 
 private:
-	int commonOp(const string& opcode, const string& pair, string& result);
-	string commonOpInternal(const string& opcode, const string& pair,
-			string& result);
+	int commonOp(const string &opcode, const string &key, const string &val,
+			const string &val2, string &result);
+	string commonOpInternal(const string &opcode, const string &key,
+			const string &val, const string &val2, string &result);
+	string extract_value(const string &returnStr);
 
 private:
 	ProtoProxy *_proxy;

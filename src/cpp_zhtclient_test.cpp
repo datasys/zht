@@ -28,10 +28,10 @@
  *      Contributor: Tony, KWang, DZhao
  */
 
-#include "ZHTClient.h"
-#include "meta.pb.h"
+#include "cpp_zhtclient.h"
 
 #include  <getopt.h>
+#include  <stdlib.h>
 #include   <stdio.h>
 #include   <string>
 #include   <exception>
@@ -45,6 +45,17 @@ void test_append();
 void printUsage(char *argv_0);
 
 ZHTClient zc;
+
+void test_all() {
+
+	test_insert();
+
+	test_lookup();
+
+	test_remove();
+
+	test_append();
+}
 
 int main(int argc, char **argv) {
 
@@ -86,13 +97,7 @@ int main(int argc, char **argv) {
 
 			zc.init(zhtConf, neighborConf);
 
-			test_insert();
-
-			test_lookup();
-
-			test_remove();
-
-			test_append();
+			test_all();
 
 			zc.teardown();
 
@@ -118,14 +123,10 @@ void printUsage(char *argv_0) {
 void test_insert() {
 
 	string key = "goodman";
-	string value =
-			"[1]:The Only Thing Necessary for the Triumph of Evil is that Good Men Do Nothing";
+	string val =
+			"[1],The Only Thing Necessary for the Triumph of Evil is that Good Men Do Nothing";
 
-	Package pkg;
-	pkg.set_virtualpath(key);
-	pkg.set_realfullpath(value);
-
-	int rc = zc.insert(pkg.SerializeAsString());
+	int rc = zc.insert(key, val);
 
 	if (rc == 0)
 		printf("INSERT OK, rc(%d)\n", rc);
@@ -139,21 +140,13 @@ void test_lookup() {
 
 	string key = "goodman";
 
-	Package pkg;
-	pkg.set_virtualpath(key);
-
 	string result;
-	int rc = zc.lookup(pkg.SerializeAsString(), result);
-
-	Package resultpkg;
-	resultpkg.ParseFromString(result);
+	int rc = zc.lookup(key, result);
 
 	if (rc == 0)
-		printf("LOOKUP OK, rc(%d), value={%s}\n", rc,
-				resultpkg.realfullpath().c_str());
+		printf("LOOKUP OK, rc(%d), value={%s}\n", rc, result.c_str()); //todo: consider ": delimited"
 	else
-		printf("LOOKUP ERR, rc(%d), value={%s}\n", rc,
-				resultpkg.realfullpath().c_str());
+		printf("LOOKUP ERR, rc(%d), value={%s}\n", rc, result.c_str()); //todo: consider ": delimited"
 }
 
 void test_remove() {
@@ -162,10 +155,7 @@ void test_remove() {
 
 	string key = "goodman";
 
-	Package pkg;
-	pkg.set_virtualpath(key);
-
-	int rc = zc.remove(pkg.SerializeAsString());
+	int rc = zc.remove(key);
 
 	if (rc == 0)
 		printf("REMOVE OK, rc(%d)\n", rc);
@@ -178,13 +168,10 @@ void test_append() {
 	test_insert();
 
 	string key = "goodman";
+	string val2 =
+			"[2],The Only Thing Necessary for the Triumph of Evil is that Good Men Do Nothing";
 
-	Package pkg;
-	pkg.set_virtualpath(key);
-	pkg.set_realfullpath(
-			"[2]:The Only Thing Necessary for the Triumph of Evil is that Good Men Do Nothing");
-
-	int rc = zc.append(pkg.SerializeAsString());
+	int rc = zc.append(key, val2);
 
 	if (rc == 0)
 		printf("APPEND OK, rc(%d)\n", rc);
@@ -192,16 +179,10 @@ void test_append() {
 		printf("APPEND ERR, rc(%d)\n", rc);
 
 	string result;
-	rc = zc.lookup(pkg.SerializeAsString(), result);
-
-	Package resultpkg;
-	resultpkg.ParseFromString(result);
+	rc = zc.lookup(key, result);
 
 	if (rc == 0)
-		printf("LOOKUP OK, rc(%d), value={%s}\n", rc,
-				resultpkg.realfullpath().c_str());
+		printf("LOOKUP OK, rc(%d), value={%s}\n", rc, result.c_str()); //todo: consider ": delimited"
 	else
-		printf("LOOKUP ERR, rc(%d), value={%s}\n", rc,
-				resultpkg.realfullpath().c_str());
-
+		printf("LOOKUP ERR, rc(%d), value={%s}\n", rc, result.c_str()); //todo: consider ": delimited"
 }

@@ -39,31 +39,37 @@
 #include "meta.pb.h"
 #include "Util.h"
 
-#include "ZHTClient.h"
+#include "cpp_zhtclient.h"
 #include "ZHTUtil.h"
 
 using namespace std;
 using namespace iit::datasys::zht::dm;
 
-int benchmarkInsert(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
-		int lenString) {
+ZHTClient zc;
+int numOfOps = -1;
+int lenString = 15;
+vector<string> pkgList;
+
+void init_packages() {
 
 	for (int i = 0; i < numOfOps; i++) {
 
-		Package package, package_ret;
+		Package package;
 		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
 		package.set_isdir(true);
-		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
+		package.set_replicanum(5); //orginal--Note: never let it be nagative!!!
 		package.set_realfullpath(
 				"Some-Real-longer-longer-and-longer-Paths--------");
+		package.add_listitem("item-----1");
 		package.add_listitem("item-----2");
 		package.add_listitem("item-----3");
 		package.add_listitem("item-----4");
 		package.add_listitem("item-----5");
-		package.add_listitem("item-----6");
-		string str = package.SerializeAsString();
-		pkgList.push_back(str);
+		pkgList.push_back(package.SerializeAsString());
 	}
+}
+
+int benchmarkInsert() {
 
 	double start = 0;
 	double end = 0;
@@ -75,9 +81,12 @@ int benchmarkInsert(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
 	for (it = pkgList.begin(); it != pkgList.end(); it++) {
 
 		c++;
-		string str_ins = *it;
 
-		int ret = zc.insert(str_ins);
+		string pkg_str = *it;
+		Package pkg;
+		pkg.ParseFromString(pkg_str);
+
+		int ret = zc.insert(pkg.virtualpath(), pkg_str);
 
 		if (ret < 0) {
 			errCount++;
@@ -90,26 +99,19 @@ int benchmarkInsert(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
 	return 0;
 }
 
-int benchmarkAppend(ZHTClient &zc, int numOfOps, int lenString) {
+int benchmarkAppend() {
 
 	vector<string> pkgList_append;
 
-	for (int i = 0; i < numOfOps; i++) {
+	vector<string>::iterator it;
+	for (it = pkgList.begin(); it != pkgList.end(); it++) {
 
-		Package package, package_ret;
-		package.set_virtualpath(
-				HashUtil::randomString(lenString).append("-append")); //as key
-		package.set_isdir(true);
-		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
-		package.set_realfullpath(
-				"Some-Real-longer#include<getopt.h>-longer-and-longer-Paths--------");
-		package.add_listitem("item-----2");
-		package.add_listitem("item-----3");
-		package.add_listitem("item-----4");
-		package.add_listitem("item-----5");
-		package.add_listitem("item-----6");
-		string str = package.SerializeAsString();
-		pkgList_append.push_back(str);
+		Package package;
+		package.ParseFromString((*it));
+
+		package.add_listitem("item-----6-append");
+
+		pkgList_append.push_back(package.SerializeAsString());
 	}
 
 	double start = 0;
@@ -118,12 +120,15 @@ int benchmarkAppend(ZHTClient &zc, int numOfOps, int lenString) {
 	int errCount = 0;
 
 	int c = 0;
-	vector<string>::iterator it;
 	for (it = pkgList_append.begin(); it != pkgList_append.end(); it++) {
 
 		c++;
-		string str_ins = *it;
-		int ret = zc.append(str_ins);
+
+		string pkg_str = *it;
+		Package pkg;
+		pkg.ParseFromString(pkg_str);
+
+		int ret = zc.append(pkg.virtualpath(), pkg_str);
 
 		if (ret < 0) {
 			errCount++;
@@ -136,85 +141,25 @@ int benchmarkAppend(ZHTClient &zc, int numOfOps, int lenString) {
 	return 0;
 }
 
-int benmarkTimeAnalize(vector<string> &pkgList, ZHTClient &zc, int numOfOps,
-		int lenString, string Recordpath) {
-
-	double timeRecord[numOfOps]; //={0};
-
-	int i = 0;
-	for (i = 0; i < numOfOps; i++) {
-
-		Package package, package_ret;
-		package.set_virtualpath(HashUtil::randomString(lenString)); //as key
-		package.set_isdir(true);
-		package.set_replicano(5); //orginal--Note: never let it be nagative!!!
-		package.set_realfullpath(
-				"Some-Real-longer-longer-and-longer-Paths--------");
-		package.add_listitem("item-----1");
-		package.add_listitem("item-----2");
-		package.add_listitem("item-----3");
-		package.add_listitem("item-----4");
-		package.add_listitem("item-----5");
-		string str = package.SerializeAsString();
-
-		pkgList.push_back(str);
-	}
+float benchmarkLookup() {
 
 	double start = 0;
 	double end = 0;
-	double istart = 0;
-	double iend = 0;
-	int errCount = 0;
-
-	ofstream record;
-	record.open(Recordpath.c_str());
-
 	start = TimeUtil::getTime_msec();
+	int errCount = 0;
 
 	int c = 0;
 	vector<string>::iterator it;
 	for (it = pkgList.begin(); it != pkgList.end(); it++) {
 
-		c++;
-		double interval = 0;
-		istart = TimeUtil::getTime_usec();
-		int op_ret = zc.insert((*it));
-		iend = TimeUtil::getTime_usec();
-
-		if (op_ret < 0) {
-			errCount++;
-			interval = -1;
-		} else
-			interval = iend - istart;
-		record << interval << endl;
-		timeRecord[c] = interval;
-
-	}
-
-	end = TimeUtil::getTime_msec();
-	record.close();
-
-	cout << "Inserted " << numOfOps - errCount << " packages out of "
-			<< numOfOps << ", cost " << end - start << " ms" << endl;
-
-	return 0;
-}
-
-float benchmarkLookup(vector<string> strList, ZHTClient &zc) {
-
-	double start = 0;
-	double end = 0;
-	start = TimeUtil::getTime_msec();
-	int errCount = 0;
-
-	int c = 0;
-	vector<string>::iterator it;
-	for (it = strList.begin(); it != strList.end(); it++) {
-
 		string result;
 		c++;
 
-		if (zc.lookup((*it), result) < 0) {
+		string pkg_str = *it;
+		Package pkg;
+		pkg.ParseFromString(pkg_str);
+
+		if (zc.lookup(pkg.virtualpath(), result) < 0) {
 
 			errCount++;
 		} else if (result.empty()) { //empty string
@@ -224,25 +169,12 @@ float benchmarkLookup(vector<string> strList, ZHTClient &zc) {
 
 	end = TimeUtil::getTime_msec();
 
-	cout << "Lookup " << strList.size() - errCount << " packages out of "
-			<< strList.size() << ", cost " << end - start << " ms" << endl;
+	cout << "Lookup " << pkgList.size() - errCount << " packages out of "
+			<< pkgList.size() << ", cost " << end - start << " ms" << endl;
 	return 0;
 }
 
-float benchmarkRemove(vector<string> strList, ZHTClient &zc) {
-
-	vector<string> removes;
-
-	vector<string>::iterator it;
-	for (it = strList.begin(); it != strList.end(); it++) {
-
-		Package package;
-		package.ParseFromString((*it));
-		package.set_replicano(5); //5: original, 3 not original
-
-		string newStr = package.SerializeAsString();
-		removes.push_back(newStr);
-	}
+float benchmarkRemove() {
 
 	double start = 0;
 	double end = 0;
@@ -250,43 +182,47 @@ float benchmarkRemove(vector<string> strList, ZHTClient &zc) {
 	int errCount = 0;
 
 	int c = 0;
-	for (it = removes.begin(); it != removes.end(); it++) {
+	vector<string>::iterator it;
+	for (it = pkgList.begin(); it != pkgList.end(); it++) {
 
 		string result;
 		c++;
 
-		if (zc.remove((*it)) < 0) {
+		string pkg_str = *it;
+		Package pkg;
+		pkg.ParseFromString(pkg_str);
+
+		if (zc.remove(pkg.virtualpath()) < 0) {
 			errCount++;
 		}
 	}
 
 	end = TimeUtil::getTime_msec();
 
-	cout << "Remove " << strList.size() - errCount << " packages out of "
-			<< strList.size() << ", cost " << end - start << " ms" << endl;
+	cout << "Remove " << pkgList.size() - errCount << " packages out of "
+			<< pkgList.size() << ", cost " << end - start << " ms" << endl;
 	return 0;
 }
 
-int benchmark(string &zhtConf, string &neighborConf, int numOfOps) {
+int benchmark(string &zhtConf, string &neighborConf) {
 
 	srand(getpid() + TimeUtil::getTime_usec());
 
-	vector<string> pkgList;
-	ZHTClient zc;
-
 	if (zc.init(zhtConf, neighborConf) != 0) {
 
-		cout << "Crap! ZHTClient initialization failed, program exits." << endl;
+		cout << "ZHTClient initialization failed, program exits." << endl;
 		return -1;
 	}
 
-	benchmarkInsert(pkgList, zc, numOfOps, 15);
+	init_packages();
 
-	benchmarkLookup(pkgList, zc);
+	benchmarkInsert();
 
-	benchmarkAppend(zc, numOfOps, 15);
+	benchmarkLookup();
 
-	benchmarkRemove(pkgList, zc);
+	benchmarkAppend();
+
+	benchmarkRemove();
 
 	zc.teardown();
 
@@ -301,7 +237,7 @@ int main(int argc, char **argv) {
 	extern char *optarg;
 
 	int printHelp = 0;
-	int numOfOps = -1;
+
 	string zhtConf = "";
 	string neighborConf = "";
 
@@ -336,7 +272,7 @@ int main(int argc, char **argv) {
 	try {
 		if (!zhtConf.empty() && !neighborConf.empty() && numOfOps != -1) {
 
-			benchmark(zhtConf, neighborConf, numOfOps);
+			benchmark(zhtConf, neighborConf);
 
 		} else {
 

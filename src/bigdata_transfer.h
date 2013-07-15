@@ -31,7 +31,7 @@
 #ifndef BIGDATA_TRANSFER_H_
 #define BIGDATA_TRANSFER_H_
 
-#include "meta.pb.h"
+#include "zpack.pb.h"
 
 #include <sys/types.h>
 #include <string>
@@ -193,7 +193,7 @@ protected:
 template<class ID>
 class AckQueue {
 public:
-	typedef queue<Package> QU;
+	typedef queue<ZPack> QU;
 	typedef map<ID, QU> MAP;
 	typedef typename map<ID, QU>::iterator MI;
 	typedef typename map<ID, QU>::const_iterator MCI;
@@ -205,10 +205,10 @@ public:
 
 	bool empty(const ID& id) const;
 	size_t size(const ID& id) const;
-	const Package& front(const ID& id) const;
-	const Package& back(const ID& id) const;
+	const ZPack& front(const ID& id) const;
+	const ZPack& back(const ID& id) const;
 
-	void push(const ID& id, Package ack);
+	void push(const ID& id, ZPack ack);
 	void pop(const ID& id);
 
 	void rmQueue(const ID& id);

@@ -98,8 +98,9 @@ int UDPProxy::sendTo(int sock, const string &host, uint port,
 	/*prompt errors*/
 	if (sentSize < sendcount) {
 
-		cerr << "UDPProxy::sendTo(): error on ::sendto(...): "
-				<< strerror(errno) << endl;
+		//todo: bug prone
+		/*cerr << "UDPProxy::sendTo(): error on ::sendto(...): "
+		 << strerror(errno) << endl;*/
 	}
 
 	return sentSize;

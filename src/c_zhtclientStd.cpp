@@ -30,7 +30,7 @@
 
 #include "c_zhtclientStd.h"
 
-#include "ZHTClient.h"
+#include "cpp_zhtclient.h"
 #include "meta.pb.h"
 
 #include <string.h>
@@ -38,17 +38,17 @@
 
 using namespace std;
 
-int c_zht_init_std(ZHTClient_c * zhtClient, const char *zhtConfig,
+int c_zht_init_std(ZHTClient_c *zhtClient, const char *zhtConfig,
 		const char *neighborConf) {
 
-	ZHTClient * zhtcppClient = new ZHTClient();
+	ZHTClient *zhtcppClient = new ZHTClient();
 
-	string zhtStr(zhtConfig);
-	string memberStr(neighborConf);
+	string zhtConfigStr(zhtConfig);
+	string neighborConfStr(neighborConf);
 
-	if (zhtcppClient->init(zhtStr, memberStr) != 0) {
-		printf("Crap! ZHTClient initialization failed, program exits.");
+	if (zhtcppClient->init(zhtConfigStr, neighborConfStr) != 0) {
 
+		printf("ZHTClient initialization failed, program exits.");
 		return -1;
 	}
 
@@ -57,206 +57,78 @@ int c_zht_init_std(ZHTClient_c * zhtClient, const char *zhtConfig,
 	return 0;
 }
 
-int c_zht_lookup_std(ZHTClient_c zhtClient, const char *pair, char *result,
-		size_t *n) {
+int c_zht_lookup_std(ZHTClient_c zhtClient, const char *key, char *result) {
 
 	ZHTClient *zhtcppClient = (ZHTClient *) zhtClient;
 
-	string sPair(pair);
+	string skey(key);
 
 	string resultStr;
-	int ret = zhtcppClient->lookup(sPair, resultStr);
+	int ret = zhtcppClient->lookup(skey, resultStr);
 
-	/*
-	 * hello,zht:hello,zht ==> hello,zht:zht
-	 * */
-	string store;
-	char * pch, *sp;
-	pch = strtok_r((char*) resultStr.c_str(), ":", &sp);
-	Package package2;
-
-	while (pch != NULL) {
-
-		package2.ParseFromString(pch);
-		string strRealfullpath = package2.realfullpath();
-
-		store.append(strRealfullpath);
-		store.append(":");
-
-		pch = strtok_r(NULL, ":", &sp);
-	}
-
-	size_t found = store.find_last_of(":");
-	store = store.substr(0, found);
-	package2.set_realfullpath(store);
-
-	store = package2.SerializeAsString();
-	strncpy(result, store.c_str(), strlen(store.c_str()));
-	*n = store.size();
+	strncpy(result, resultStr.c_str(), resultStr.size() + 1);
 
 	return ret;
 }
 
-int c_zht_lookup2_std(ZHTClient_c zhtClient, const char *key, char *result,
-		size_t *n) {
+int c_zht_remove_std(ZHTClient_c zhtClient, const char *key) {
 
-	ZHTClient *zhtcppClient = (ZHTClient *) zhtClient;
+	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
 
-	string sKey(key);
+	string skey(key);
 
-	Package package;
-	package.set_virtualpath(sKey); //as key
-	package.set_isdir(true);
-	package.set_replicano(5);
-	package.set_operation(1); //1 for look up, 2 for remove, 3 for insert, 4 append
+	return zhtcppClient->remove(skey);
+}
+
+int c_zht_insert_std(ZHTClient_c zhtClient, const char *key,
+		const char *value) {
+
+	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
+
+	string skey(key);
+	string sval(value);
+
+	return zhtcppClient->insert(skey, sval);
+}
+
+int c_zht_append_std(ZHTClient_c zhtClient, const char *key,
+		const char *value) {
+
+	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
+
+	string skey(key);
+	string sval(value);
+
+	return zhtcppClient->append(skey, sval);
+
+}
+
+int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
+		const char *seen_value, const char *new_value, char **value_queried) {
+
+	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
+
+	string skey(key);
+	string sseenValue(seen_value);
+	string snewValue(new_value);
 
 	string resultStr;
-	int ret = zhtcppClient->lookup(package.SerializeAsString(), resultStr);
+	int rc = zhtcppClient->compare_swap(skey, sseenValue, snewValue, resultStr);
 
-	/*
-	 * hello,zht:hello,zht ==> hello,zht:zht
-	 * */
-	string store;
-	char * pch, *sp;
-	pch = strtok_r((char*) resultStr.c_str(), ":", &sp);
-	Package package2;
+	strncpy(*value_queried, resultStr.c_str(), resultStr.size() + 1);
 
-	while (pch != NULL) {
-
-		package2.ParseFromString(pch);
-		string strRealfullpath = package2.realfullpath();
-
-		store.append(strRealfullpath);
-		store.append(":");
-
-		pch = strtok_r(NULL, ":", &sp);
-	}
-
-	size_t found = store.find_last_of(":");
-	store = store.substr(0, found);
-
-	strncpy(result, store.c_str(), strlen(store.c_str()));
-	*n = store.size();
-
-	return ret;
-}
-
-int c_zht_remove_std(ZHTClient_c zhtClient, const char *pair) {
-
-	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
-
-	string str(pair);
-
-	return zhtcppClient->remove(str);
-}
-
-int c_zht_remove2_std(ZHTClient_c zhtClient, const char *key) {
-
-	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
-
-	string sKey(key);
-
-	Package package;
-	package.set_virtualpath(sKey);
-	package.set_operation(2); //1 for look up, 2 for remove, 3 for insert, 4 append
-
-	return zhtcppClient->remove(package.SerializeAsString());
-}
-
-int c_zht_insert_std(ZHTClient_c zhtClient, const char *pair) {
-
-	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
-
-	string str(pair);
-
-	return zhtcppClient->insert(str);
-}
-
-int c_zht_insert2_std(ZHTClient_c zhtClient, const char *key,
-		const char *value) {
-
-	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
-
-	string sKey(key);
-	string sValue(value);
-
-	Package package;
-	package.set_virtualpath(sKey); //as key
-	package.set_isdir(true);
-	package.set_replicano(5);
-	package.set_operation(3); //1 for look up, 2 for remove, 3 for insert, 4 append
-	if (!sValue.empty())
-		package.set_realfullpath(sValue);
-
-	return zhtcppClient->insert(package.SerializeAsString());
-}
-
-int c_zht_append_std(ZHTClient_c zhtClient, const char *pair) {
-
-	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
-
-	string str(pair);
-
-	return zhtcppClient->append(str);
-}
-
-int c_zht_append2_std(ZHTClient_c zhtClient, const char *key,
-		const char *value) {
-
-	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
-
-	string sKey(key);
-	string sValue(value);
-
-	Package package;
-	package.set_virtualpath(sKey); //as key
-	package.set_isdir(true);
-	package.set_replicano(5);
-	package.set_operation(4); //1 for look up, 2 for remove, 3 for insert, 4 append
-	if (!sValue.empty())
-		package.set_realfullpath(sValue);
-
-	return zhtcppClient->append(package.SerializeAsString());
-
+	return rc;
 }
 
 int c_zht_teardown_std(ZHTClient_c zhtClient) {
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
 
-	return zhtcppClient->teardown();
-}
+	int rc = zhtcppClient->teardown();
 
-int c_zht_compare_and_swap_std(ZHTClient_c zhtClient, const char *key,
-		const char *seen_value, const char *new_value, char **value_queried) {
-
-	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
-	string sKey(key);
-	string sSeenValue(seen_value);
-	string sNewValue(new_value);
-
-	Package package;
-	package.set_virtualpath(sKey);
-	package.set_isdir(true);
-	package.set_replicano(5);
-	package.set_operation(5);  // 5 for comapre and swap
-	if (!sSeenValue.empty()) {
-		package.set_realfullpath(sSeenValue);
-	}
-	if (!sNewValue.empty()) {
-		package.set_newfullpath(sNewValue);
-	}
-
-	int rc = 0;
-
-	string return_str;
-	/*rc = zhtcppClient->compare_and_swap(package.SerializeAsString(),
-	 return_str);*/
-
-	Package ret_pack;
-	ret_pack.ParseFromString(return_str);
-
-	strcpy(*value_queried, ret_pack.realfullpath().c_str());
+	delete zhtcppClient;
+	zhtcppClient = NULL;
 
 	return rc;
 }
+

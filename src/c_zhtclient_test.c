@@ -37,10 +37,10 @@
 #include "c_zhtclient.h"
 #include "meta.pb-c.h"
 
-const int LOOKUP_SIZE = 1024 * 10000 * 7; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
+const int LOOKUP_SIZE = 1024 * 10000 * 2; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
 //const int LOOKUP_SIZE = 16 * 3; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
 
-const int TOTAL_SIZE = 1024 * 10000 * 6; //total size of a message to be transfered
+const int TOTAL_SIZE = 1024 * 10000 * 1; //total size of a message to be transfered
 //const int TOTAL_SIZE = 16 * 2; //total size of a message to be transfered
 
 void test_large_keyvalue();
@@ -61,6 +61,18 @@ void test_pass_package_reuse();
 void test_simple_largevalue();
 
 void printUsage(char *argv_0);
+
+void test_all() {
+
+	//test_common_usecase();
+
+	//test_simple_largevalue();
+
+	//test_large_keyvalue();
+
+	test_pass_package();
+
+}
 
 int main(int argc, char **argv) {
 
@@ -100,13 +112,7 @@ int main(int argc, char **argv) {
 
 		c_zht_init(zhtConf, neighborConf);
 
-//		test_large_keyvalue();
-
-		test_common_usecase();
-
-		//	test_pass_package();
-
-//		test_simple_largevalue();
+		test_all();
 
 		c_zht_teardown();
 
@@ -134,7 +140,7 @@ void test_simple_largevalue() {
 	/*
 	 * test c_zht_insert
 	 * */
-	int iret = c_zht_insert2(key, value2); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int iret = c_zht_insert(key, value2); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_insert, return code: %d\n", iret);
 
 	/*
@@ -145,7 +151,9 @@ void test_simple_largevalue() {
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup2(key, result, &ln); //1 for look up, 2 for remove, 3 for insert, 4 for append
+		int lret = c_zht_lookup(key, result); //1 for look up, 2 for remove, 3 for insert, 4 for append
+
+		ln = strlen(result);
 
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
 				ln);
@@ -158,13 +166,32 @@ void test_simple_largevalue() {
 	/*
 	 * test c_zht_append
 	 * */
-	int aret = c_zht_append2(key, "value appended"); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int aret = c_zht_append(key, "value appended"); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_append, return code: %d\n", aret);
+
+	/*
+	 * test c_zht_lookup again
+	 * */
+	result = (char*) calloc(LOOKUP_SIZE, sizeof(char));
+
+	if (result != NULL ) {
+
+		int lret = c_zht_lookup(key, result); //1 for look up, 2 for remove, 3 for insert, 4 for append
+
+		ln = strlen(result);
+
+		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
+				ln);
+		/*	fprintf(stdout, "c_zht_lookup, return {key}:{value} => {%s}:{%s}\n",
+		 key, result);*/
+	}
+
+	free(result);
 
 	/*
 	 * test c_zht_remove
 	 * */
-	int rret = c_zht_remove2(key); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int rret = c_zht_remove(key); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_remove, return code: %d\n", rret);
 
 	free(value2);
@@ -203,7 +230,7 @@ void test_common_usecase_reuse(const char * const key, const char * const value,
 	/*
 	 * test c_zht_insert
 	 * */
-	int iret = c_zht_insert2(key, value); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int iret = c_zht_insert(key, value); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_insert, return code: %d\n", iret);
 
 	/*
@@ -214,7 +241,9 @@ void test_common_usecase_reuse(const char * const key, const char * const value,
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup2(key, result, &ln); //1 for look up, 2 for remove, 3 for insert, 4 for append
+		int lret = c_zht_lookup(key, result); //1 for look up, 2 for remove, 3 for insert, 4 for append
+
+		ln = strlen(result);
 
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
 				ln);
@@ -227,7 +256,7 @@ void test_common_usecase_reuse(const char * const key, const char * const value,
 	/*
 	 * test c_zht_append
 	 * */
-	int aret = c_zht_append2(key, value2); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int aret = c_zht_append(key, value2); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_append, return code: %d\n", aret);
 
 	/*
@@ -238,7 +267,9 @@ void test_common_usecase_reuse(const char * const key, const char * const value,
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup2(key, result, &ln); //1 for look up, 2 for remove, 3 for insert, 4 for append
+		int lret = c_zht_lookup(key, result); //1 for look up, 2 for remove, 3 for insert, 4 for append
+
+		ln = strlen(result);
 
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
 				ln);
@@ -251,7 +282,7 @@ void test_common_usecase_reuse(const char * const key, const char * const value,
 	/*
 	 * test c_zht_remove
 	 * */
-	int rret = c_zht_remove2(key); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int rret = c_zht_remove(key); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_remove, return code: %d\n", rret);
 }
 
@@ -297,7 +328,7 @@ void test_large_keyvalue_reuse(const char * const key, const char * const value,
 	/*
 	 * test c_zht_insert
 	 * */
-	int iret = c_zht_insert2(key, value); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int iret = c_zht_insert(key, value); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_insert, return code: %d\n", iret);
 
 	/*
@@ -308,7 +339,9 @@ void test_large_keyvalue_reuse(const char * const key, const char * const value,
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup2(key, result, &ln); //1 for look up, 2 for remove, 3 for insert, 4 for append
+		int lret = c_zht_lookup(key, result); //1 for look up, 2 for remove, 3 for insert, 4 for append
+
+		ln = strlen(result);
 
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
 				ln);
@@ -321,7 +354,7 @@ void test_large_keyvalue_reuse(const char * const key, const char * const value,
 	/*
 	 * test c_zht_append
 	 * */
-	int aret = c_zht_append2(key, value2); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int aret = c_zht_append(key, value2); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_append, return code: %d\n", aret);
 
 	/*
@@ -332,7 +365,9 @@ void test_large_keyvalue_reuse(const char * const key, const char * const value,
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup2(key, result, &ln); //1 for look up, 2 for remove, 3 for insert, 4 for append
+		int lret = c_zht_lookup(key, result); //1 for look up, 2 for remove, 3 for insert, 4 for append
+
+		ln = strlen(result);
 
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
 				ln);
@@ -345,7 +380,7 @@ void test_large_keyvalue_reuse(const char * const key, const char * const value,
 	/*
 	 * test c_zht_remove
 	 */
-	int rret = c_zht_remove2(key); //1 for look up, 2 for remove, 3 for insert, 4 for append
+	int rret = c_zht_remove(key); //1 for look up, 2 for remove, 3 for insert, 4 for append
 	fprintf(stdout, "c_zht_remove, return code: %d\n", rret);
 
 }
@@ -356,7 +391,7 @@ void test_pass_package() {
 
 	fprintf(stdout, "%s\n", "--------------------------");
 
-	test_pass_package_emptystring();
+//	test_pass_package_emptystring();
 }
 
 void test_pass_package_blankspace() {
@@ -371,26 +406,23 @@ void test_pass_package_blankspace() {
 void test_pass_package_emptystring() {
 
 	const char *key = "hello";
-	const char *value = "";
+	const char *value = "		";
 	const char *value2 = "ZHT";
 
 	test_pass_package_reuse(key, value, value2);
 }
 
-void test_pass_package_reuse(const char * const key, const char * const value,
-		const char * const value2) {
+void test_pass_package_reuse(const char *key, const char *value,
+		const char *value2) {
 
-	char *buf; // Buffer to store serialized data
-	unsigned len; // Length of serialized data
+	char *buf; //buffer to store serialized data
+	unsigned len; //length of serialized data
 
 	Package package = PACKAGE__INIT; // Package
 	package.virtualpath = (char*) key;
-	if (strcmp(value, "") != 0) //tricky: bypass protocol-buf's bug
-		package.realfullpath = (char*) value;
+	package.realfullpath = (char*) value;
 	package.has_isdir = true;
 	package.isdir = false;
-	package.has_operation = true;
-	package.operation = 3; //1 for look up, 2 for remove, 3 for insert, 4 for append
 
 	len = package__get_packed_size(&package);
 	buf = (char*) calloc(len, sizeof(char));
@@ -399,107 +431,80 @@ void test_pass_package_reuse(const char * const key, const char * const value,
 	/*
 	 * test c_zht_insert
 	 * */
-	int iret = c_zht_insert(buf);
+	int iret = c_zht_insert(key, buf);
 	fprintf(stdout, "c_zht_insert, return code: %d\n", iret);
 	free(buf);
 
 	/*
 	 * test c_zht_lookup
 	 * */
-	Package package2 = PACKAGE__INIT;
-	package2.virtualpath = (char*) key;
-	package2.operation = 1; //1 for look up, 2 for remove, 3 for insert, 4 for append
-
-	len = package__get_packed_size(&package2);
-	buf = (char*) calloc(len, sizeof(char));
-	package__pack(&package2, buf);
-
-	size_t ln;
+	size_t ln = 0;
 	char *result = (char*) calloc(LOOKUP_SIZE, sizeof(char));
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup(buf, result, &ln);
+		int lret = c_zht_lookup(key, result);
+		ln = strlen(result);
+
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
 				ln);
 
 		if (lret == 0 && ln > 0) {
 
-			Package * lPackage;
-			char *lBuf = (char*) calloc(ln, sizeof(char));
+			Package *lpkg = package__unpack(NULL, LOOKUP_SIZE, result);
 
-			strncpy(lBuf, result, ln);
-			lPackage = package__unpack(NULL, ln, lBuf);
-
-			if (lPackage == NULL ) {
+			if (lpkg == NULL ) {
 
 				fprintf(stdout, "error unpacking lookup result\n");
-
 			} else {
 
 				fprintf(stdout,
 						"c_zht_lookup, return {key}:{value} => {%s}:{%s}\n",
-						lPackage->virtualpath, lPackage->realfullpath);
+						lpkg->virtualpath, lpkg->realfullpath);
 
 			}
 
-			free(lBuf);
-			package__free_unpacked(lPackage, NULL );
+			package__free_unpacked(lpkg, NULL );
 		}
 	}
-
-	free(buf);
 	free(result);
 
 	/*
 	 * test c_zht_append
 	 * */
-	Package package4 = PACKAGE__INIT;
-	package4.virtualpath = (char*) key;
-	if (strcmp(value2, "") != 0) //tricky: bypass protocol-buf's bug
-		package4.realfullpath = (char*) value2;
-	package4.has_isdir = true;
-	package4.isdir = false;
-	package4.has_operation = true;
-	package4.operation = 4; //1 for look up, 2 for remove, 3 for insert, 4 for append
+	Package package2 = PACKAGE__INIT;
+	package2.virtualpath = (char*) key;
+	package2.realfullpath = (char*) value2;
+	package2.has_isdir = true;
+	package2.isdir = false;
 
-	len = package__get_packed_size(&package4);
+	len = package__get_packed_size(&package2);
 	buf = (char*) calloc(len, sizeof(char));
-	package__pack(&package4, buf);
+	package__pack(&package2, buf);
 
-	int aret = c_zht_append(buf);
+	int aret = c_zht_append(key, buf);
 	fprintf(stdout, "c_zht_append, return code: %d\n", aret);
 	free(buf);
 
 	/*
 	 * test c_zht_lookup again
 	 * */
-	Package package5 = PACKAGE__INIT; // Package
-	package5.virtualpath = (char*) key;
-	package5.operation = 1; //1 for look up, 2 for remove, 3 for insert, 4 for append
-
-	len = package__get_packed_size(&package5);
-	buf = (char*) calloc(len, sizeof(char));
-	package__pack(&package5, buf);
-
 	ln = 0;
 	result = (char*) calloc(LOOKUP_SIZE, sizeof(char));
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup(buf, result, &ln);
+		int lret = c_zht_lookup(key, result);
+		ln = strlen(result);
+
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
 				ln);
 
 		if (lret == 0 && ln > 0) {
 
-			Package * lPackage;
-			char *lBuf = (char*) calloc(ln, sizeof(char));
+			Package *lpkg = lpkg = package__unpack(NULL, LOOKUP_SIZE, result);
 
-			strncpy(lBuf, result, ln);
-			lPackage = package__unpack(NULL, ln, lBuf);
-
-			if (lPackage == NULL ) {
+			if (lpkg == NULL ) {
 
 				fprintf(stdout, "error unpacking lookup result\n");
 
@@ -507,30 +512,17 @@ void test_pass_package_reuse(const char * const key, const char * const value,
 
 				fprintf(stdout,
 						"c_zht_lookup, return {key}:{value} => {%s}:{%s}\n",
-						lPackage->virtualpath, lPackage->realfullpath);
+						lpkg->virtualpath, lpkg->realfullpath);
 
 			}
-
-			free(lBuf);
-			package__free_unpacked(lPackage, NULL );
+			package__free_unpacked(lpkg, NULL );
 		}
 	}
-
-	free(buf);
 	free(result);
 
 	/*
 	 * test c_zht_remove
 	 * */
-	Package package3 = PACKAGE__INIT;
-	package3.virtualpath = (char*) key;
-	package3.operation = 2; //1 for look up, 2 for remove, 3 for insert, 4 for append
-
-	len = package__get_packed_size(&package3);
-	buf = (char*) calloc(len, sizeof(char));
-	package__pack(&package3, buf);
-
-	int rret = c_zht_remove(buf);
+	int rret = c_zht_remove(key);
 	fprintf(stdout, "c_zht_remove, return code: %d\n", rret);
-	free(buf);
 }

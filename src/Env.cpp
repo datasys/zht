@@ -31,7 +31,9 @@
 #include "Env.h"
 
 //const int Env::MAX_MSG_SIZE = 1024 * 2; //max size of a message in each transfer
-const int Env::MAX_MSG_SIZE = 65535; //max size of a message in each transfer
+//const int Env::MAX_MSG_SIZE = 65535; //max size of a message in each transfer
+
+const int Env::MAX_MSG_SIZE = 1024 * 10000 * 7; //max size of a message in each transfer
 
 const uint Env::BUF_SIZE = 512 + 38;
 

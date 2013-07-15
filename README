@@ -6,6 +6,11 @@ Google protocol buffers c binding, VERSION 0.15 or later
 Google protocol buffers c++ binding, VERSION 2.4.1
 		http://code.google.com/p/protobuf/downloads/list
 
+-------------------ABOUT ZHT API, SPECIAL ATTENTION-------------------
+ZHT supports the API set such as insert/lookup/remove/append/compare_swap.
+
+When you are using append, BE CAREFUL THAT your key and value CAN NOT contain the colon(:), which is used 
+internally to delimite key/value pairs.
 
 -------------------COMPILE AND INSTALL-------------------
 Assuming that Google protocol buffers c and c++ bindings are installed to default directory, that is, /usr/local
@@ -31,7 +36,7 @@ To run benchmark:
 1. ./zhtserver -z zht.conf -n neighbor.conf, OR
    ./zhtserver -z zht.conf -n neighbor.conf -p 40000, to define your own port, which overrides PORT in zht.conf
 
-2. ./zhtben -z zht.conf -n neighbor.conf -o 1000
+2. ./zht_ben -z zht.conf -n neighbor.conf -o 1000
 
 NOTE that:
 	The port you defined to listen on at zhtserver(e.g. the PORT in zht.conf, or ./zhtserver -z zht.conf -n neighbor.conf -p 40000)
@@ -42,7 +47,7 @@ In ./zhtserver -z zht.conf -n neighbor.conf -p 40000
 	neighbor.conf is to configure neighbored nodes in ZHT overlay network,
 	40000 means zhtserver PORT to listen on, which overrides PORT in zht.conf, if missing, that PORT will be used. 
 	
-In ./zhtben -z zht.conf -n neighbor.conf -o 1000 
+In ./zht_ben -z zht.conf -n neighbor.conf -o 1000 
 	zht.conf is to configure PROTOCOL and PORT, and other parameters,
 	neighbor.conf is to configure neighbored nodes in ZHT overlay network,
 	1000 means running 1000 iterations of INSERT, LOOKUP, REMOVE and APPEND,

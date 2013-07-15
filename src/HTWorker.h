@@ -31,7 +31,7 @@
 #ifndef HTWORKER_H_
 #define HTWORKER_H_
 
-#include "meta.pb.h"
+#include "zpack.pb.h"
 #include "novoht.h"
 
 #include <string>
@@ -49,10 +49,10 @@ public:
 	string run(const char *buf);
 
 private:
-	string lookup(const Package &pkg);
-	string remove(const Package &pkg);
-	string insert(const Package &pkg);
-	string append(const Package &pkg);
+	string lookup(const ZPack &zpack);
+	string remove(const ZPack &zpack);
+	string insert(const ZPack &zpack);
+	string append(const ZPack &zpack);
 
 private:
 	static NoVoHT *pmap;

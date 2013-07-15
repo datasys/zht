@@ -1,0 +1,9 @@
+message ZPack{
+	optional string opcode = 1; //001:lookup, 002:remove, 003:insert, 004:append, 005:compare_swap
+	optional string key = 2;
+	optional string val = 3;
+	optional bool valnull = 4;
+	optional string newval = 5; //used by compare_swap
+	optional bool newvalnull = 6; //used by compare_swap
+	optional int32 replicanum = 7;	
+}

@@ -49,25 +49,25 @@ string HTWorker::run(const char *buf) {
 
 	string result;
 
-	Package pkg;
+	ZPack zpack;
 	string str(buf);
-	pkg.ParseFromString(str);
+	zpack.ParseFromString(str);
 
-	if (pkg.opcode() == Const::ZSC_OPC_LOOKUP) {
+	if (zpack.opcode() == Const::ZSC_OPC_LOOKUP) {
 
-		result = lookup(pkg);
+		result = lookup(zpack);
 
-	} else if (pkg.opcode() == Const::ZSC_OPC_REMOVE) {
+	} else if (zpack.opcode() == Const::ZSC_OPC_REMOVE) {
 
-		result = remove(pkg);
+		result = remove(zpack);
 
-	} else if (pkg.opcode() == Const::ZSC_OPC_INSERT) {
+	} else if (zpack.opcode() == Const::ZSC_OPC_INSERT) {
 
-		result = insert(pkg);
+		result = insert(zpack);
 
-	} else if (pkg.opcode() == Const::ZSC_OPC_APPEND) {
+	} else if (zpack.opcode() == Const::ZSC_OPC_APPEND) {
 
-		result = append(pkg);
+		result = append(zpack);
 
 	} else {
 
@@ -77,14 +77,14 @@ string HTWorker::run(const char *buf) {
 	return result;
 }
 
-string HTWorker::lookup(const Package &pkg) {
+string HTWorker::lookup(const ZPack &zpack) {
 
 	string result;
 
-	if (pkg.virtualpath().empty())
+	if (zpack.key().empty())
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
-	string key = pkg.virtualpath();
+	string key = zpack.key();
 	string *ret = pmap->get(key);
 
 	if (ret == NULL) {
@@ -103,14 +103,14 @@ string HTWorker::lookup(const Package &pkg) {
 	return result;
 }
 
-string HTWorker::remove(const Package &pkg) {
+string HTWorker::remove(const ZPack &zpack) {
 
 	string result;
 
-	if (pkg.virtualpath().empty())
+	if (zpack.key().empty())
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
-	string key = pkg.virtualpath();
+	string key = zpack.key();
 	int ret = pmap->remove(key);
 
 	if (ret != 0) {
@@ -126,15 +126,15 @@ string HTWorker::remove(const Package &pkg) {
 	return result;
 }
 
-string HTWorker::insert(const Package &pkg) {
+string HTWorker::insert(const ZPack &zpack) {
 
 	string result;
 
-	if (pkg.virtualpath().empty())
+	if (zpack.key().empty())
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
-	string key = pkg.virtualpath();
-	int ret = pmap->put(key, pkg.SerializeAsString());
+	string key = zpack.key();
+	int ret = pmap->put(key, zpack.SerializeAsString());
 
 	if (ret != 0) {
 
@@ -149,15 +149,15 @@ string HTWorker::insert(const Package &pkg) {
 	return result;
 }
 
-string HTWorker::append(const Package &pkg) {
+string HTWorker::append(const ZPack &zpack) {
 
 	string result;
 
-	if (pkg.virtualpath().empty())
+	if (zpack.key().empty())
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
-	string key = pkg.virtualpath();
-	int ret = pmap->append(key, pkg.SerializeAsString());
+	string key = zpack.key();
+	int ret = pmap->append(key, zpack.SerializeAsString());
 
 	if (ret != 0) {
 

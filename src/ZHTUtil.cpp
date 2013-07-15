@@ -37,6 +37,8 @@
 #include <algorithm>
 #include <netdb.h>
 
+#include  "zpack.pb.h"
+
 using namespace iit::datasys::zht::dm;
 
 ZHTUtil::ZHTUtil() {
@@ -47,10 +49,10 @@ ZHTUtil::~ZHTUtil() {
 
 HostEntity ZHTUtil::getHostEntityByKey(const string& msg) {
 
-	Package pkg;
-	pkg.ParseFromString(msg);
+	ZPack zpack;
+	zpack.ParseFromString(msg);
 
-	int index = HashUtil::genHash(pkg.virtualpath())
+	int index = HashUtil::genHash(zpack.key())
 			% ConfHandler::NeighborVector.size();
 
 	ConfEntry ce = ConfHandler::NeighborVector.at(index);

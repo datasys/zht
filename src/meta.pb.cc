@@ -29,35 +29,12 @@ void protobuf_AssignDesc_meta_2eproto() {
       "meta.proto");
   GOOGLE_CHECK(file != NULL);
   Package_descriptor_ = file->message_type(0);
-  static const int Package_offsets_[28] = {
+  static const int Package_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, virtualpath_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, num_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, realfullpath_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, newfullpath_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, isdir_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, replicanum_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, listitem_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, openmode_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, mode_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, operation_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, replicano_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, opcode_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, rcode_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, migrateinst_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, uprange_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, sourcezht_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, targetzht_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, rfname_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, lfname_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, migringpos_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, gmembership_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, isfwdmsg_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, asneighbor_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, wifecode_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, ackid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, t_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, cid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, desc_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Package, nmoves_),
   };
   Package_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -100,19 +77,9 @@ void protobuf_AddDesc_meta_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\nmeta.proto\"\361\003\n\007Package\022\023\n\013virtualPath\030"
-    "\001 \001(\t\022\013\n\003num\030\002 \001(\005\022\024\n\014realFullPath\030\003 \001(\t"
-    "\022\023\n\013newFullPath\030\004 \001(\t\022\r\n\005isDir\030\005 \001(\010\022\020\n\010"
-    "listItem\030\006 \003(\t\022\020\n\010openMode\030\007 \001(\005\022\014\n\004mode"
-    "\030\010 \001(\005\022\021\n\tOperation\030\t \001(\005\022\021\n\treplicaNo\030\n"
-    " \001(\005\022\016\n\006opcode\030\013 \001(\t\022\r\n\005rcode\030\014 \001(\t\022\023\n\013m"
-    "igrateInst\030\r \001(\r\022\017\n\007uprange\030\016 \001(\010\022\021\n\tsou"
-    "rceZHT\030\017 \001(\t\022\021\n\ttargetZHT\030\020 \001(\t\022\016\n\006rfnam"
-    "e\030\021 \001(\t\022\016\n\006lfname\030\022 \001(\t\022\022\n\nmigringpos\030\023 "
-    "\003(\004\022\023\n\013gmembership\030\024 \001(\t\022\020\n\010isfwdmsg\030\025 \001"
-    "(\010\022\022\n\nasneighbor\030\026 \001(\t\022\020\n\010wifecode\030\027 \001(\t"
-    "\022\r\n\005ackid\030\030 \001(\010\022\014\n\004t_id\030\031 \003(\r\022\013\n\003cid\030\032 \003"
-    "(\t\022\014\n\004desc\030\033 \003(\t\022\016\n\006nmoves\030\034 \003(\r", 512);
+    "\n\nmeta.proto\"i\n\007Package\022\023\n\013virtualPath\030\001"
+    " \001(\t\022\024\n\014realFullPath\030\002 \001(\t\022\r\n\005isDir\030\003 \001("
+    "\010\022\022\n\nreplicanum\030\004 \001(\005\022\020\n\010listItem\030\005 \003(\t", 119);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "meta.proto", &protobuf_RegisterTypes);
   Package::default_instance_ = new Package();
@@ -132,33 +99,10 @@ struct StaticDescriptorInitializer_meta_2eproto {
 
 #ifndef _MSC_VER
 const int Package::kVirtualPathFieldNumber;
-const int Package::kNumFieldNumber;
 const int Package::kRealFullPathFieldNumber;
-const int Package::kNewFullPathFieldNumber;
 const int Package::kIsDirFieldNumber;
+const int Package::kReplicanumFieldNumber;
 const int Package::kListItemFieldNumber;
-const int Package::kOpenModeFieldNumber;
-const int Package::kModeFieldNumber;
-const int Package::kOperationFieldNumber;
-const int Package::kReplicaNoFieldNumber;
-const int Package::kOpcodeFieldNumber;
-const int Package::kRcodeFieldNumber;
-const int Package::kMigrateInstFieldNumber;
-const int Package::kUprangeFieldNumber;
-const int Package::kSourceZHTFieldNumber;
-const int Package::kTargetZHTFieldNumber;
-const int Package::kRfnameFieldNumber;
-const int Package::kLfnameFieldNumber;
-const int Package::kMigringposFieldNumber;
-const int Package::kGmembershipFieldNumber;
-const int Package::kIsfwdmsgFieldNumber;
-const int Package::kAsneighborFieldNumber;
-const int Package::kWifecodeFieldNumber;
-const int Package::kAckidFieldNumber;
-const int Package::kTIdFieldNumber;
-const int Package::kCidFieldNumber;
-const int Package::kDescFieldNumber;
-const int Package::kNmovesFieldNumber;
 #endif  // !_MSC_VER
 
 Package::Package()
@@ -178,27 +122,9 @@ Package::Package(const Package& from)
 void Package::SharedCtor() {
   _cached_size_ = 0;
   virtualpath_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  num_ = 0;
   realfullpath_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  newfullpath_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   isdir_ = false;
-  openmode_ = 0;
-  mode_ = 0;
-  operation_ = 0;
-  replicano_ = 0;
-  opcode_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  rcode_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  migrateinst_ = 0u;
-  uprange_ = false;
-  sourcezht_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  targetzht_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  rfname_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  lfname_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  gmembership_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  isfwdmsg_ = false;
-  asneighbor_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  wifecode_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  ackid_ = false;
+  replicanum_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -212,36 +138,6 @@ void Package::SharedDtor() {
   }
   if (realfullpath_ != &::google::protobuf::internal::kEmptyString) {
     delete realfullpath_;
-  }
-  if (newfullpath_ != &::google::protobuf::internal::kEmptyString) {
-    delete newfullpath_;
-  }
-  if (opcode_ != &::google::protobuf::internal::kEmptyString) {
-    delete opcode_;
-  }
-  if (rcode_ != &::google::protobuf::internal::kEmptyString) {
-    delete rcode_;
-  }
-  if (sourcezht_ != &::google::protobuf::internal::kEmptyString) {
-    delete sourcezht_;
-  }
-  if (targetzht_ != &::google::protobuf::internal::kEmptyString) {
-    delete targetzht_;
-  }
-  if (rfname_ != &::google::protobuf::internal::kEmptyString) {
-    delete rfname_;
-  }
-  if (lfname_ != &::google::protobuf::internal::kEmptyString) {
-    delete lfname_;
-  }
-  if (gmembership_ != &::google::protobuf::internal::kEmptyString) {
-    delete gmembership_;
-  }
-  if (asneighbor_ != &::google::protobuf::internal::kEmptyString) {
-    delete asneighbor_;
-  }
-  if (wifecode_ != &::google::protobuf::internal::kEmptyString) {
-    delete wifecode_;
   }
   if (this != default_instance_) {
   }
@@ -274,82 +170,15 @@ void Package::Clear() {
         virtualpath_->clear();
       }
     }
-    num_ = 0;
     if (has_realfullpath()) {
       if (realfullpath_ != &::google::protobuf::internal::kEmptyString) {
         realfullpath_->clear();
       }
     }
-    if (has_newfullpath()) {
-      if (newfullpath_ != &::google::protobuf::internal::kEmptyString) {
-        newfullpath_->clear();
-      }
-    }
     isdir_ = false;
-    openmode_ = 0;
-    mode_ = 0;
-  }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    operation_ = 0;
-    replicano_ = 0;
-    if (has_opcode()) {
-      if (opcode_ != &::google::protobuf::internal::kEmptyString) {
-        opcode_->clear();
-      }
-    }
-    if (has_rcode()) {
-      if (rcode_ != &::google::protobuf::internal::kEmptyString) {
-        rcode_->clear();
-      }
-    }
-    migrateinst_ = 0u;
-    uprange_ = false;
-    if (has_sourcezht()) {
-      if (sourcezht_ != &::google::protobuf::internal::kEmptyString) {
-        sourcezht_->clear();
-      }
-    }
-    if (has_targetzht()) {
-      if (targetzht_ != &::google::protobuf::internal::kEmptyString) {
-        targetzht_->clear();
-      }
-    }
-  }
-  if (_has_bits_[16 / 32] & (0xffu << (16 % 32))) {
-    if (has_rfname()) {
-      if (rfname_ != &::google::protobuf::internal::kEmptyString) {
-        rfname_->clear();
-      }
-    }
-    if (has_lfname()) {
-      if (lfname_ != &::google::protobuf::internal::kEmptyString) {
-        lfname_->clear();
-      }
-    }
-    if (has_gmembership()) {
-      if (gmembership_ != &::google::protobuf::internal::kEmptyString) {
-        gmembership_->clear();
-      }
-    }
-    isfwdmsg_ = false;
-    if (has_asneighbor()) {
-      if (asneighbor_ != &::google::protobuf::internal::kEmptyString) {
-        asneighbor_->clear();
-      }
-    }
-    if (has_wifecode()) {
-      if (wifecode_ != &::google::protobuf::internal::kEmptyString) {
-        wifecode_->clear();
-      }
-    }
-    ackid_ = false;
+    replicanum_ = 0;
   }
   listitem_.Clear();
-  migringpos_.Clear();
-  t_id_.Clear();
-  cid_.Clear();
-  desc_.Clear();
-  nmoves_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -372,28 +201,12 @@ bool Package::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(16)) goto parse_num;
+        if (input->ExpectTag(18)) goto parse_realFullPath;
         break;
       }
       
-      // optional int32 num = 2;
+      // optional string realFullPath = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_num:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &num_)));
-          set_has_num();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(26)) goto parse_realFullPath;
-        break;
-      }
-      
-      // optional string realFullPath = 3;
-      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_realFullPath:
@@ -405,29 +218,12 @@ bool Package::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(34)) goto parse_newFullPath;
+        if (input->ExpectTag(24)) goto parse_isDir;
         break;
       }
       
-      // optional string newFullPath = 4;
-      case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_newFullPath:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_newfullpath()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->newfullpath().data(), this->newfullpath().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(40)) goto parse_isDir;
-        break;
-      }
-      
-      // optional bool isDir = 5;
-      case 5: {
+      // optional bool isDir = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_isDir:
@@ -438,12 +234,28 @@ bool Package::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(50)) goto parse_listItem;
+        if (input->ExpectTag(32)) goto parse_replicanum;
         break;
       }
       
-      // repeated string listItem = 6;
-      case 6: {
+      // optional int32 replicanum = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_replicanum:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &replicanum_)));
+          set_has_replicanum();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_listItem;
+        break;
+      }
+      
+      // repeated string listItem = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_listItem:
@@ -455,390 +267,7 @@ bool Package::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(50)) goto parse_listItem;
-        if (input->ExpectTag(56)) goto parse_openMode;
-        break;
-      }
-      
-      // optional int32 openMode = 7;
-      case 7: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_openMode:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &openmode_)));
-          set_has_openmode();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(64)) goto parse_mode;
-        break;
-      }
-      
-      // optional int32 mode = 8;
-      case 8: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_mode:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &mode_)));
-          set_has_mode();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(72)) goto parse_Operation;
-        break;
-      }
-      
-      // optional int32 Operation = 9;
-      case 9: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_Operation:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &operation_)));
-          set_has_operation();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(80)) goto parse_replicaNo;
-        break;
-      }
-      
-      // optional int32 replicaNo = 10;
-      case 10: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_replicaNo:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &replicano_)));
-          set_has_replicano();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(90)) goto parse_opcode;
-        break;
-      }
-      
-      // optional string opcode = 11;
-      case 11: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_opcode:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_opcode()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->opcode().data(), this->opcode().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(98)) goto parse_rcode;
-        break;
-      }
-      
-      // optional string rcode = 12;
-      case 12: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_rcode:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_rcode()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->rcode().data(), this->rcode().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(104)) goto parse_migrateInst;
-        break;
-      }
-      
-      // optional uint32 migrateInst = 13;
-      case 13: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_migrateInst:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &migrateinst_)));
-          set_has_migrateinst();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(112)) goto parse_uprange;
-        break;
-      }
-      
-      // optional bool uprange = 14;
-      case 14: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_uprange:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &uprange_)));
-          set_has_uprange();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(122)) goto parse_sourceZHT;
-        break;
-      }
-      
-      // optional string sourceZHT = 15;
-      case 15: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_sourceZHT:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_sourcezht()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->sourcezht().data(), this->sourcezht().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(130)) goto parse_targetZHT;
-        break;
-      }
-      
-      // optional string targetZHT = 16;
-      case 16: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_targetZHT:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_targetzht()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->targetzht().data(), this->targetzht().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(138)) goto parse_rfname;
-        break;
-      }
-      
-      // optional string rfname = 17;
-      case 17: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_rfname:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_rfname()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->rfname().data(), this->rfname().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(146)) goto parse_lfname;
-        break;
-      }
-      
-      // optional string lfname = 18;
-      case 18: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_lfname:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_lfname()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->lfname().data(), this->lfname().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(152)) goto parse_migringpos;
-        break;
-      }
-      
-      // repeated uint64 migringpos = 19;
-      case 19: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_migringpos:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 2, 152, input, this->mutable_migringpos())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 input, this->mutable_migringpos())));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(152)) goto parse_migringpos;
-        if (input->ExpectTag(162)) goto parse_gmembership;
-        break;
-      }
-      
-      // optional string gmembership = 20;
-      case 20: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_gmembership:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_gmembership()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->gmembership().data(), this->gmembership().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(168)) goto parse_isfwdmsg;
-        break;
-      }
-      
-      // optional bool isfwdmsg = 21;
-      case 21: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_isfwdmsg:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &isfwdmsg_)));
-          set_has_isfwdmsg();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(178)) goto parse_asneighbor;
-        break;
-      }
-      
-      // optional string asneighbor = 22;
-      case 22: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_asneighbor:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_asneighbor()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->asneighbor().data(), this->asneighbor().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(186)) goto parse_wifecode;
-        break;
-      }
-      
-      // optional string wifecode = 23;
-      case 23: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_wifecode:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_wifecode()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->wifecode().data(), this->wifecode().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(192)) goto parse_ackid;
-        break;
-      }
-      
-      // optional bool ackid = 24;
-      case 24: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_ackid:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &ackid_)));
-          set_has_ackid();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(200)) goto parse_t_id;
-        break;
-      }
-      
-      // repeated uint32 t_id = 25;
-      case 25: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_t_id:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 2, 200, input, this->mutable_t_id())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_t_id())));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(200)) goto parse_t_id;
-        if (input->ExpectTag(210)) goto parse_cid;
-        break;
-      }
-      
-      // repeated string cid = 26;
-      case 26: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_cid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_cid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->cid(0).data(), this->cid(0).length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(210)) goto parse_cid;
-        if (input->ExpectTag(218)) goto parse_desc;
-        break;
-      }
-      
-      // repeated string desc = 27;
-      case 27: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_desc:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_desc()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->desc(0).data(), this->desc(0).length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(218)) goto parse_desc;
-        if (input->ExpectTag(224)) goto parse_nmoves;
-        break;
-      }
-      
-      // repeated uint32 nmoves = 28;
-      case 28: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_nmoves:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 2, 224, input, this->mutable_nmoves())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_nmoves())));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(224)) goto parse_nmoves;
+        if (input->ExpectTag(42)) goto parse_listItem;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -870,198 +299,32 @@ void Package::SerializeWithCachedSizes(
       1, this->virtualpath(), output);
   }
   
-  // optional int32 num = 2;
-  if (has_num()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->num(), output);
-  }
-  
-  // optional string realFullPath = 3;
+  // optional string realFullPath = 2;
   if (has_realfullpath()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->realfullpath().data(), this->realfullpath().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->realfullpath(), output);
+      2, this->realfullpath(), output);
   }
   
-  // optional string newFullPath = 4;
-  if (has_newfullpath()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->newfullpath().data(), this->newfullpath().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      4, this->newfullpath(), output);
-  }
-  
-  // optional bool isDir = 5;
+  // optional bool isDir = 3;
   if (has_isdir()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(5, this->isdir(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->isdir(), output);
   }
   
-  // repeated string listItem = 6;
+  // optional int32 replicanum = 4;
+  if (has_replicanum()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->replicanum(), output);
+  }
+  
+  // repeated string listItem = 5;
   for (int i = 0; i < this->listitem_size(); i++) {
   ::google::protobuf::internal::WireFormat::VerifyUTF8String(
     this->listitem(i).data(), this->listitem(i).length(),
     ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      6, this->listitem(i), output);
-  }
-  
-  // optional int32 openMode = 7;
-  if (has_openmode()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->openmode(), output);
-  }
-  
-  // optional int32 mode = 8;
-  if (has_mode()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(8, this->mode(), output);
-  }
-  
-  // optional int32 Operation = 9;
-  if (has_operation()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(9, this->operation(), output);
-  }
-  
-  // optional int32 replicaNo = 10;
-  if (has_replicano()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(10, this->replicano(), output);
-  }
-  
-  // optional string opcode = 11;
-  if (has_opcode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->opcode().data(), this->opcode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      11, this->opcode(), output);
-  }
-  
-  // optional string rcode = 12;
-  if (has_rcode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->rcode().data(), this->rcode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      12, this->rcode(), output);
-  }
-  
-  // optional uint32 migrateInst = 13;
-  if (has_migrateinst()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(13, this->migrateinst(), output);
-  }
-  
-  // optional bool uprange = 14;
-  if (has_uprange()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(14, this->uprange(), output);
-  }
-  
-  // optional string sourceZHT = 15;
-  if (has_sourcezht()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->sourcezht().data(), this->sourcezht().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      15, this->sourcezht(), output);
-  }
-  
-  // optional string targetZHT = 16;
-  if (has_targetzht()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->targetzht().data(), this->targetzht().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      16, this->targetzht(), output);
-  }
-  
-  // optional string rfname = 17;
-  if (has_rfname()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->rfname().data(), this->rfname().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      17, this->rfname(), output);
-  }
-  
-  // optional string lfname = 18;
-  if (has_lfname()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->lfname().data(), this->lfname().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      18, this->lfname(), output);
-  }
-  
-  // repeated uint64 migringpos = 19;
-  for (int i = 0; i < this->migringpos_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(
-      19, this->migringpos(i), output);
-  }
-  
-  // optional string gmembership = 20;
-  if (has_gmembership()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->gmembership().data(), this->gmembership().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      20, this->gmembership(), output);
-  }
-  
-  // optional bool isfwdmsg = 21;
-  if (has_isfwdmsg()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(21, this->isfwdmsg(), output);
-  }
-  
-  // optional string asneighbor = 22;
-  if (has_asneighbor()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->asneighbor().data(), this->asneighbor().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      22, this->asneighbor(), output);
-  }
-  
-  // optional string wifecode = 23;
-  if (has_wifecode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->wifecode().data(), this->wifecode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      23, this->wifecode(), output);
-  }
-  
-  // optional bool ackid = 24;
-  if (has_ackid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(24, this->ackid(), output);
-  }
-  
-  // repeated uint32 t_id = 25;
-  for (int i = 0; i < this->t_id_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      25, this->t_id(i), output);
-  }
-  
-  // repeated string cid = 26;
-  for (int i = 0; i < this->cid_size(); i++) {
-  ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-    this->cid(i).data(), this->cid(i).length(),
-    ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      26, this->cid(i), output);
-  }
-  
-  // repeated string desc = 27;
-  for (int i = 0; i < this->desc_size(); i++) {
-  ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-    this->desc(i).data(), this->desc(i).length(),
-    ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      27, this->desc(i), output);
-  }
-  
-  // repeated uint32 nmoves = 28;
-  for (int i = 0; i < this->nmoves_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      28, this->nmoves(i), output);
+      5, this->listitem(i), output);
   }
   
   if (!unknown_fields().empty()) {
@@ -1082,209 +345,33 @@ void Package::SerializeWithCachedSizes(
         1, this->virtualpath(), target);
   }
   
-  // optional int32 num = 2;
-  if (has_num()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->num(), target);
-  }
-  
-  // optional string realFullPath = 3;
+  // optional string realFullPath = 2;
   if (has_realfullpath()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->realfullpath().data(), this->realfullpath().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->realfullpath(), target);
+        2, this->realfullpath(), target);
   }
   
-  // optional string newFullPath = 4;
-  if (has_newfullpath()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->newfullpath().data(), this->newfullpath().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->newfullpath(), target);
-  }
-  
-  // optional bool isDir = 5;
+  // optional bool isDir = 3;
   if (has_isdir()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(5, this->isdir(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->isdir(), target);
   }
   
-  // repeated string listItem = 6;
+  // optional int32 replicanum = 4;
+  if (has_replicanum()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->replicanum(), target);
+  }
+  
+  // repeated string listItem = 5;
   for (int i = 0; i < this->listitem_size(); i++) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->listitem(i).data(), this->listitem(i).length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(6, this->listitem(i), target);
-  }
-  
-  // optional int32 openMode = 7;
-  if (has_openmode()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->openmode(), target);
-  }
-  
-  // optional int32 mode = 8;
-  if (has_mode()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(8, this->mode(), target);
-  }
-  
-  // optional int32 Operation = 9;
-  if (has_operation()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(9, this->operation(), target);
-  }
-  
-  // optional int32 replicaNo = 10;
-  if (has_replicano()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(10, this->replicano(), target);
-  }
-  
-  // optional string opcode = 11;
-  if (has_opcode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->opcode().data(), this->opcode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        11, this->opcode(), target);
-  }
-  
-  // optional string rcode = 12;
-  if (has_rcode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->rcode().data(), this->rcode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        12, this->rcode(), target);
-  }
-  
-  // optional uint32 migrateInst = 13;
-  if (has_migrateinst()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(13, this->migrateinst(), target);
-  }
-  
-  // optional bool uprange = 14;
-  if (has_uprange()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(14, this->uprange(), target);
-  }
-  
-  // optional string sourceZHT = 15;
-  if (has_sourcezht()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->sourcezht().data(), this->sourcezht().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        15, this->sourcezht(), target);
-  }
-  
-  // optional string targetZHT = 16;
-  if (has_targetzht()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->targetzht().data(), this->targetzht().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        16, this->targetzht(), target);
-  }
-  
-  // optional string rfname = 17;
-  if (has_rfname()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->rfname().data(), this->rfname().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        17, this->rfname(), target);
-  }
-  
-  // optional string lfname = 18;
-  if (has_lfname()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->lfname().data(), this->lfname().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        18, this->lfname(), target);
-  }
-  
-  // repeated uint64 migringpos = 19;
-  for (int i = 0; i < this->migringpos_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt64ToArray(19, this->migringpos(i), target);
-  }
-  
-  // optional string gmembership = 20;
-  if (has_gmembership()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->gmembership().data(), this->gmembership().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        20, this->gmembership(), target);
-  }
-  
-  // optional bool isfwdmsg = 21;
-  if (has_isfwdmsg()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(21, this->isfwdmsg(), target);
-  }
-  
-  // optional string asneighbor = 22;
-  if (has_asneighbor()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->asneighbor().data(), this->asneighbor().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        22, this->asneighbor(), target);
-  }
-  
-  // optional string wifecode = 23;
-  if (has_wifecode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->wifecode().data(), this->wifecode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        23, this->wifecode(), target);
-  }
-  
-  // optional bool ackid = 24;
-  if (has_ackid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(24, this->ackid(), target);
-  }
-  
-  // repeated uint32 t_id = 25;
-  for (int i = 0; i < this->t_id_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(25, this->t_id(i), target);
-  }
-  
-  // repeated string cid = 26;
-  for (int i = 0; i < this->cid_size(); i++) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->cid(i).data(), this->cid(i).length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(26, this->cid(i), target);
-  }
-  
-  // repeated string desc = 27;
-  for (int i = 0; i < this->desc_size(); i++) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->desc(i).data(), this->desc(i).length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(27, this->desc(i), target);
-  }
-  
-  // repeated uint32 nmoves = 28;
-  for (int i = 0; i < this->nmoves_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(28, this->nmoves(i), target);
+      WriteStringToArray(5, this->listitem(i), target);
   }
   
   if (!unknown_fields().empty()) {
@@ -1305,199 +392,31 @@ int Package::ByteSize() const {
           this->virtualpath());
     }
     
-    // optional int32 num = 2;
-    if (has_num()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->num());
-    }
-    
-    // optional string realFullPath = 3;
+    // optional string realFullPath = 2;
     if (has_realfullpath()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->realfullpath());
     }
     
-    // optional string newFullPath = 4;
-    if (has_newfullpath()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->newfullpath());
-    }
-    
-    // optional bool isDir = 5;
+    // optional bool isDir = 3;
     if (has_isdir()) {
       total_size += 1 + 1;
     }
     
-    // optional int32 openMode = 7;
-    if (has_openmode()) {
+    // optional int32 replicanum = 4;
+    if (has_replicanum()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->openmode());
-    }
-    
-    // optional int32 mode = 8;
-    if (has_mode()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->mode());
+          this->replicanum());
     }
     
   }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    // optional int32 Operation = 9;
-    if (has_operation()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->operation());
-    }
-    
-    // optional int32 replicaNo = 10;
-    if (has_replicano()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->replicano());
-    }
-    
-    // optional string opcode = 11;
-    if (has_opcode()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->opcode());
-    }
-    
-    // optional string rcode = 12;
-    if (has_rcode()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->rcode());
-    }
-    
-    // optional uint32 migrateInst = 13;
-    if (has_migrateinst()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->migrateinst());
-    }
-    
-    // optional bool uprange = 14;
-    if (has_uprange()) {
-      total_size += 1 + 1;
-    }
-    
-    // optional string sourceZHT = 15;
-    if (has_sourcezht()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->sourcezht());
-    }
-    
-    // optional string targetZHT = 16;
-    if (has_targetzht()) {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->targetzht());
-    }
-    
-  }
-  if (_has_bits_[16 / 32] & (0xffu << (16 % 32))) {
-    // optional string rfname = 17;
-    if (has_rfname()) {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->rfname());
-    }
-    
-    // optional string lfname = 18;
-    if (has_lfname()) {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->lfname());
-    }
-    
-    // optional string gmembership = 20;
-    if (has_gmembership()) {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->gmembership());
-    }
-    
-    // optional bool isfwdmsg = 21;
-    if (has_isfwdmsg()) {
-      total_size += 2 + 1;
-    }
-    
-    // optional string asneighbor = 22;
-    if (has_asneighbor()) {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->asneighbor());
-    }
-    
-    // optional string wifecode = 23;
-    if (has_wifecode()) {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->wifecode());
-    }
-    
-    // optional bool ackid = 24;
-    if (has_ackid()) {
-      total_size += 2 + 1;
-    }
-    
-  }
-  // repeated string listItem = 6;
+  // repeated string listItem = 5;
   total_size += 1 * this->listitem_size();
   for (int i = 0; i < this->listitem_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
       this->listitem(i));
-  }
-  
-  // repeated uint64 migringpos = 19;
-  {
-    int data_size = 0;
-    for (int i = 0; i < this->migringpos_size(); i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt64Size(this->migringpos(i));
-    }
-    total_size += 2 * this->migringpos_size() + data_size;
-  }
-  
-  // repeated uint32 t_id = 25;
-  {
-    int data_size = 0;
-    for (int i = 0; i < this->t_id_size(); i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt32Size(this->t_id(i));
-    }
-    total_size += 2 * this->t_id_size() + data_size;
-  }
-  
-  // repeated string cid = 26;
-  total_size += 2 * this->cid_size();
-  for (int i = 0; i < this->cid_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->cid(i));
-  }
-  
-  // repeated string desc = 27;
-  total_size += 2 * this->desc_size();
-  for (int i = 0; i < this->desc_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->desc(i));
-  }
-  
-  // repeated uint32 nmoves = 28;
-  {
-    int data_size = 0;
-    for (int i = 0; i < this->nmoves_size(); i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt32Size(this->nmoves(i));
-    }
-    total_size += 2 * this->nmoves_size() + data_size;
   }
   
   if (!unknown_fields().empty()) {
@@ -1526,81 +445,18 @@ void Package::MergeFrom(const ::google::protobuf::Message& from) {
 void Package::MergeFrom(const Package& from) {
   GOOGLE_CHECK_NE(&from, this);
   listitem_.MergeFrom(from.listitem_);
-  migringpos_.MergeFrom(from.migringpos_);
-  t_id_.MergeFrom(from.t_id_);
-  cid_.MergeFrom(from.cid_);
-  desc_.MergeFrom(from.desc_);
-  nmoves_.MergeFrom(from.nmoves_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_virtualpath()) {
       set_virtualpath(from.virtualpath());
     }
-    if (from.has_num()) {
-      set_num(from.num());
-    }
     if (from.has_realfullpath()) {
       set_realfullpath(from.realfullpath());
-    }
-    if (from.has_newfullpath()) {
-      set_newfullpath(from.newfullpath());
     }
     if (from.has_isdir()) {
       set_isdir(from.isdir());
     }
-    if (from.has_openmode()) {
-      set_openmode(from.openmode());
-    }
-    if (from.has_mode()) {
-      set_mode(from.mode());
-    }
-  }
-  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    if (from.has_operation()) {
-      set_operation(from.operation());
-    }
-    if (from.has_replicano()) {
-      set_replicano(from.replicano());
-    }
-    if (from.has_opcode()) {
-      set_opcode(from.opcode());
-    }
-    if (from.has_rcode()) {
-      set_rcode(from.rcode());
-    }
-    if (from.has_migrateinst()) {
-      set_migrateinst(from.migrateinst());
-    }
-    if (from.has_uprange()) {
-      set_uprange(from.uprange());
-    }
-    if (from.has_sourcezht()) {
-      set_sourcezht(from.sourcezht());
-    }
-    if (from.has_targetzht()) {
-      set_targetzht(from.targetzht());
-    }
-  }
-  if (from._has_bits_[16 / 32] & (0xffu << (16 % 32))) {
-    if (from.has_rfname()) {
-      set_rfname(from.rfname());
-    }
-    if (from.has_lfname()) {
-      set_lfname(from.lfname());
-    }
-    if (from.has_gmembership()) {
-      set_gmembership(from.gmembership());
-    }
-    if (from.has_isfwdmsg()) {
-      set_isfwdmsg(from.isfwdmsg());
-    }
-    if (from.has_asneighbor()) {
-      set_asneighbor(from.asneighbor());
-    }
-    if (from.has_wifecode()) {
-      set_wifecode(from.wifecode());
-    }
-    if (from.has_ackid()) {
-      set_ackid(from.ackid());
+    if (from.has_replicanum()) {
+      set_replicanum(from.replicanum());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -1626,33 +482,10 @@ bool Package::IsInitialized() const {
 void Package::Swap(Package* other) {
   if (other != this) {
     std::swap(virtualpath_, other->virtualpath_);
-    std::swap(num_, other->num_);
     std::swap(realfullpath_, other->realfullpath_);
-    std::swap(newfullpath_, other->newfullpath_);
     std::swap(isdir_, other->isdir_);
+    std::swap(replicanum_, other->replicanum_);
     listitem_.Swap(&other->listitem_);
-    std::swap(openmode_, other->openmode_);
-    std::swap(mode_, other->mode_);
-    std::swap(operation_, other->operation_);
-    std::swap(replicano_, other->replicano_);
-    std::swap(opcode_, other->opcode_);
-    std::swap(rcode_, other->rcode_);
-    std::swap(migrateinst_, other->migrateinst_);
-    std::swap(uprange_, other->uprange_);
-    std::swap(sourcezht_, other->sourcezht_);
-    std::swap(targetzht_, other->targetzht_);
-    std::swap(rfname_, other->rfname_);
-    std::swap(lfname_, other->lfname_);
-    migringpos_.Swap(&other->migringpos_);
-    std::swap(gmembership_, other->gmembership_);
-    std::swap(isfwdmsg_, other->isfwdmsg_);
-    std::swap(asneighbor_, other->asneighbor_);
-    std::swap(wifecode_, other->wifecode_);
-    std::swap(ackid_, other->ackid_);
-    t_id_.Swap(&other->t_id_);
-    cid_.Swap(&other->cid_);
-    desc_.Swap(&other->desc_);
-    nmoves_.Swap(&other->nmoves_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

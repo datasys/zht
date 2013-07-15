@@ -20,53 +20,17 @@ struct  _Package
 {
   ProtobufCMessage base;
   char *virtualpath;
-  protobuf_c_boolean has_num;
-  int32_t num;
   char *realfullpath;
-  char *newfullpath;
   protobuf_c_boolean has_isdir;
   protobuf_c_boolean isdir;
+  protobuf_c_boolean has_replicanum;
+  int32_t replicanum;
   size_t n_listitem;
   char **listitem;
-  protobuf_c_boolean has_openmode;
-  int32_t openmode;
-  protobuf_c_boolean has_mode;
-  int32_t mode;
-  protobuf_c_boolean has_operation;
-  int32_t operation;
-  protobuf_c_boolean has_replicano;
-  int32_t replicano;
-  char *opcode;
-  char *rcode;
-  protobuf_c_boolean has_migrateinst;
-  uint32_t migrateinst;
-  protobuf_c_boolean has_uprange;
-  protobuf_c_boolean uprange;
-  char *sourcezht;
-  char *targetzht;
-  char *rfname;
-  char *lfname;
-  size_t n_migringpos;
-  uint64_t *migringpos;
-  char *gmembership;
-  protobuf_c_boolean has_isfwdmsg;
-  protobuf_c_boolean isfwdmsg;
-  char *asneighbor;
-  char *wifecode;
-  protobuf_c_boolean has_ackid;
-  protobuf_c_boolean ackid;
-  size_t n_t_id;
-  uint32_t *t_id;
-  size_t n_cid;
-  char **cid;
-  size_t n_desc;
-  char **desc;
-  size_t n_nmoves;
-  uint32_t *nmoves;
 };
 #define PACKAGE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&package__descriptor) \
-    , NULL, 0,0, NULL, NULL, 0,0, 0,NULL, 0,0, 0,0, 0,0, 0,0, NULL, NULL, 0,0, 0,0, NULL, NULL, NULL, NULL, 0,NULL, NULL, 0,0, NULL, NULL, 0,0, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
+    , NULL, NULL, 0,0, 0,0, 0,NULL }
 
 
 /* Package methods */

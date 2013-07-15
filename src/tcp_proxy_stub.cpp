@@ -167,8 +167,9 @@ int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
 	/*prompt errors*/
 	if (sentSize < sendcount) {
 
-		cerr << "TCPProxy::sendTo(): error on BdSendToServer::bsend(...): "
-				<< strerror(errno) << endl;
+		//todo: bug prone
+		/*	cerr << "TCPProxy::sendTo(): error on BdSendToServer::bsend(...): "
+		 << strerror(errno) << endl;*/
 	}
 
 	return sentSize;

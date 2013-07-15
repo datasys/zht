@@ -402,11 +402,11 @@ void BdRecvBase::deleteBlobs(const uint64_t& uuid) {
 int BdRecvFromClient::sendAck(int sock, const uint64_t& ackid) const {
 
 	/*send ack of this blob to sender*/
-	/*	Package pack;
-	 pack.set_opcode("ack");
-	 pack.set_rcode("000");
+	/*	ZPack zpack;
+	 zpack.set_opcode("ack");
+	 zpack.set_rcode("000");
 
-	 string ack = pack.SerializeAsString();
+	 string ack = zpack.SerializeAsString();
 
 	 return send(sock, ack.c_str(), ack.size(), 0);*/
 
@@ -416,12 +416,12 @@ int BdRecvFromClient::sendAck(int sock, const uint64_t& ackid) const {
 int BdRecvFromServer::sendAck(int sock, const uint64_t& ackid) const {
 
 	/*send ack of this blob to sender*/
-	/*Package pack;
-	 pack.set_opcode("ack");
-	 pack.set_rcode("000");
-	 pack.set_ackid(ackid);
+	/*ZPack zpack;
+	 zpack.set_opcode("ack");
+	 zpack.set_rcode("000");
+	 zpack.set_ackid(ackid);
 
-	 BdSendBase *pbsb = new BdSendToServer(pack.SerializeAsString());
+	 BdSendBase *pbsb = new BdSendToServer(zpack.SerializeAsString());
 	 int count = pbsb->bsend(sock, true);
 
 	 delete pbsb;
@@ -471,7 +471,7 @@ size_t AckQueue<ID>::size(const ID& id) const {
 }
 
 template<class ID>
-const Package& AckQueue<ID>::front(const ID& id) const {
+const ZPack& AckQueue<ID>::front(const ID& id) const {
 
 	MCI it = _QMap.find(id);
 
@@ -479,7 +479,7 @@ const Package& AckQueue<ID>::front(const ID& id) const {
 }
 
 template<class ID>
-const Package& AckQueue<ID>::back(const ID& id) const {
+const ZPack& AckQueue<ID>::back(const ID& id) const {
 
 	MCI it = _QMap.find(id);
 
@@ -487,7 +487,7 @@ const Package& AckQueue<ID>::back(const ID& id) const {
 }
 
 template<class ID>
-void AckQueue<ID>::push(const ID& id, Package ack) {
+void AckQueue<ID>::push(const ID& id, ZPack ack) {
 
 	MI it = _QMap.find(id);
 

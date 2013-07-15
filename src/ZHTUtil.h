@@ -37,8 +37,6 @@ using namespace std;
 
 #include <arpa/inet.h>
 
-#include  "meta.pb.h"
-
 struct HostEntity {
 
 	struct sockaddr_in si;

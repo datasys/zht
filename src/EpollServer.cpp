@@ -62,7 +62,7 @@ EpollData::~EpollData() {
 }
 
 const int EpollServer::MAX_EVENTS = 1024;
-const uint EpollServer::MAX_MSG_SIZE = Env::MAX_MSG_SIZE; //transferd string maximum size
+const uint EpollServer::MAX_MSG_SIZE = Env::BUF_SIZE; //transferd string maximum size
 
 EpollServer::EpollServer(const char *port, ZProcessor *processor) :
 		_port(port), _ZProcessor(processor), pbrb(new BdRecvFromClient()) {
@@ -368,21 +368,32 @@ void EpollServer::serve() {
 					continue;
 				} else {
 
-					ssize_t count;
-					char buf[MAX_MSG_SIZE];
-					memset(buf, 0, sizeof(buf));
+					while (1) {
 
-					sockaddr_in fromaddr;
-					socklen_t sender_len = sizeof(struct sockaddr);
-					count = recvfrom(edata->fd(), buf, sizeof buf, 0,
-							(struct sockaddr*) &fromaddr, &sender_len);
+						ssize_t count;
+						char buf[MAX_MSG_SIZE];
+						memset(buf, 0, sizeof(buf));
 
-					sockaddr *sender = (struct sockaddr*) &fromaddr;
+						sockaddr_in fromaddr;
+						socklen_t sender_len = sizeof(struct sockaddr);
+						count = recvfrom(edata->fd(), buf, sizeof buf, 0,
+								(struct sockaddr*) &fromaddr, &sender_len);
 
-					string str(buf);
-					_ZProcessor->process(edata->fd(), buf, *sender); //todo: problem maybe
+						bool ready = false;
+						string bd = pbrb->getBdStr(sfd, buf, count, ready);
 
-					memset(buf, 0, sizeof(buf));
+						if (ready) {
+
+							sockaddr *sender = (struct sockaddr*) &fromaddr;
+
+							string str(buf);
+							_ZProcessor->process(edata->fd(), buf, *sender); //todo: problem maybe
+						}
+
+						memset(buf, 0, sizeof(buf));
+
+						break;
+					}
 				}
 
 			} else {

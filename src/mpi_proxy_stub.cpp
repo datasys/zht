@@ -38,7 +38,7 @@
 #include "HTWorker.h"
 
 #include  "Util.h"
-#include  "meta.pb.h"
+#include  "zpack.pb.h"
 
 using namespace iit::datasys::zht::dm;
 
@@ -89,10 +89,10 @@ int MPIProxy::get_mpi_dest(const void *sendbuf, const size_t sendcount) {
 
 	//todo: to know which ZHT server as dest, same as TCP_Proxy and UDP_Proxy
 
-	Package pkg;
-	pkg.ParsePartialFromArray(sendbuf, sendcount);
+	ZPack zpack;
+	zpack.ParsePartialFromArray(sendbuf, sendcount);
 
-	int index = HashUtil::genHash(pkg.virtualpath()) % (size - 1);
+	int index = HashUtil::genHash(zpack.key()) % (size - 1);
 
 	return index;
 
