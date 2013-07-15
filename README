@@ -13,8 +13,10 @@ When you are using append, BE CAREFUL THAT your key and value CAN NOT contain th
 internally to delimite key/value pairs.
 
 -------------------COMPILE AND INSTALL-------------------
-Assuming that Google protocol buffers c and c++ bindings are installed to default directory, possibly that is, /usr/local
+FIRSTLY install Google protocol buffers c++ binding, 
+AND THEN install Google protocol buffers c binding.
 
+Assuming that you installed them to default directory, possibly that is, /usr/local
 To compile and install ZHT:
 	make
 
