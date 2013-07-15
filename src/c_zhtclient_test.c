@@ -390,8 +390,6 @@ void test_pass_package() {
 	test_pass_package_blankspace();
 
 	fprintf(stdout, "%s\n", "--------------------------");
-
-//	test_pass_package_emptystring();
 }
 
 void test_pass_package_blankspace() {
@@ -406,7 +404,7 @@ void test_pass_package_blankspace() {
 void test_pass_package_emptystring() {
 
 	const char *key = "hello";
-	const char *value = "		";
+	const char *value = "";
 	const char *value2 = "ZHT";
 
 	test_pass_package_reuse(key, value, value2);
@@ -420,7 +418,8 @@ void test_pass_package_reuse(const char *key, const char *value,
 
 	Package package = PACKAGE__INIT; // Package
 	package.virtualpath = (char*) key;
-	package.realfullpath = (char*) value;
+	if (strcmp(value, "") != 0) //tricky: bypass protocol-buf's bug
+		package.realfullpath = (char*) value;
 	package.has_isdir = true;
 	package.isdir = false;
 
@@ -474,7 +473,8 @@ void test_pass_package_reuse(const char *key, const char *value,
 	 * */
 	Package package2 = PACKAGE__INIT;
 	package2.virtualpath = (char*) key;
-	package2.realfullpath = (char*) value2;
+	if (strcmp(value2, "") != 0) //tricky: bypass protocol-buf's bug
+		package2.realfullpath = (char*) value2;
 	package2.has_isdir = true;
 	package2.isdir = false;
 
