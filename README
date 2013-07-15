@@ -89,7 +89,7 @@ To deploye ZHT on a cluster of nodes and run your own ZHT application:
 To develope your own ZHT applications, please refer to <c_zhtclient_test.c>, which extensively tests ZHT client c binding, internally invoking c++ binding.
 OR see also <cpp_zhtclient_test.cpp> on how to use ZHT in c++ programs.
 
-To compile your own ZHT applications, link to <libzht.a> and include ZHTClient.h and c_zhtclient.h for C++ and C programs, respectively.
+To compile your own ZHT applications, link to <libzht.a> and include cpp_zhtclient.h and c_zhtclient.h for C++ and C programs, respectively.
 
 
 -------------------HOW TO CONFIGURE-------------------
