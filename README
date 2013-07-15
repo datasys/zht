@@ -13,12 +13,24 @@ When you are using append, BE CAREFUL THAT your key and value CAN NOT contain th
 internally to delimite key/value pairs.
 
 -------------------COMPILE AND INSTALL-------------------
-Assuming that Google protocol buffers c and c++ bindings are installed to default directory, that is, /usr/local
+Assuming that Google protocol buffers c and c++ bindings are installed to default directory, possibly that is, /usr/local
 
 To compile and install ZHT:
 	make
 
-If you installed Google protocol buffers c and c++ bindings to customized directory, e.g./home/xiaobingo/install, MAKE SURE TO EXPORT them, e.g.
+ORTHERWISE, assuming that you will install them to /home/xiaobingo/install, follow THE ORDER TO INSTALL them:
+1. firstly install Google protocol buffers c++ binding, by running 
+   1) ./configure --prefix=/home/xiaobingo/install
+   2) make
+   3) make install
+2. then install Google protocol buffers c binding, in this step, you may get error like: ERROR: protobuf headers are required.,
+   follow the instructions, 
+   1) ./configure --prefix=/home/xiaobingo/install CXXFLAGS=-I/home/xiaobingo/install/include LDFLAGS=-L/home/xiaobingo/install/lib
+   2) make
+   3) make install
+  
+   
+If you installed Google protocol buffers c and c++ bindings to customized directory, e.g./home/xiaobingo/install, MAKE SURE TO EXPORT them,
 1. cd to your home directory
 2. vim/gedit .bashrc
 3. append the following lines to the end,
@@ -30,11 +42,6 @@ If you installed Google protocol buffers c and c++ bindings to customized direct
 
 , otherwise, you probably fail to compile ZHT or locate dependencies required by ZHT runtime.
 
-
-THE ORDER TO INSTALL Google protocol buffers c and c++ bindings:
-1. firstly install Google protocol buffers c++ binding
-2. then install Google protocol buffers c binding, in this step, you may get error like: ERROR: protobuf headers are required.,
-   follow the instructions, e.g. ./configure CXXFLAGS=-I/home/xiaobingo/install/include LDFLAGS=-L/home/xiaobingo/install/lib
    
 -------------------RUN THE BENCHMARK-------------------
 To run benchmark:
