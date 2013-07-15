@@ -95,6 +95,7 @@ int main(int argc, char **argv) {
 			protocol = ConfHandler::getProtocolFromConf();
 
 			port_from_conf = ConfHandler::getPortFromConf();
+
 			if (port_from_conf.empty()) {
 
 				cout << "zht.conf: port not configured" << endl;

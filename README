@@ -31,6 +31,11 @@ If you installed Google protocol buffers c and c++ bindings to customized direct
 , otherwise, you probably fail to compile ZHT or locate dependencies required by ZHT runtime.
 
 
+THE ORDER TO INSTALL Google protocol buffers c and c++ bindings:
+1. firstly install Google protocol buffers c++ binding
+2. then install Google protocol buffers c binding, in this step, you may get error like: ERROR: protobuf headers are required.,
+   follow the instructions, e.g. ./configure CXXFLAGS=-I/home/xiaobingo/install/include LDFLAGS=-L/home/xiaobingo/install/lib
+   
 -------------------RUN THE BENCHMARK-------------------
 To run benchmark:
 1. ./zhtserver -z zht.conf -n neighbor.conf, OR
