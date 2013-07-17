@@ -173,17 +173,11 @@ void ConfHandler::setParametersInternal(string configFile, MAP& configMap) {
 		if (strtok.has_more_tokens())
 			two = strtok.next_token();
 
-		if (one.empty() || two.empty())
+		if (one.empty())
 			continue;
 
-		string name = one;
-		string value = two;
-
-		if (!name.empty() && !value.empty()) {
-
-			ConfEntry ce(name, value);
-			configMap.insert(PAIR(ce.toString(), ce)); //todo: use hash code to reduce size of key/value pair.
-		}
+		ConfEntry ce(one, two);
+		configMap.insert(PAIR(ce.toString(), ce)); //todo: use hash code to reduce size of key/value pair.
 	}
 
 	ifs.close();
