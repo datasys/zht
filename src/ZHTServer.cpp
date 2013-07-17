@@ -94,6 +94,7 @@ int main(int argc, char **argv) {
 			/*get protocol and port*/
 			protocol = ConfHandler::getProtocolFromConf();
 
+			/*get port, port defined interactively overrides that in configure*/
 			port_from_conf = ConfHandler::getPortFromConf();
 
 			if (port_from_conf.empty()) {
@@ -110,6 +111,7 @@ int main(int argc, char **argv) {
 				exit(1);
 			}
 
+			/*make sure protocol defined*/
 			if (protocol.empty()) {
 
 				cout << "zht.conf: protocol not configured" << endl;
@@ -118,9 +120,18 @@ int main(int argc, char **argv) {
 
 			char buf[100];
 			memset(buf, 0, sizeof(buf));
-			int n = sprintf(buf,
-					"ZHT server- <localhost:%s> <protocol:%s> started...",
-					port.c_str(), protocol.c_str());
+
+			/*prompt zht server startup message for different protocols*/
+			if (protocol == Const::PROTO_VAL_MPI) {
+
+				sprintf(buf, "ZHT server- <protocol:%s> started...",
+						protocol.c_str());
+			} else {
+
+				sprintf(buf,
+						"ZHT server- <localhost:%s> <protocol:%s> started...",
+						port.c_str(), protocol.c_str());
+			}
 
 			cout << buf << endl;
 

@@ -36,8 +36,17 @@
 #include <string.h>
 #include <signal.h>
 
+#include <string>
+#include <getopt.h>
+
 #include "mq_proxy_stub.h"
 #include "mpi_proxy_stub.h"
+
+#include "ConfHandler.h"
+
+using namespace std;
+
+using namespace iit::datasys::zht::dm;
 
 MQStub mqstub;
 MPIProxy mpiproxy;
@@ -64,14 +73,17 @@ void init_sig_handler() {
 	}
 }
 
-void init_me(void) {
+void init_me(const string &zhtConf, const string &neighborConf) {
 
 	init_sig_handler();
+
+	/*init config*/
+	ConfHandler::initConf(zhtConf, neighborConf);
 }
 
-int main(int argc, char **argv) {
+void printUsage(char *argv_0);
 
-	init_me();
+void serve(int argc, char **argv) {
 
 	size_t msz;
 	char req[IPC_MAX_MSG_SZ];
@@ -102,6 +114,65 @@ int main(int argc, char **argv) {
 		memset(req, 0, sizeof(req));
 		memset(ans, 0, sizeof(ans));
 	}
+}
+
+int main(int argc, char **argv) {
+
+	int printHelp = 0;
+	string zhtConf = "";
+	string neighborConf = "";
+
+	int c;
+	while ((c = getopt(argc, argv, "z:n:h")) != -1) {
+		switch (c) {
+		case 'z':
+			zhtConf = string(optarg);
+			break;
+		case 'n':
+			neighborConf = string(optarg);
+			break;
+			break;
+		case 'h':
+			printHelp = 1;
+			break;
+		default:
+			fprintf(stderr, "Illegal argument \"%c\"\n", c);
+			printUsage(argv[0]);
+			exit(1);
+		}
+	}
+
+	int helpPrinted = 0;
+	if (printHelp) {
+		printUsage(argv[0]);
+		helpPrinted = 1;
+	}
+
+	try {
+
+		if (!zhtConf.empty() && !neighborConf.empty()) {
+
+			init_me(zhtConf, neighborConf);
+
+			serve(argc, argv);
+
+		} else {
+
+			if (!helpPrinted)
+				printUsage(argv[0]);
+		}
+
+	} catch (exception& e) {
+
+		fprintf(stderr, "%s, exception caught:\n\t%s", "zht-mpibroker::main",
+				e.what());
+	}
 
 	return 0;
+}
+
+void printUsage(char *argv_0) {
+
+	fprintf(stdout, "Usage:\n%s %s\n", argv_0,
+			"-z zht.conf -n neighbor.conf [-h(help)]");
 }

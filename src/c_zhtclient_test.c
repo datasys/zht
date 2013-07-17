@@ -64,13 +64,13 @@ void printUsage(char *argv_0);
 
 void test_all() {
 
-	//test_common_usecase();
+	test_common_usecase();
 
 	//test_simple_largevalue();
 
 	//test_large_keyvalue();
 
-	test_pass_package();
+	//test_pass_package();
 
 }
 

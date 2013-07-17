@@ -39,6 +39,7 @@
 
 #include  "Util.h"
 #include  "zpack.pb.h"
+#include "ConfHandler.h"
 
 using namespace iit::datasys::zht::dm;
 
@@ -92,7 +93,11 @@ int MPIProxy::get_mpi_dest(const void *sendbuf, const size_t sendcount) {
 	ZPack zpack;
 	zpack.ParsePartialFromArray(sendbuf, sendcount);
 
-	int index = HashUtil::genHash(zpack.key()) % (size - 1);
+	uint64_t hascode = HashUtil::genHash(zpack.key());
+	size_t node_size = ConfHandler::NeighborVector.size();
+	int index = hascode % (size - node_size);
+
+//	printf("[%lu][%lu][%d]\n", hascode, node_size, index);
 
 	return index;
 
@@ -124,7 +129,7 @@ bool MPIStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 	int again = 0;
 	char req[IPC_MAX_MSG_SZ];
 
-	fprintf(stderr, "[%d,%d] mpi server loop %d\n", size, rank, again);
+	fprintf(stdout, "[%d,%d] mpi server loop %d\n", size, rank, again);
 
 	for (;;) {
 

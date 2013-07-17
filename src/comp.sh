@@ -1,4 +1,4 @@
-mpicxx mpi_broker.cpp proxy_stub.cpp mq_proxy_stub.cpp ipc_plus.cpp mpi_proxy_stub.cpp Util.cpp HTWorker.cpp Const.cpp novoht.cpp meta.pb.cc zpack.pb.cc -DMPI_INET -lprotobuf -o zht-mpibroker
+mpicxx mpi_broker.cpp proxy_stub.cpp mq_proxy_stub.cpp ipc_plus.cpp mpi_proxy_stub.cpp ConfHandler.cpp ConfEntry.cpp StrTokenizer.cpp Util.cpp HTWorker.cpp Const.cpp novoht.cpp meta.pb.cc zpack.pb.cc -DMPI_INET -lprotobuf -o zht-mpibroker
 echo "zht-mpibroker compiled"
 
 

@@ -62,7 +62,6 @@ int main(int argc, char **argv) {
 	extern char *optarg;
 
 	int printHelp = 0;
-	int numOfOps = -1;
 	string zhtConf = "";
 	string neighborConf = "";
 

@@ -139,7 +139,7 @@ Since mpi has its own compile facilities(e.g. mpicxx), it's very difficult to in
 simple script(e.g. comp.sh) to compile zht to use mpi protocol. 
 
 2. TO START zht-mpiserver and zht-mpibroker(e.g. ON SINGLE NODE), RUN:
-mpiexec -np 4 ./zht-mpiserver -z zht.conf -n neighbor.conf : ./zht-mpibroker
+mpiexec -np 4 ./zht-mpiserver -z zht.conf -n neighbor.conf : ./zht-mpibroker -z zht.conf -n neighbor.conf
 
 3. TO RUN THE BENCHMARK:
 see also <RUN THE BENCHMARK> section.
