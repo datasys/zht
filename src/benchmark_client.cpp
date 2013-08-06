@@ -292,4 +292,3 @@ void printUsage(char *argv_0) {
 	fprintf(stdout, "Usage:\n%s %s\n", argv_0,
 			"-z zht.conf -n neighbor.conf -o number_of_operations [-h(help)]");
 }
-

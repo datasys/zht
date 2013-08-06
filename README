@@ -6,11 +6,13 @@ Google protocol buffers c binding, VERSION 0.15 or later
 Google protocol buffers c++ binding, VERSION 2.4.1
 		http://code.google.com/p/protobuf/downloads/list
 
+
 -------------------ABOUT ZHT API, SPECIAL ATTENTION-------------------
 ZHT supports the API set such as insert/lookup/remove/append/compare_swap.
 
 When you are using append, BE CAREFUL THAT your key and value CAN NOT contain the colon(:), which is used 
 internally to delimite key/value pairs.
+
 
 -------------------COMPILE AND INSTALL-------------------
 FIRSTLY install Google protocol buffers c++ binding, 
@@ -20,7 +22,7 @@ Assuming that you installed them to default directory, possibly that is, /usr/lo
 To compile and install ZHT:
 	make
 
-ORTHERWISE, assuming that you will install them to /home/xiaobingo/install, follow THE ORDER TO INSTALL them:
+ORTHERWISE, assuming that you will install them to /home/xiaobingo/install, follow THE ORDER:
 1. firstly install Google protocol buffers c++ binding, by running 
    1) ./configure --prefix=/home/xiaobingo/install
    2) make
@@ -38,9 +40,9 @@ If you installed Google protocol buffers c and c++ bindings to customized direct
 3. append the following lines to the end,
 	export USER_LIB=/home/xiaobingo/install/lib/:$USER_LIB
 	export USER_INCLUDE=/home/xiaobingo/install/include/:$USER_INCLUDE
-	export LD_LIBRARY_PATH=$USER_LIB
+	export LD_LIBRARY_PATH=/home/xiaobingo/install/lib/:$LD_LIBRARY_PATH
 4. source .bashrc
-5. COMPILE/INSTALL ZHT
+5. make
 
 , otherwise, you probably fail to compile ZHT or locate dependencies required by ZHT runtime.
 
@@ -58,18 +60,19 @@ NOTE that:
 		
 In ./zhtserver -z zht.conf -n neighbor.conf -p 40000 	
 	zht.conf is to configure PROTOCOL and PORT, and other parameters,
-	neighbor.conf is to configure neighbored nodes in ZHT overlay network,
-	40000 means zhtserver PORT to listen on, which overrides PORT in zht.conf, if missing, that PORT will be used. 
+	neighbor.conf is to configure neighbored nodes(or ZHT servers) in ZHT overlay network,
+	40000 means zhtserver port to listen on, which overrides PORT in zht.conf, if missing, that PORT will be used. 
 	
 In ./zht_ben -z zht.conf -n neighbor.conf -o 1000 
 	zht.conf is to configure PROTOCOL and PORT, and other parameters,
-	neighbor.conf is to configure neighbored nodes in ZHT overlay network,
-	1000 means running 1000 iterations of INSERT, LOOKUP, REMOVE and APPEND,
+	neighbor.conf is to configure neighbored nodes(or ZHT servers) in ZHT overlay network,
+	1000 means running 1000 iterations of INSERT, LOOKUP, REMOVE and APPEND, each in sequential.
 
 NOTE that:
 The parameter ID and VALUE(e.g. PROTOCOL TCP) for both zht.conf and neighbor.conf is SPACE delimited.
 The conf files support #-style comment-out.
 The blank lines will be ignored as comment-outs while parsing the conf files.
+
 	
 -------------------RUN TEST CASES FOR C++ BINDING-------------------
 To run test cases for zht c++ binding:
@@ -77,11 +80,13 @@ To run test cases for zht c++ binding:
 2. ./zhtserver -z zht.conf -n neighbor.conf
 3. ./zht_cpptest -z zht.conf -n neighbor.conf
 
+
 -------------------RUN TEST CASES FOR C BINDING-------------------
 To run test cases for zht c binding:
 1. make
 2. ./zhtserver -z zht.conf -n neighbor.conf
 3. ./zht_ctest -z zht.conf -n neighbor.conf
+
 
 -------------------STANDALONE DEPLOYMENT-------------------
 To deploy ZHT on a single node and run your own ZHT application:
@@ -90,10 +95,11 @@ To deploy ZHT on a single node and run your own ZHT application:
 
 NOTE that your_zht_app is your binary that invokes ZHT client to INSERT/LOOKUP/REMOVE/APPEND key/value pairs.
 
+
 -------------------CLUSTER DEPLOYMENT-------------------
 To deploye ZHT on a cluster of nodes and run your own ZHT application:
 1. copy zht binary(e.g. zhtserver) to every node.
-2. edit neighbor.conf to contain IP(s) and PORT(s)(e.g. assuming <PORT 50000> in zht.conf is used.) of all these nodes, DO NOT USE localhost.
+2. edit neighbor.conf to contain IP and PORT pair(e.g. 192.168.1.100 50000) of all ZHT servers you are going to start, DO NOT USE localhost.
 3. copy zht.conf and neighbor.conf, to every node.
 4. In every node, run ./zhtserver -z zht.conf -n neighbor.conf, assuming <PORT 50000> in zht.conf is used. 
 5. run your ZHT applications.
@@ -101,45 +107,20 @@ To deploye ZHT on a cluster of nodes and run your own ZHT application:
 
 -------------------DEVELOPE YOUR ZHT APPLICATIONS-------------------
 To develope your own ZHT applications, please refer to <c_zhtclient_test.c>, which extensively tests ZHT client c binding, internally invoking c++ binding.
-OR see also <cpp_zhtclient_test.cpp> on how to use ZHT in c++ programs.
+OR see also <cpp_zhtclient_test.cpp> on how to use ZHT API in c++ programs.
 
 To compile your own ZHT applications, link to <libzht.a> and include cpp_zhtclient.h and c_zhtclient.h for C++ and C programs, respectively.
 
 
--------------------HOW TO CONFIGURE-------------------
-There are two conf files needed, one is zht.conf, the other is neighbor.conf.
-
-ZHT.CONF:
-In zht.conf, PROTOCOL and PORT are the options to configure what protocols and ports(if applicable) 
-over which zhtclient and zhtserver communicate. 
-
-If you define your own port by -p option(e.g. ./zhtserver -z zht.conf -n neighbor.conf -p 40000), this will override PORT defined in
-zht.conf.
-
-
-NEIGHBOR.CONF:
-In neighbor.conf, 
-
-The IP(s) and PORT(s) of neighbored nodes in ZHT overlay network are configured. 
-
-The port you defined to listen on at zhtserver(e.g. the PORT in zht.conf, or ./zhtserver -z zht.conf -n neighbor.conf -p 40000)
-MUST BE CONSISTENT WITH the port of that machine in neighbor.conf, otherwise, the zhtclient CANNOT reach the zhtserver by that port.
-
-
-NOTE that:
-The parameter ID and VALUE(e.g. PROTOCOL TCP) for both zht.conf and neighbor.conf is SPACE delimited.
-The conf files support #-style comment-out.
-The blank lines will be ignored as comment-outs while parsing the conf files.
-
 -------------------HOW TO USE MPI PROTOCOL ON STANDALONE-------------------
 1. TO COMPILE, RUN
-bash ./comp.sh
+./comp.sh
 
 Since mpi has its own compile facilities(e.g. mpicxx), it's very difficult to integrate them into makefile, we give out additional
 simple script(e.g. comp.sh) to compile zht to use mpi protocol. 
 
 2. TO START zht-mpiserver and zht-mpibroker(e.g. ON SINGLE NODE), RUN:
-mpiexec -np 4 ./zht-mpiserver -z zht.conf -n neighbor.conf : ./zht-mpibroker -z zht.conf -n neighbor.conf
+mpiexec -np 4 ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
 
 3. TO RUN THE BENCHMARK:
 see also <RUN THE BENCHMARK> section.
@@ -154,17 +135,48 @@ see also <RUN TEST CASES FOR C BINDING> section
 NOTE THAT:
 mpiexec: the command to launch mpi jobs.
 -np 4 ./zht-mpiserver: allocate 4 processors to run the zht-mpiserver processes. 
--z zht.conf: zht conf file as input argument to zht-mpiserver, the same file mentioned above 
--n neighbor.conf: negibor conf file as input argument to zht-mpiserver, the same file mentioned above
+-z zht.conf: zht conf file as input argument to zht-mpiserver or zht-mpibroker, the same file mentioned above 
+-n neighbor.mpi.conf: negibor conf file as input argument to zht-mpiserver or zht-mpibroker, the similar file mentioned above
 zht-mpibroker: the process deployed on each node to talk to zht-mpiserver on behalf of zhtclient. 
 
 PAY SPECIAL ATTENTIONS:
 There is ONLY ONE INSTANCE of zht-mpibroker allowed to be deployed ON EVERY NODE.
 
 zht-mpibroker MUST appear after zht-mpiserver IN ORDER in order to ensure the processes of zht-mpiserver
-are assigned to proper mpi-ranks which serve processing requests from zhtclients.
+are assigned to proper mpi-ranks which serve processing incoming requests from zhtclients.
  
 
 -------------------HOW TO USE MPI PROTOCOL ON CLUSTER-------------------
 We are doing cluster tests or benchmarks at large scale, when zht gets stable, we will release
 how to run mpi-zhtserver, zht-mpibroker and zht applications on clusters.
+
+
+-------------------HOW TO CONFIGURE-------------------
+There are two conf files needed, one is zht.conf, the other is neighbor.conf.
+
+zht.conf:
+PROTOCOL and PORT are the options to configure what protocols and ports(if applicable) 
+over which zhtclient and zhtserver communicate with. 
+
+If you define your own port by -p option(e.g. ./zhtserver -z zht.conf -n neighbor.conf -p 40000), this will override PORT defined in
+zht.conf.
+
+
+neighbor.conf:
+This file is used for TCP/UDP protocol.
+
+The IP and PORT pairs of neighbored nodes(or ZHT servers) in ZHT overlay network are configured, e.g. 192.168.1.100 50000 
+
+The port you defined to listen on at neighbored node(or ZHT server)(e.g. the PORT in zht.conf, or ./zhtserver -z zht.conf -n neighbor.conf -p 40000)
+MUST BE CONSISTENT WITH the port of that machine in neighbor.conf, otherwise, the zhtclient CANNOT reach the zhtserver by that port.
+
+
+neighbor.mpi.conf:
+This file is used for MPI protocol.
+
+The IP(s) of neighbored nodes(or ZHT servers) in ZHT overlay network are configured, e.g. 192.168.1.100, no port is necessary for MPI protocol. 
+
+NOTE that:
+The parameter ID and VALUE(e.g. PROTOCOL TCP) for both zht.conf and neighbor.conf is SPACE delimited.
+The conf files support #-style comment-out.
+The blank lines will be ignored as comment-outs while parsing the conf files.
