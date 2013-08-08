@@ -16,7 +16,7 @@ internally to delimite key/value pairs.
 
 -------------------COMPILE AND INSTALL-------------------
 FIRSTLY install Google protocol buffers c++ binding, 
-AND THEN install Google protocol buffers c binding.
+AND THEN install Google protocol buffers c binding since the latter dependes on the former.
 
 Assuming that you installed them to default directory, possibly that is, /usr/local
 To compile and install ZHT:
@@ -35,14 +35,13 @@ ORTHERWISE, assuming that you will install them to /home/xiaobingo/install, foll
   
    
 If you installed Google protocol buffers c and c++ bindings to customized directory, e.g./home/xiaobingo/install, MAKE SURE TO EXPORT them,
-1. cd to your home directory
-2. vim/gedit .bashrc
-3. append the following lines to the end,
+1. vim/gedit ~/.bashrc
+2. append the following lines to the end,
 	export USER_LIB=/home/xiaobingo/install/lib/:$USER_LIB
 	export USER_INCLUDE=/home/xiaobingo/install/include/:$USER_INCLUDE
 	export LD_LIBRARY_PATH=/home/xiaobingo/install/lib/:$LD_LIBRARY_PATH
-4. source .bashrc
-5. make
+3. source ~/.bashrc
+4. make
 
 , otherwise, you probably fail to compile ZHT or locate dependencies required by ZHT runtime.
 
@@ -66,7 +65,7 @@ In ./zhtserver -z zht.conf -n neighbor.conf -p 40000
 In ./zht_ben -z zht.conf -n neighbor.conf -o 1000 
 	zht.conf is to configure PROTOCOL and PORT, and other parameters,
 	neighbor.conf is to configure neighbored nodes(or ZHT servers) in ZHT overlay network,
-	1000 means running 1000 iterations of INSERT, LOOKUP, REMOVE and APPEND, each in sequential.
+	1000 means running 1000 sequential iterations of INSERT, LOOKUP, REMOVE and APPEND.
 
 NOTE that:
 The parameter ID and VALUE(e.g. PROTOCOL TCP) for both zht.conf and neighbor.conf is SPACE delimited.
@@ -88,7 +87,7 @@ To run test cases for zht c binding:
 3. ./zht_ctest -z zht.conf -n neighbor.conf
 
 
--------------------STANDALONE DEPLOYMENT-------------------
+-------------------ZHT STANDALONE DEPLOYMENT-------------------
 To deploy ZHT on a single node and run your own ZHT application:
 1. ./zhtserver -z zht.conf -n neighbor.conf
 2. ./your_zht_app -z zht.conf -n neighbor.conf
@@ -96,11 +95,11 @@ To deploy ZHT on a single node and run your own ZHT application:
 NOTE that your_zht_app is your binary that invokes ZHT client to INSERT/LOOKUP/REMOVE/APPEND key/value pairs.
 
 
--------------------CLUSTER DEPLOYMENT-------------------
+-------------------ZHT CLUSTER DEPLOYMENT-------------------
 To deploye ZHT on a cluster of nodes and run your own ZHT application:
-1. copy zht binary(e.g. zhtserver) to every node.
+1. copy zht binary(e.g. zhtserver) to every node, or using shared NFS directory.
 2. edit neighbor.conf to contain IP and PORT pair(e.g. 192.168.1.100 50000) of all ZHT servers you are going to start, DO NOT USE localhost.
-3. copy zht.conf and neighbor.conf, to every node.
+3. copy zht.conf and neighbor.conf to every node, or using shared NFS directory.
 4. In every node, run ./zhtserver -z zht.conf -n neighbor.conf, assuming <PORT 50000> in zht.conf is used. 
 5. run your ZHT applications.
 
@@ -112,14 +111,20 @@ OR see also <cpp_zhtclient_test.cpp> on how to use ZHT API in c++ programs.
 To compile your own ZHT applications, link to <libzht.a> and include cpp_zhtclient.h and c_zhtclient.h for C++ and C programs, respectively.
 
 
--------------------HOW TO USE MPI PROTOCOL ON STANDALONE-------------------
-1. TO COMPILE, RUN
-./comp.sh
+-------------------HOW TO COMPILE ZHT TO USE MPI PROTOCOL-------------------
+1. INSTALL MPI, e.g. MPICH or OpenMPI, assuming that the mpi is installed to /users/xiaobingo/install
+2. vim/gedit ~/.bashrc
+3. append the following lines to the end,
+	export PATH=/users/xiaobingo/install/bin:$PATH
+4. source ~/.bashrc
+5. TO COMPILE ZHT, RUN
+    ./comp.sh
 
 Since mpi has its own compile facilities(e.g. mpicxx), it's very difficult to integrate them into makefile, we give out additional
-simple script(e.g. comp.sh) to compile zht to use mpi protocol. 
+script(e.g. comp.sh) to compile zht to use mpi protocol.
 
-2. TO START zht-mpiserver and zht-mpibroker(e.g. ON SINGLE NODE), RUN:
+-------------------ZHT(USING MPI) STANDALONE DEPLOYMENT-------------------
+1. TO START zht-mpiserver and zht-mpibroker(e.g. ON SINGLE NODE), RUN:
 mpiexec -np 4 ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
 
 3. TO RUN THE BENCHMARK:
@@ -133,10 +138,42 @@ see also <RUN TEST CASES FOR C BINDING> section
 
 
 NOTE THAT:
-mpiexec: the command to launch mpi jobs.
+mpiexec: mpi command to launch mpi jobs.
 -np 4 ./zht-mpiserver: allocate 4 processors to run the zht-mpiserver processes. 
--z zht.conf: zht conf file as input argument to zht-mpiserver or zht-mpibroker, the same file mentioned above 
--n neighbor.mpi.conf: negibor conf file as input argument to zht-mpiserver or zht-mpibroker, the similar file mentioned above
+-z zht.conf: zht conf file as input argument to zht-mpiserver or zht-mpibroker, the same file mentioned above.
+-n neighbor.mpi.conf: negibor conf file as input argument to zht-mpiserver or zht-mpibroker, containing localhost in this case.			  
+zht-mpibroker: the process deployed on each node to talk to zht-mpiserver on behalf of zhtclient. 
+
+PAY SPECIAL ATTENTIONS:
+There is ONLY ONE INSTANCE of zht-mpibroker allowed to be deployed ON EVERY NODE.
+
+zht-mpibroker MUST appear after zht-mpiserver IN ORDER in order to ensure the processes of zht-mpiserver
+are assigned to proper mpi-ranks that serve processing incoming requests from zhtclients.
+ 
+
+-------------------ZHT(USING MPI) CLUSTER DEPLOYMENT-------------------
+1. TO START zht-mpiserver and zht-mpibroker(e.g. ON MANY NODEs), RUN:
+mpiexec -f neighbor.mpi.conf -np <#processors> ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
+OR
+mpiexec -hosts 192.168.1.100,192.168.1.101 -np <#processors> ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
+
+2. TO RUN THE BENCHMARK:
+see also <RUN THE BENCHMARK> section.
+
+3. TO RUN TEST CASES FOR C++ BINDING:
+see also <RUN TEST CASES FOR C++ BINDING> section
+
+4. TO RUN TEST CASES FOR C BINDING:
+see also <RUN TEST CASES FOR C BINDING> section
+
+
+NOTE THAT:
+mpiexec: mpi command to launch mpi jobs.
+-f neighbor.mpi.conf: negibor conf file containing nodes on which MPI processors run, in which each line is ip address(e.g. 192.168.1.100), DO NOT USE localhost.
+-hosts 192.168.1.100,192.168.1.101: two nodes(comma separated ip addresses) on which MPI processors run.
+-np <#processors> ./zht-mpiserver: allocate <#processors> processors to run the zht-mpiserver processes. 
+-z zht.conf: zht conf file as input argument to zht-mpiserver or zht-mpibroker, the same file mentioned above.
+-n neighbor.mpi.conf: negibor conf file as input argument to zht-mpiserver or zht-mpibroker, in which each line is ip address(e.g. 192.168.1.100), DO NOT USE localhost.			  
 zht-mpibroker: the process deployed on each node to talk to zht-mpiserver on behalf of zhtclient. 
 
 PAY SPECIAL ATTENTIONS:
@@ -144,15 +181,10 @@ There is ONLY ONE INSTANCE of zht-mpibroker allowed to be deployed ON EVERY NODE
 
 zht-mpibroker MUST appear after zht-mpiserver IN ORDER in order to ensure the processes of zht-mpiserver
 are assigned to proper mpi-ranks which serve processing incoming requests from zhtclients.
- 
-
--------------------HOW TO USE MPI PROTOCOL ON CLUSTER-------------------
-We are doing cluster tests or benchmarks at large scale, when zht gets stable, we will release
-how to run mpi-zhtserver, zht-mpibroker and zht applications on clusters.
 
 
 -------------------HOW TO CONFIGURE-------------------
-There are two conf files needed, one is zht.conf, the other is neighbor.conf.
+There are two conf files needed, one is zht.conf, the other is neighbor.conf or neighbor.mpi.conf.
 
 zht.conf:
 PROTOCOL and PORT are the options to configure what protocols and ports(if applicable) 
@@ -179,4 +211,4 @@ The IP(s) of neighbored nodes(or ZHT servers) in ZHT overlay network are configu
 NOTE that:
 The parameter ID and VALUE(e.g. PROTOCOL TCP) for both zht.conf and neighbor.conf is SPACE delimited.
 The conf files support #-style comment-out.
-The blank lines will be ignored as comment-outs while parsing the conf files.
+The blank lines will be ignored as comment-outs while parsing.

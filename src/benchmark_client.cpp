@@ -94,8 +94,12 @@ int benchmarkInsert() {
 	}
 
 	end = TimeUtil::getTime_msec();
-	cout << "Inserted " << numOfOps - errCount << " packages out of "
-			<< numOfOps << ", cost " << end - start << " ms" << endl;
+
+	char buf[200];
+	sprintf(buf, "Inserted packages, %d, %d, cost(ms), %f", numOfOps - errCount,
+			numOfOps, end - start);
+	cout << buf << endl;
+
 	return 0;
 }
 
@@ -136,8 +140,12 @@ int benchmarkAppend() {
 	}
 
 	end = TimeUtil::getTime_msec();
-	cout << "Appended " << numOfOps - errCount << " packages out of "
-			<< numOfOps << ", cost " << end - start << " ms" << endl;
+
+	char buf[200];
+	sprintf(buf, "Appended packages, %d, %d, cost(ms), %f", numOfOps - errCount,
+			numOfOps, end - start);
+	cout << buf << endl;
+
 	return 0;
 }
 
@@ -159,8 +167,9 @@ float benchmarkLookup() {
 		Package pkg;
 		pkg.ParseFromString(pkg_str);
 
-		if (zc.lookup(pkg.virtualpath(), result) < 0) {
+		int ret = zc.lookup(pkg.virtualpath(), result);
 
+		if (ret < 0) {
 			errCount++;
 		} else if (result.empty()) { //empty string
 			errCount++;
@@ -169,8 +178,11 @@ float benchmarkLookup() {
 
 	end = TimeUtil::getTime_msec();
 
-	cout << "Lookup " << pkgList.size() - errCount << " packages out of "
-			<< pkgList.size() << ", cost " << end - start << " ms" << endl;
+	char buf[200];
+	sprintf(buf, "Lookuped packages, %d, %d, cost(ms), %f", numOfOps - errCount,
+			numOfOps, end - start);
+	cout << buf << endl;
+
 	return 0;
 }
 
@@ -192,15 +204,20 @@ float benchmarkRemove() {
 		Package pkg;
 		pkg.ParseFromString(pkg_str);
 
-		if (zc.remove(pkg.virtualpath()) < 0) {
+		int ret = zc.remove(pkg.virtualpath());
+
+		if (ret < 0) {
 			errCount++;
 		}
 	}
 
 	end = TimeUtil::getTime_msec();
 
-	cout << "Remove " << pkgList.size() - errCount << " packages out of "
-			<< pkgList.size() << ", cost " << end - start << " ms" << endl;
+	char buf[200];
+	sprintf(buf, "Removed packages, %d, %d, cost(ms), %f", numOfOps - errCount,
+			numOfOps, end - start);
+	cout << buf << endl;
+
 	return 0;
 }
 
