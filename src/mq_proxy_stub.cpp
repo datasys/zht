@@ -86,5 +86,5 @@ bool MQStub::recv(void *recvbuf, size_t &recvcount) {
 
 bool MQStub::teardown() {
 
-	_ms.destroy();
+	return _ms.destroy();
 }
