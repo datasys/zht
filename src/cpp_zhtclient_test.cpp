@@ -132,9 +132,7 @@ int main(int argc, char **argv) {
 
 			zc.init(zhtConf, neighborConf);
 
-//			test_all();
-
-			test_all_other();
+			test_all();
 
 			zc.teardown();
 
