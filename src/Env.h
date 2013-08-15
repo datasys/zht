@@ -40,18 +40,16 @@ public:
 	Env();
 	virtual ~Env();
 
-	static int setconfigvariables(string confFile);
-
 public:
-	static const int MAX_MSG_SIZE; //max size of a message in each transfer
+	static const int MSG_DEFAULTSIZE; //max size of a message in each transfer
 
 	static const uint BUF_SIZE; //size of blob transfered from client to server each time
 
-	static const int TOTAL_MSG_SIZE; //total size of a message transfered
-
 	static int REPLICATION_TYPE; //1 for Client-side replication
-
 	static int NUM_REPLICAS;
+
+public:
+	static int get_msg_maxsize();
 };
 
 #endif /* ENV_H_ */

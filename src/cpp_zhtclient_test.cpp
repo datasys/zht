@@ -48,13 +48,49 @@ ZHTClient zc;
 
 void test_all() {
 
+	printf("starting test_insert...\n");
 	test_insert();
 
+	printf("starting test_lookup...\n");
 	test_lookup();
 
+	printf("starting test_remove...\n");
 	test_remove();
 
+	printf("starting test_append...\n");
 	test_append();
+}
+
+void test_lookup_shared(string key) {
+
+	string result;
+	int rc = zc.lookup(key, result);
+
+	if (rc == 0)
+		printf("LOOKUP OK, rc(%d), value={%s}\n", rc, result.c_str());
+	else
+		printf("LOOKUP ERR, rc(%d), value={%s}\n", rc, result.c_str());
+}
+
+void test_all_other() {
+
+	string key = "hello";
+	string val = "1.zht";
+
+	zc.insert(key, val);
+	test_lookup_shared(key);
+
+	val = "2.zht";
+	zc.append(key, val);
+	test_lookup_shared(key);
+
+	val = "3.zht";
+	zc.insert(key, val);
+	test_lookup_shared(key);
+
+	val = "4.zht";
+	zc.append(key, val);
+	test_lookup_shared(key);
 }
 
 int main(int argc, char **argv) {
@@ -96,7 +132,9 @@ int main(int argc, char **argv) {
 
 			zc.init(zhtConf, neighborConf);
 
-			test_all();
+//			test_all();
+
+			test_all_other();
 
 			zc.teardown();
 
@@ -143,9 +181,9 @@ void test_lookup() {
 	int rc = zc.lookup(key, result);
 
 	if (rc == 0)
-		printf("LOOKUP OK, rc(%d), value={%s}\n", rc, result.c_str()); //todo: consider ": delimited"
+		printf("LOOKUP OK, rc(%d), value={%s}\n", rc, result.c_str());
 	else
-		printf("LOOKUP ERR, rc(%d), value={%s}\n", rc, result.c_str()); //todo: consider ": delimited"
+		printf("LOOKUP ERR, rc(%d), value={%s}\n", rc, result.c_str());
 }
 
 void test_remove() {

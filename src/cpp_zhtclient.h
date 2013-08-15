@@ -69,6 +69,7 @@ private:
 
 private:
 	ProtoProxy *_proxy;
+	int _msg_maxsize;
 };
 
 #endif /* ZHTCLIENT_H_ */

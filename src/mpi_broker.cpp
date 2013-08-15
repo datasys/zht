@@ -51,26 +51,34 @@ using namespace iit::datasys::zht::dm;
 MQStub mqstub;
 MPIProxy mpiproxy;
 
-void sigint_handler(int sig) {
+void sig_handler(int signo) {
 
-//	printf("sigint_handler called\n");
+	if (signo == SIGHUP || signo == SIGINT || signo == SIGQUIT
+			|| signo == SIGABRT || signo == SIGKILL || signo == SIGTERM
+			|| signo == SIGSTOP || signo == SIGTSTP) {
 
-	mqstub.teardown();
+//		printf("sig_handler called\n");
+		mqstub.teardown();
+	}
 }
 
 void init_sig_handler() {
 
 	struct sigaction sa;
-	sa.sa_handler = sigint_handler;
+	memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = sig_handler;
 	sa.sa_flags = 0; // or SA_RESTART
 
+	//SIGHUP | SIGINT | SIGQUIT | SIGABRT | SIGKILL | SIGTERM | SIGSTOP | SIGTSTP
 	sigemptyset(&sa.sa_mask);
-
-	if (sigaction(SIGINT, &sa, NULL) == -1) {
-
-		perror("sigaction");
-		exit(1);
-	}
+	sigaction(SIGHUP, &sa, 0);
+	sigaction(SIGINT, &sa, 0);
+	sigaction(SIGQUIT, &sa, 0);
+	sigaction(SIGABRT, &sa, 0);
+	sigaction(SIGKILL, &sa, 0);
+	sigaction(SIGTERM, &sa, 0);
+	sigaction(SIGSTOP, &sa, 0);
+	sigaction(SIGTSTP, &sa, 0);
 }
 
 void init_me(const string &zhtConf, const string &neighborConf) {
@@ -99,7 +107,9 @@ void serve(int argc, char **argv) {
 			exit(1);
 		}
 
-		if (!mpiproxy.sendrecv(req, msz, ans, msz)) {
+		string sndstr(req, msz);
+
+		if (!mpiproxy.sendrecv(sndstr.c_str(), sndstr.size(), ans, msz)) {
 
 			perror("MPIProxy::sendrecv()");
 			exit(1);

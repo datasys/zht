@@ -52,8 +52,9 @@ HostEntity ZHTUtil::getHostEntityByKey(const string& msg) {
 	ZPack zpack;
 	zpack.ParseFromString(msg);
 
-	int index = HashUtil::genHash(zpack.key())
-			% ConfHandler::NeighborVector.size();
+	uint64_t hascode = HashUtil::genHash(zpack.key());
+	size_t node_size = ConfHandler::NeighborVector.size();
+	int index = hascode % node_size;
 
 	ConfEntry ce = ConfHandler::NeighborVector.at(index);
 

@@ -30,20 +30,23 @@
 
 #include "mpi_server.h"
 #include "ProxyStubFactory.h"
+#include <stddef.h>
 
 MPIServer::MPIServer(int argc, char **argv) :
-		_argc(argc), _argv(argv) {
+		_argc(argc), _argv(argv), _stub(ProxyStubFactory::createStub()) {
+
+	_stub->init(_argc, _argv);
 }
 
 MPIServer::~MPIServer() {
+
+	delete _stub;
+	_stub = NULL;
 }
 
 void MPIServer::serve() {
 
-	ProtoStub *stub = ProxyStubFactory::createStub();
-	stub->init(_argc, _argv);
-
 	ProtoAddr pa;
-	stub->recvsend(pa, 0);
+	_stub->recvsend(pa, 0);
 }
 

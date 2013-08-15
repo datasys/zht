@@ -32,12 +32,19 @@
 #define TCP_PROXY_STUB_H_
 
 #include "ip_proxy_stub.h"
+#include "HTWorker.h"
 
-#include "lru_cache.h"
+#include <map>
+using namespace std;
+
 /*
  *
  */
 class TCPProxy: public IPProtoProxy {
+public:
+	typedef map<string, int> MAP;
+	typedef typename MAP::iterator MIT;
+
 public:
 	TCPProxy();
 	virtual ~TCPProxy();
@@ -56,8 +63,7 @@ private:
 	int sendTo(int sock, const void* sendbuf, int sendcount);
 
 private:
-	static int CACHE_SIZE;
-	static LRUCache<string, int> CONN_CACHE;
+	static MAP CONN_CACHE;
 };
 
 class TCPStub: public IPProtoStub {
@@ -69,6 +75,9 @@ public:
 
 protected:
 	virtual int sendBack(ProtoAddr addr, const void* sendbuf, int sendcount);
+
+private:
+	HTWorker _htw;
 };
 
 #endif /* TCP_PROXY_STUB_H_ */

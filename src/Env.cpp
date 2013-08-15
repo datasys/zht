@@ -29,22 +29,41 @@
  */
 
 #include "Env.h"
+#include "ConfHandler.h"
 
-//const int Env::MAX_MSG_SIZE = 1024 * 2; //max size of a message in each transfer
-//const int Env::MAX_MSG_SIZE = 65535; //max size of a message in each transfer
+using namespace iit::datasys::zht::dm;
 
-const int Env::MAX_MSG_SIZE = 1024 * 10000 * 7; //max size of a message in each transfer
+const int Env::MSG_DEFAULTSIZE = 1024 * 1024 * 2; //2M
 
 const uint Env::BUF_SIZE = 512 + 38;
 
-const int Env::TOTAL_MSG_SIZE = 1024 * 1024 * 10; //total size of a message transfered, 10M
-
 int Env::REPLICATION_TYPE = 0; //1 for Client-side replication
-
 int Env::NUM_REPLICAS = 0;
 
 Env::Env() {
 }
 
 Env::~Env() {
+}
+
+int Env::get_msg_maxsize() {
+
+	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
+
+	ConfHandler::MIT it;
+
+	int size = zpmap->size();
+
+	for (it = zpmap->begin(); it != zpmap->end(); it++) {
+
+		ConfEntry ce;
+		ce.assign(it->first);
+
+		if (ce.name() == Const::MSG_MAXSIZE) {
+
+			return atoi(ce.value().c_str());
+		}
+	}
+
+	return MSG_DEFAULTSIZE;
 }

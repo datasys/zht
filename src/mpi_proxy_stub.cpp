@@ -68,22 +68,25 @@ bool MPIProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 	int mpi_dest = get_mpi_dest(sendbuf, sendcount);
 
-	int rs = MPI_Send((void*) sendbuf, sendcount, MPI_CHAR, mpi_dest, 2,
+	int rs = MPI_Send((void*) sendbuf, sendcount, MPI_CHAR, mpi_dest, mpi_dest,
 			MPI_COMM_WORLD );
 
 	//printf("spock, sent to [%d] %lu char(s): \"%s\"\n", mpi_dest, sendcount, (char*) sendbuf);
 
 	size_t msz;
 	char ans[IPC_MAX_MSG_SZ];
+	memset(ans, 0, sizeof(ans));
 
 	MPI_Status status;
-	int rr = MPI_Recv(ans, sizeof(ans), MPI_CHAR, mpi_dest, MPI_ANY_TAG,
+	int rr = MPI_Recv(ans, sizeof(ans), MPI_CHAR, mpi_dest, mpi_dest,
 			MPI_COMM_WORLD, &status);
 
-	memcpy(recvbuf, ans, recvcount = strlen(ans) + 1);
+	string ansstr(ans);
+	memcpy(recvbuf, ansstr.data(), recvcount = ansstr.size());
+
+	memset(ans, 0, sizeof(ans));
 
 	return rs == MPI_SUCCESS && rr == MPI_SUCCESS;
-
 }
 
 int MPIProxy::get_mpi_dest(const void *sendbuf, const size_t sendcount) {
@@ -97,7 +100,8 @@ int MPIProxy::get_mpi_dest(const void *sendbuf, const size_t sendcount) {
 	size_t node_size = ConfHandler::NeighborVector.size();
 	int index = hascode % (size - node_size);
 
-//	printf("[%lu][%lu][%d]\n", hascode, node_size, index);
+	/*printf("[%s][%lu][%d:%lu][%d]\n", zpack.key().c_str(), hascode, size,
+	 node_size, index);*/
 
 	return index;
 
@@ -128,6 +132,7 @@ bool MPIStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	int again = 0;
 	char req[IPC_MAX_MSG_SZ];
+	memset(req, 0, sizeof(req));
 
 	fprintf(stdout, "[%d,%d] mpi server loop %d\n", size, rank, again);
 
@@ -135,19 +140,20 @@ bool MPIStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 		++again;
 
-		int rr = MPI_Recv(req, sizeof(req), MPI_CHAR, MPI_ANY_SOURCE,
-				MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+		int rr = MPI_Recv(req, sizeof(req), MPI_CHAR, MPI_ANY_SOURCE, rank,
+				MPI_COMM_WORLD, &status);
 
 		/*get response to be sent to client*/
 		HTWorker htw;
-		string result = htw.run((char*) req);
+		string reqstr(req);
+		string result = htw.run(reqstr.c_str());
 
 		const char *sendbuf = result.data();
 		int sendcount = result.size();
 
 		/*send response to client over MPI_SOURCE*/
 		int rs = MPI_Send((void*) sendbuf, sendcount, MPI_CHAR,
-				status.MPI_SOURCE, 0, MPI_COMM_WORLD );
+				status.MPI_SOURCE, rank, MPI_COMM_WORLD );
 
 		memset(req, 0, sizeof(req));
 
@@ -157,46 +163,3 @@ bool MPIStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	return rr_bool && rs_bool;
 }
-
-/*
- bool MPIStub::recvsend(void *recvbuf, size_t &recvcount, const void *sendbuf,
- const size_t sendcount) {
-
- bool rr_bool;
- bool rs_bool;
-
- MPI_Status status;
-
- int again = 0;
-
- size_t msz;
- char req[IPC_MAX_MSG_SZ];
- char ans[IPC_MAX_MSG_SZ];
-
- for (;;) {
-
- ++again;
-
- fprintf(stderr, "[%d] mpi server loop %d\n", rank, again);
-
- int rr = MPI_Recv(req, sizeof(req), MPI_CHAR, MPI_ANY_SOURCE,
- MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-
- do something
- fprintf(stderr, "[%d] do something: [%lu] [%s]\n", rank, strlen(req),
- req);
- strcat(req, " [answered]");
- strncpy(ans, req, strlen(req) + 1);
-
- int rs = MPI_Send(ans, strlen(ans) + 1, MPI_CHAR, status.MPI_SOURCE, 0,
- MPI_COMM_WORLD );
-
- memset(req, 0, sizeof(req));
- memset(ans, 0, sizeof(ans));
-
- rr_bool = rr == MPI_SUCCESS;
- rs_bool = rs == MPI_SUCCESS;
- }
-
- return rr_bool && rs_bool;
- }*/

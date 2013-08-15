@@ -35,17 +35,19 @@
 #include <string.h>
 #include <stdio.h>
 
-IPServer::IPServer() {
+IPServer::IPServer() :
+		_stub(ProxyStubFactory::createStub()) {
 }
 
 IPServer::~IPServer() {
+
+	delete _stub;
+	_stub = NULL;
 }
 
 void IPServer::process(const int& fd, const char * const buf, sockaddr sender) {
 
-	ProtoStub *stub = ProxyStubFactory::createStub();
-
-	if (stub == 0) {
+	if (_stub == 0) {
 
 		fprintf(stderr,
 				"IPServer::process(): error on ProxyStubFactory::createStub().\n");
@@ -56,6 +58,6 @@ void IPServer::process(const int& fd, const char * const buf, sockaddr sender) {
 	pa.fd = fd;
 	pa.sender = &sender;
 
-	stub->recvsend(pa, buf);
+	_stub->recvsend(pa, buf);
 }
 

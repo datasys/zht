@@ -32,6 +32,7 @@
 #define IPSERVER_H_
 
 #include "ZProcessor.h"
+#include "proxy_stub.h"
 
 using namespace iit::datasys::zht::dm;
 
@@ -45,6 +46,9 @@ public:
 
 	virtual void process(const int& fd, const char * const buf,
 			sockaddr sender);
+
+private:
+	ProtoStub *_stub;
 };
 
 #endif /* IPSERVER_H_ */

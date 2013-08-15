@@ -67,6 +67,8 @@ const string Const::PROTO_VAL_UDP = "UDP";
 const string Const::PROTO_VAL_UDT = "UDT";
 const string Const::PROTO_VAL_MPI = "MPI";
 
+const string Const::MSG_MAXSIZE = "MSG_MAXSIZE";
+
 const string Const::ASC_OPC_AZ_ALL = "101";
 const string Const::ASC_OPC_AZ_PORT = "102";
 const string Const::ASC_OPC_AZ_IPPORT = "103";

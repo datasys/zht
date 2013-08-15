@@ -62,6 +62,8 @@ int ZHTClient::init(const string& zhtConf, const string& neighborConf) {
 
 	ConfHandler::initConf(zhtConf, neighborConf);
 
+	_msg_maxsize = Env::get_msg_maxsize();
+
 	_proxy = ProxyStubFactory::createProxy();
 
 	if (_proxy == 0)
@@ -190,9 +192,8 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 
 	string msg = zpack.SerializeAsString();
 
-	char *buf = (char*) calloc(Env::MAX_MSG_SIZE, sizeof(char));
-
-	size_t msz = sizeof(buf);
+	char *buf = (char*) calloc(_msg_maxsize, sizeof(char));
+	size_t msz = _msg_maxsize;
 
 	/*send to and receive from*/
 	_proxy->sendrecv(msg.c_str(), msg.size(), buf, msz);

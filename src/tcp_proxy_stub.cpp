@@ -30,6 +30,7 @@
 
 #include "tcp_proxy_stub.h"
 
+#include <iostream>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -41,15 +42,15 @@
 #include "Env.h"
 #include "Util.h"
 #include "ZHTUtil.h"
-#include "HTWorker.h"
 #include "bigdata_transfer.h"
 
+using namespace std;
 using namespace iit::datasys::zht::dm;
 
-int TCPProxy::CACHE_SIZE = 1024;
+/*LRUCache<string, int> TCPProxy::CONN_CACHE = LRUCache<string, int>(
+ TCPProxy::CACHE_SIZE);*/
 
-LRUCache<string, int> TCPProxy::CONN_CACHE = LRUCache<string, int>(
-		TCPProxy::CACHE_SIZE);
+TCPProxy::MAP TCPProxy::CONN_CACHE = TCPProxy::MAP();
 
 TCPProxy::TCPProxy() {
 
@@ -84,8 +85,17 @@ bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 bool TCPProxy::teardown() {
 
-	//todo: close all socket cached
-	return true;
+	bool result = true;
+
+	MIT it;
+	for (it = CONN_CACHE.begin(); it != CONN_CACHE.end(); it++) {
+
+		int rc = close(it->second);
+
+		result &= rc == 0;
+	}
+
+	return result;
 }
 
 int TCPProxy::getSockCached(const string& host, const uint& port) {
@@ -94,9 +104,9 @@ int TCPProxy::getSockCached(const string& host, const uint& port) {
 
 	string hashKey = HashUtil::genBase(host, port);
 
-	sock = CONN_CACHE.fetch(hashKey, true);
+	MIT it = CONN_CACHE.find(hashKey);
 
-	if (sock <= 0) {
+	if (it == CONN_CACHE.end()) {
 
 		sock = makeClientSocket(host, port);
 
@@ -108,17 +118,48 @@ int TCPProxy::getSockCached(const string& host, const uint& port) {
 			sock = -1;
 		} else {
 
-			int tobeRemoved = -1;
-			CONN_CACHE.insert(hashKey, sock, tobeRemoved);
-
-			if (tobeRemoved != -1) {
-				close(tobeRemoved);
-			}
+			CONN_CACHE[hashKey] = sock;
 		}
+	} else {
+
+		sock = it->second;
 	}
 
 	return sock;
 }
+
+/*
+ int TCPProxy::getSockCached(const string& host, const uint& port) {
+
+ int sock = 0;
+
+ string hashKey = HashUtil::genBase(host, port);
+
+ sock = CONN_CACHE.fetch(hashKey, true);
+
+ if (sock <= 0) {
+
+ sock = makeClientSocket(host, port);
+
+ if (sock <= 0) {
+
+ cerr
+ << "TCPProxy::getSockCached(): error on makeClientSocket(...): "
+ << strerror(errno) << endl;
+ sock = -1;
+ } else {
+
+ int tobeRemoved = -1;
+ CONN_CACHE.insert(hashKey, sock, tobeRemoved);
+
+ if (tobeRemoved != -1) {
+ close(tobeRemoved);
+ }
+ }
+ }
+
+ return sock;
+ }*/
 
 int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 
@@ -157,12 +198,29 @@ int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 
 }
 
+/*
+ int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
+
+ BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
+ int sentSize = pbsb->bsend(sock);
+ delete pbsb;
+ pbsb = NULL;
+
+ prompt errors
+ if (sentSize < sendcount) {
+
+ //todo: bug prone
+ cerr << "TCPProxy::sendTo(): error on BdSendToServer::bsend(...): "
+ << strerror(errno) << endl;
+ }
+
+ return sentSize;
+ }
+ */
+
 int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
 
-	BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
-	int sentSize = pbsb->bsend(sock);
-	delete pbsb;
-	pbsb = NULL;
+	int sentSize = ::send(sock, sendbuf, sendcount, 0);
 
 	/*prompt errors*/
 	if (sentSize < sendcount) {
@@ -175,12 +233,31 @@ int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
 	return sentSize;
 }
 
+/*int TCPProxy::recvFrom(int sock, void* recvbuf) {
+
+ string result;
+ int recvcount = loopedrecv(sock, result);
+
+ memcpy(recvbuf, result.c_str(), result.size() + 1);
+
+ prompt errors
+ if (recvcount < 0) {
+
+ cerr << "TCPProxy::recvFrom: error on ::recv(...): " << strerror(errno)
+ << endl;
+ }
+
+ return recvcount;
+ }*/
+
 int TCPProxy::recvFrom(int sock, void* recvbuf) {
 
-	string result;
-	int recvcount = loopedrecv(sock, result);
+	char buf[Env::BUF_SIZE];
+	memset(buf, '\0', sizeof(buf));
 
-	memcpy(recvbuf, result.c_str(), result.size() + 1);
+	int recvcount = ::recv(sock, buf, sizeof(buf), 0);
+
+	memcpy(recvbuf, buf, strlen(buf) + 1);
 
 	/*prompt errors*/
 	if (recvcount < 0) {
@@ -197,7 +274,8 @@ int TCPProxy::loopedrecv(int sock, string &srecv) {
 	return IPProtoProxy::loopedrecv(sock, NULL, srecv);
 }
 
-TCPStub::TCPStub() {
+TCPStub::TCPStub() :
+		_htw() {
 
 }
 
@@ -207,8 +285,7 @@ TCPStub::~TCPStub() {
 bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	/*get response to be sent to client*/
-	HTWorker htw;
-	string result = htw.run((char*) recvbuf);
+	string result = _htw.run((char*) recvbuf);
 
 	const char *sendbuf = result.data();
 	int sendcount = result.size();
@@ -219,15 +296,36 @@ bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	return sent_bool;
 }
+/*
+ int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+
+ send response to client over server sock fd
+ BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
+ int sentsize = pbsb->bsend(addr.fd);
+
+ delete pbsb;
+ pbsb = NULL;
+
+ prompt errors
+ if (sentsize < sendcount) {
+
+ cerr << "TCPStub::sendBack():  error on BdSendToClient::bsend(...): "
+ << strerror(errno) << endl;
+ }
+
+ return sentsize;
+ }*/
 
 int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 
 	/*send response to client over server sock fd*/
-	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
-	int sentsize = pbsb->bsend(addr.fd);
+	/*	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
+	 int sentsize = pbsb->bsend(addr.fd);
 
-	delete pbsb;
-	pbsb = NULL;
+	 delete pbsb;
+	 pbsb = NULL;*/
+
+	int sentsize = ::send(addr.fd, sendbuf, sendcount, 0);
 
 	/*prompt errors*/
 	if (sentsize < sendcount) {

@@ -31,6 +31,8 @@
 #ifndef MPISERVER_H_
 #define MPISERVER_H_
 
+#include "proxy_stub.h"
+
 /*
  *
  */
@@ -49,6 +51,7 @@ public:
 private:
 	int _argc;
 	char ** _argv;
+	ProtoStub *_stub;
 };
 
 #endif /* MPISERVER_H_ */

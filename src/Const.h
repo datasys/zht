@@ -104,6 +104,11 @@ public:
 	static const string PROTO_VAL_MPI;
 
 	/*
+	 * MSG_: message
+	 */
+	static const string MSG_MAXSIZE;
+
+	/*
 	 * ASC_: admin server(service) chars
 	 * ASI_: admin server(service) integers
 	 * OPC_: operation code
