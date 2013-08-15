@@ -83,6 +83,7 @@ void init_sig_handler() {
 
 void init_me(const string &zhtConf, const string &neighborConf) {
 
+	/*init signal handler*/
 	init_sig_handler();
 
 	/*init config*/
@@ -96,6 +97,8 @@ void serve(int argc, char **argv) {
 	size_t msz;
 	char req[IPC_MAX_MSG_SZ];
 	char ans[IPC_MAX_MSG_SZ];
+	memset(req, 0, sizeof(req));
+	memset(ans, 0, sizeof(ans));
 
 	mpiproxy.init(argc, argv);
 
@@ -107,9 +110,9 @@ void serve(int argc, char **argv) {
 			exit(1);
 		}
 
-		string sndstr(req, msz);
+		string reqstr(req, msz);
 
-		if (!mpiproxy.sendrecv(sndstr.c_str(), sndstr.size(), ans, msz)) {
+		if (!mpiproxy.sendrecv(reqstr.c_str(), reqstr.size(), ans, msz)) {
 
 			perror("MPIProxy::sendrecv()");
 			exit(1);

@@ -78,7 +78,7 @@ bool MPIProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 	memset(ans, 0, sizeof(ans));
 
 	MPI_Status status;
-	int rr = MPI_Recv(ans, sizeof(ans), MPI_CHAR, mpi_dest, mpi_dest,
+	int rr = MPI_Recv(ans, sizeof(ans), MPI_CHAR, mpi_dest, rank,
 			MPI_COMM_WORLD, &status);
 
 	string ansstr(ans);
@@ -153,7 +153,7 @@ bool MPIStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 		/*send response to client over MPI_SOURCE*/
 		int rs = MPI_Send((void*) sendbuf, sendcount, MPI_CHAR,
-				status.MPI_SOURCE, rank, MPI_COMM_WORLD );
+				status.MPI_SOURCE, status.MPI_SOURCE, MPI_COMM_WORLD );
 
 		memset(req, 0, sizeof(req));
 

@@ -266,6 +266,8 @@ int TCPProxy::recvFrom(int sock, void* recvbuf) {
 				<< endl;
 	}
 
+	memset(buf, '\0', sizeof(buf));
+
 	return recvcount;
 }
 
@@ -285,7 +287,8 @@ TCPStub::~TCPStub() {
 bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	/*get response to be sent to client*/
-	string result = _htw.run((char*) recvbuf);
+	string recvstr((char*) recvbuf);
+	string result = _htw.run(recvstr.c_str());
 
 	const char *sendbuf = result.data();
 	int sendcount = result.size();

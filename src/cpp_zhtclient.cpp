@@ -40,7 +40,7 @@
 using namespace iit::datasys::zht::dm;
 
 ZHTClient::ZHTClient() :
-		_proxy(0) {
+		_proxy(0), _msg_maxsize(0) {
 
 }
 
