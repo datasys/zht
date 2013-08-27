@@ -32,11 +32,21 @@
 #define UDP_PROXY_STUB_H_
 
 #include "ip_proxy_stub.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <map>
+using namespace std;
 
 /*
  *
  */
 class UDPProxy: public IPProtoProxy {
+public:
+	typedef map<string, int> SMAP;
+	typedef typename SMAP::iterator SIT;
+	typedef map<string, sockaddr_in> AMAP;
+	typedef typename AMAP::iterator AIT;
+
 public:
 	UDPProxy();
 	virtual ~UDPProxy();
@@ -47,7 +57,9 @@ public:
 
 protected:
 	virtual int getSockCached(const string& host, const uint& port);
+	virtual sockaddr_in getAddrCached(const string& host, const uint& port);
 	virtual int makeClientSocket(const string& host, const uint& port);
+	virtual sockaddr_in makeClientAddr(const string& host, const uint& port);
 	virtual int recvFrom(int sock, void* recvbuf);
 	virtual int loopedrecv(int sock, string &srecv);
 
@@ -57,6 +69,8 @@ private:
 
 private:
 	static int UDP_SOCKET;
+	static SMAP SOCK_CACHE;
+	static AMAP ADDR_CACHE;
 };
 
 class UDPStub: public IPProtoStub {

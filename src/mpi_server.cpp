@@ -40,8 +40,11 @@ MPIServer::MPIServer(int argc, char **argv) :
 
 MPIServer::~MPIServer() {
 
-	delete _stub;
-	_stub = NULL;
+	if (_stub != NULL) {
+
+		delete _stub;
+		_stub = NULL;
+	}
 }
 
 void MPIServer::serve() {

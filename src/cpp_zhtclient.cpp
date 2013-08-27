@@ -172,7 +172,7 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 
 	if (val.empty()) {
 
-		zpack.set_val(" "); //coup, to fix ridiculous bug of protobuf!
+		zpack.set_val(" "); //coup, to fix ridiculous bug of protobuf! //to debug
 		zpack.set_valnull(true);
 	} else {
 
@@ -182,7 +182,7 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 
 	if (val2.empty()) {
 
-		zpack.set_newval(" "); //coup, to fix ridiculous bug of protobuf!
+		zpack.set_newval(" "); //coup, to fix ridiculous bug of protobuf! //to debug
 		zpack.set_newvalnull(true);
 	} else {
 

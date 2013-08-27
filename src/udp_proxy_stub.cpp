@@ -39,13 +39,19 @@
 #include <iostream>
 #include <unistd.h>
 
+#include "Util.h"
 #include "ZHTUtil.h"
 #include "HTWorker.h"
 
 #include "Env.h"
 #include "bigdata_transfer.h"
 
+using namespace iit::datasys::zht::dm;
+
 int UDPProxy::UDP_SOCKET = -1;
+
+UDPProxy::SMAP UDPProxy::SOCK_CACHE = UDPProxy::SMAP();
+UDPProxy::AMAP UDPProxy::ADDR_CACHE = UDPProxy::AMAP();
 
 UDPProxy::UDPProxy() {
 
@@ -82,24 +88,21 @@ bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 int UDPProxy::sendTo(int sock, const string &host, uint port,
 		const void* sendbuf, int sendcount) {
 
-	sockaddr_in recvAddr;
+	struct sockaddr_in dest = getAddrCached(host, port);
 
-	struct hostent *hp;
-	struct sockaddr_in server;
-	server.sin_family = AF_INET;
-	hp = gethostbyname(host.c_str());
+	/*int sentSize = sendto(sock, sendbuf, sendcount, 0, (struct sockaddr*) &dest,
+	 sizeof(struct sockaddr));*/
 
-	bcopy((char *) hp->h_addr, (char *) &server.sin_addr, hp->h_length);
-	server.sin_port = htons(port);
+	BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
+	int sentSize = pbsb->bsend(sock, &dest);
+	delete pbsb;
+	pbsb = NULL;
 
-	int sentSize = sendto(sock, sendbuf, sendcount, 0,
-			(struct sockaddr*) &server, sizeof(struct sockaddr));
-
-	/*prompt errors*/
+	//prompt errors
 	if (sentSize < sendcount) {
 
 		//todo: bug prone
-		/*cerr << "UDPProxy::sendTo(): error on ::sendto(...): "
+		/*cerr << "UDPProxy::sendTo(): error on BdSendToServer::bsend(...): "
 		 << strerror(errno) << endl;*/
 	}
 
@@ -116,7 +119,7 @@ int UDPProxy::recvFrom(int sock, void* recvbuf) {
 	/*prompt errors*/
 	if (recvcount < 0) {
 
-		cerr << "UDPProxy::recvFrom(): error on ::recvfrom(...): "
+		cerr << "UDPProxy::recvFrom(): error on loopedrecv(...): "
 				<< strerror(errno) << endl;
 	}
 
@@ -139,20 +142,67 @@ bool UDPProxy::teardown() {
 
 int UDPProxy::getSockCached(const string& host, const uint& port) {
 
-	int sock;
+	int sock = 0;
 
-	if (UDP_SOCKET <= 0) {
+	string hashKey = HashUtil::genBase(host, port);
+
+	SIT it = SOCK_CACHE.find(hashKey);
+
+	if (it == SOCK_CACHE.end()) {
 
 		sock = makeClientSocket(host, port);
-		UDP_SOCKET = sock;
 
+		if (sock <= 0) {
+
+			cerr << "UDPProxy::getSockCached(): error on makeClientSocket("
+					<< host << ":" << port << "): " << strerror(errno) << endl;
+			sock = -1;
+		} else {
+
+			SOCK_CACHE[hashKey] = sock;
+		}
 	} else {
 
-		sock = UDP_SOCKET;
+		sock = it->second;
 	}
 
 	return sock;
 }
+
+sockaddr_in UDPProxy::getAddrCached(const string& host, const uint& port) {
+
+	string hashKey = HashUtil::genBase(host, port);
+
+	AIT it = ADDR_CACHE.find(hashKey);
+
+	if (it == ADDR_CACHE.end()) {
+
+		ADDR_CACHE[hashKey] = makeClientAddr(host, port);
+
+		return ADDR_CACHE[hashKey];
+
+	} else {
+
+		return ADDR_CACHE[hashKey];
+	}
+}
+
+/*int UDPProxy::getSockCached(const string& host, const uint& port) {
+
+ int sock;
+
+ if (UDP_SOCKET <= 0) {
+
+ sock = makeClientSocket(host, port);
+ UDP_SOCKET = sock;
+
+ } else {
+
+ sock = UDP_SOCKET;
+ }
+
+ return sock;
+ }*/
 
 int UDPProxy::makeClientSocket(const string& host, const uint& port) {
 
@@ -162,14 +212,35 @@ int UDPProxy::makeClientSocket(const string& host, const uint& port) {
 
 	if (to_sock < 0) {
 
-		printf("Error occurred when creating the socket:%d\n", to_sock);
-		printf("%s\n", strerror(errno));
+		fprintf(stderr,
+				"UDPProxy::makeClientSocket(): error on creating the socket:%d\n",
+				to_sock);
+		fprintf(stderr, "%s\n", strerror(errno));
 		close(to_sock);
 
 		return -1;
 	}
 
 	return to_sock;
+}
+
+sockaddr_in UDPProxy::makeClientAddr(const string& host, const uint& port) {
+
+	struct sockaddr_in dest;
+	memset(&dest, 0, sizeof(struct sockaddr_in)); /*zero the struct*/
+	dest.sin_family = PF_INET;
+	dest.sin_port = htons(port);
+
+	struct hostent *hinfo = gethostbyname(host.c_str()); //todo: remove it from here...
+	if (hinfo == NULL) {
+		cerr << "UDPProxy::makeClientAddr(): ";
+		herror(host.c_str());
+		return dest;
+	}
+
+	memcpy(&dest.sin_addr, hinfo->h_addr, sizeof(dest.sin_addr));
+
+	return dest;
 }
 
 UDPStub::UDPStub() {
@@ -197,14 +268,14 @@ bool UDPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 
-	/*send response to client over server sock fd*/
+	//send response to client over server sock fd
 	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
 	int sentsize = pbsb->bsend(addr.fd, addr.sender);
 
 	delete pbsb;
 	pbsb = NULL;
 
-	/*prompt errors*/
+	//prompt errors
 	if (sentsize < sendcount) {
 
 		cerr << "UDPStub::sendBack():  error on BdSendToClient::bsend(...): "

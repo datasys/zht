@@ -48,7 +48,7 @@ using namespace iit::datasys::zht::dm;
 
 ZHTClient zc;
 int numOfOps = -1;
-int lenString = 15;
+int lenString = 52;
 vector<string> pkgList;
 
 void init_packages() {

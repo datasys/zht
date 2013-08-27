@@ -232,10 +232,13 @@ public:
 			r2 = rep->destroy();
 		}
 		// assure nobody will use these anymore
+
 		delete req;
 		req = NULL;
+
 		delete rep;
 		rep = NULL;
+
 		return r1 && r2;
 	}
 	;

@@ -35,13 +35,35 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "ZProcessor.h"
+#include <queue>
 
 #include "bigdata_transfer.h"
+
+using namespace std;
 
 namespace iit {
 namespace datasys {
 namespace zht {
 namespace dm {
+
+class EventData {
+public:
+	EventData(int fd, char* buf, size_t bufsize, sockaddr addr);
+
+	~EventData();
+
+	int fd() const;
+	char* buf() const;
+	size_t bufsize() const;
+	sockaddr fromaddr();
+
+private:
+	int _fd;
+	char* _buf;
+	size_t _bufsize;
+	sockaddr _fromaddr;
+
+};
 
 class EpollData {
 public:
@@ -53,7 +75,7 @@ public:
 
 private:
 	int _fd;
-	const sockaddr * const _sender;
+	const sockaddr *_sender;
 };
 /*
  *
@@ -71,17 +93,23 @@ private:
 	int make_socket_non_blocking(const int& sfd);
 	int makeSvrSocket();
 	int reuseSock(int sock);
+	void init_thread();
+
+private:
+	static void* threadedServe(void *arg);
 
 private:
 	EpollServer();
 
 private:
-	const char *_port;
 	bool _tcp;
-	static const int MAX_EVENTS;
-	static const uint MAX_MSG_SIZE;
-	ZProcessor *_ZProcessor;
+	const char *_port;
 	BdRecvBase *pbrb;
+	ZProcessor *_ZProcessor;
+	queue<EventData> _eventQueue;
+
+private:
+	static const int MAX_EVENTS;
 
 };
 

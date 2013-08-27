@@ -1,3 +1,6 @@
+-------------------ABOUT ZHT-------------------
+ZHT is a zero-hop distributed hash table(see also the paper, http://datasys.cs.iit.edu/publications/2013_IPDPS13_ZHT.pdf).
+
 -------------------SOFTWARE REQUIREMENTS-------------------
 Google protocol buffers c binding, VERSION 0.15 or later
 		http://code.google.com/p/protobuf-c/downloads/list
@@ -132,10 +135,7 @@ To compile your own ZHT applications, link to <libzht.a> and include cpp_zhtclie
 4. source ~/.bashrc
 5. cd to ZHT src directory
 6. TO COMPILE ZHT, RUN
-    ./comp.sh
-
-Since mpi has its own compile facilities(e.g. mpicxx), it's very difficult to integrate them into makefile, we give out additional
-script(e.g. comp.sh) to compile zht to use mpi protocol.
+   make
 
 -------------------ZHT(USING MPI) STANDALONE DEPLOYMENT-------------------
 1. TO START zht-mpiserver and zht-mpibroker(e.g. ON SINGLE NODE), RUN:

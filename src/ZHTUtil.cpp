@@ -50,7 +50,7 @@ ZHTUtil::~ZHTUtil() {
 HostEntity ZHTUtil::getHostEntityByKey(const string& msg) {
 
 	ZPack zpack;
-	zpack.ParseFromString(msg);
+	zpack.ParseFromString(msg); //to debug
 
 	uint64_t hascode = HashUtil::genHash(zpack.key());
 	size_t node_size = ConfHandler::NeighborVector.size();
@@ -66,26 +66,31 @@ HostEntity ZHTUtil::buildHostEntity(const string& host, const uint& port) {
 
 	HostEntity he;
 
-	struct sockaddr_in si_other;
-	hostent *record;
-	in_addr *address;
-	string ip_address;
+	/*
+	 struct sockaddr_in si_other;
+	 hostent *record;
+	 in_addr *address;
+	 string ip_address;
 
-	record = gethostbyname(host.c_str());
-	address = (in_addr *) record->h_addr;
-	ip_address = inet_ntoa(*address);
+	 record = gethostbyname(host.c_str());
+	 address = (in_addr *) record->h_addr;
+	 ip_address = inet_ntoa(*address);
 
-	memset((char *) &si_other, 0, sizeof(si_other));
-	si_other.sin_family = AF_INET;
-	si_other.sin_port = htons(port);
-	if (inet_aton(ip_address.c_str(), &si_other.sin_addr) == 0) {
-		fprintf(stderr, "inet_aton() failed\n");
-	}
+	 memset((char *) &si_other, 0, sizeof(si_other));
+	 si_other.sin_family = AF_INET;
+	 si_other.sin_port = htons(port);
+	 if (inet_aton(ip_address.c_str(), &si_other.sin_addr) == 0) {
+	 fprintf(stderr, "inet_aton() failed\n");
+	 }
 
-	he.si = si_other;
+	 he.si = si_other;
+	 he.host = host;
+	 he.port = port;
+	 he.valid = true;
+	 he.sock = -1;*/
+
 	he.host = host;
 	he.port = port;
-	he.valid = true;
 	he.sock = -1;
 
 	return he;

@@ -112,9 +112,8 @@ int TCPProxy::getSockCached(const string& host, const uint& port) {
 
 		if (sock <= 0) {
 
-			cerr
-					<< "TCPProxy::getSockCached(): error on makeClientSocket(...): "
-					<< strerror(errno) << endl;
+			cerr << "TCPProxy::getSockCached(): error on makeClientSocket("
+					<< host << ":" << port << "): " << strerror(errno) << endl;
 			sock = -1;
 		} else {
 
@@ -163,20 +162,21 @@ int TCPProxy::getSockCached(const string& host, const uint& port) {
 
 int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 
-	int to_sock = 0;
-
 	struct sockaddr_in dest;
 	memset(&dest, 0, sizeof(struct sockaddr_in)); /*zero the struct*/
-
-	struct hostent * hinfo = gethostbyname(host.c_str());
-	if (hinfo == NULL)
-		printf("getbyname failed!\n");
-
 	dest.sin_family = PF_INET; /*storing the server info in sockaddr_in structure*/
-	dest.sin_addr = *(struct in_addr *) (hinfo->h_addr); /*set destination IP number*/
 	dest.sin_port = htons(port);
 
-	to_sock = socket(PF_INET, SOCK_STREAM, 0); //try change here.................................................
+	struct hostent * hinfo = gethostbyname(host.c_str());
+	if (hinfo == NULL) {
+		cerr << "TCPProxy::makeClientSocket(): ";
+		herror(host.c_str());
+		return -1;
+	}
+
+	memcpy(&dest.sin_addr, hinfo->h_addr, sizeof(dest.sin_addr));
+
+	int to_sock = socket(PF_INET, SOCK_STREAM, 0); //try change here.................................................
 
 	if (to_sock < 0) {
 
@@ -195,18 +195,31 @@ int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 	}
 
 	return to_sock;
-
 }
 
-/*
- int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
+int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
 
- BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
- int sentSize = pbsb->bsend(sock);
- delete pbsb;
- pbsb = NULL;
+	BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
+	int sentSize = pbsb->bsend(sock);
+	delete pbsb;
+	pbsb = NULL;
 
- prompt errors
+	//prompt errors
+	if (sentSize < sendcount) {
+
+		//todo: bug prone
+		/*cerr << "TCPProxy::sendTo(): error on BdSendToServer::bsend(...): "
+		 << strerror(errno) << endl;*/
+	}
+
+	return sentSize;
+}
+
+/*int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
+
+ int sentSize = ::send(sock, sendbuf, sendcount, 0);
+
+ //prompt errors
  if (sentSize < sendcount) {
 
  //todo: bug prone
@@ -215,61 +228,45 @@ int TCPProxy::makeClientSocket(const string& host, const uint& port) {
  }
 
  return sentSize;
- }
- */
-
-int TCPProxy::sendTo(int sock, const void* sendbuf, int sendcount) {
-
-	int sentSize = ::send(sock, sendbuf, sendcount, 0);
-
-	/*prompt errors*/
-	if (sentSize < sendcount) {
-
-		//todo: bug prone
-		/*	cerr << "TCPProxy::sendTo(): error on BdSendToServer::bsend(...): "
-		 << strerror(errno) << endl;*/
-	}
-
-	return sentSize;
-}
-
-/*int TCPProxy::recvFrom(int sock, void* recvbuf) {
-
- string result;
- int recvcount = loopedrecv(sock, result);
-
- memcpy(recvbuf, result.c_str(), result.size() + 1);
-
- prompt errors
- if (recvcount < 0) {
-
- cerr << "TCPProxy::recvFrom: error on ::recv(...): " << strerror(errno)
- << endl;
- }
-
- return recvcount;
  }*/
 
 int TCPProxy::recvFrom(int sock, void* recvbuf) {
 
-	char buf[Env::BUF_SIZE];
-	memset(buf, '\0', sizeof(buf));
+	string result;
+	int recvcount = loopedrecv(sock, result);
 
-	int recvcount = ::recv(sock, buf, sizeof(buf), 0);
+	memcpy(recvbuf, result.c_str(), result.size() + 1);
 
-	memcpy(recvbuf, buf, strlen(buf) + 1);
-
-	/*prompt errors*/
+	//prompt errors
 	if (recvcount < 0) {
 
-		cerr << "TCPProxy::recvFrom: error on ::recv(...): " << strerror(errno)
-				<< endl;
+		cerr << "TCPProxy::recvFrom(): error on loopedrecv(...): "
+				<< strerror(errno) << endl;
 	}
-
-	memset(buf, '\0', sizeof(buf));
 
 	return recvcount;
 }
+
+/*int TCPProxy::recvFrom(int sock, void* recvbuf) {
+
+ char buf[Env::BUF_SIZE];
+ memset(buf, '\0', sizeof(buf));
+
+ int recvcount = ::recv(sock, buf, sizeof(buf), 0);
+
+ memcpy(recvbuf, buf, strlen(buf) + 1);
+
+ //prompt errors
+ if (recvcount < 0) {
+
+ cerr << "TCPProxy::recvFrom(): error on ::recv(...): "
+ << strerror(errno) << endl;
+ }
+
+ memset(buf, '\0', sizeof(buf));
+
+ return recvcount;
+ }*/
 
 int TCPProxy::loopedrecv(int sock, string &srecv) {
 
@@ -286,30 +283,30 @@ TCPStub::~TCPStub() {
 
 bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
-	/*get response to be sent to client*/
+	//get response to be sent to client
 	string recvstr((char*) recvbuf);
 	string result = _htw.run(recvstr.c_str());
 
 	const char *sendbuf = result.data();
 	int sendcount = result.size();
 
-	/*send response to client over server sock fd*/
+	//send response to client over server sock fd
 	int sentsize = sendBack(addr, sendbuf, sendcount);
 	bool sent_bool = sentsize == sendcount;
 
 	return sent_bool;
 }
+
 /*
  int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 
- send response to client over server sock fd
+ //send response to client over server sock fd
  BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
  int sentsize = pbsb->bsend(addr.fd);
-
  delete pbsb;
  pbsb = NULL;
 
- prompt errors
+ //prompt errors
  if (sentsize < sendcount) {
 
  cerr << "TCPStub::sendBack():  error on BdSendToClient::bsend(...): "
@@ -321,16 +318,16 @@ bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 
-	/*send response to client over server sock fd*/
-	/*	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
-	 int sentsize = pbsb->bsend(addr.fd);
+	//send response to client over server sock fd
+	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
+	int sentsize = pbsb->bsend(addr.fd);
 
-	 delete pbsb;
-	 pbsb = NULL;*/
+	delete pbsb;
+	pbsb = NULL;
 
-	int sentsize = ::send(addr.fd, sendbuf, sendcount, 0);
+	//int sentsize = ::send(addr.fd, sendbuf, sendcount, 0);
 
-	/*prompt errors*/
+	//prompt errors
 	if (sentsize < sendcount) {
 
 		cerr << "TCPStub::sendBack():  error on BdSendToClient::bsend(...): "

@@ -57,7 +57,7 @@ string StrTokenizer::next_token() {
 	if (!has_more_tokens())
 		return "";
 	// Save the next token.
-	string token = the_source.substr(start, end - start);
+	string token = the_source.substr(start, end - start); //to debug
 	// Find the following token.
 	find_next();
 	// Return the next token.

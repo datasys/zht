@@ -42,6 +42,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <queue>
 
 using namespace std;
 
@@ -50,6 +51,42 @@ namespace datasys {
 namespace zht {
 namespace dm {
 
+EventData::EventData(int fd, char* buf, size_t bufsize, sockaddr addr) {
+
+	_fd = fd;
+	int len = strlen((const char*) buf);
+	_buf = (char*) calloc(len + 1, sizeof(char));
+	memcpy(_buf, buf, len + 1);
+
+	_bufsize = bufsize;
+	_fromaddr = addr;
+}
+
+EventData::~EventData() {
+
+//	free(_buf);
+}
+
+int EventData::fd() const {
+
+	return _fd;
+}
+
+char* EventData::buf() const {
+
+	return _buf;
+}
+
+size_t EventData::bufsize() const {
+
+	return _bufsize;
+}
+
+sockaddr EventData::fromaddr() {
+
+	return _fromaddr;
+}
+
 EpollData::EpollData(const int& fd, const sockaddr * const sender) :
 		_fd(fd), _sender(sender) {
 
@@ -57,15 +94,17 @@ EpollData::EpollData(const int& fd, const sockaddr * const sender) :
 
 EpollData::~EpollData() {
 
-	if (_sender != NULL)
-		delete _sender;
+	if (_sender != NULL) {
+
+		free((void*) _sender);
+		_sender = NULL;
+	}
 }
 
-const int EpollServer::MAX_EVENTS = 1024;
-const uint EpollServer::MAX_MSG_SIZE = Env::BUF_SIZE; //transferd string maximum size
+const int EpollServer::MAX_EVENTS = 4096;
 
 EpollServer::EpollServer(const char *port, ZProcessor *processor) :
-		_port(port), _ZProcessor(processor), pbrb(new BdRecvFromClient()) {
+		_port(port), _ZProcessor(processor), pbrb(new BdRecvFromClient()), _eventQueue() {
 
 	string protocol = ConfHandler::getProtocolFromConf();
 	if (protocol == Const::PROTO_VAL_TCP) {
@@ -85,12 +124,17 @@ EpollServer::EpollServer(const char *port, ZProcessor *processor) :
 
 EpollServer::~EpollServer() {
 
-	delete _ZProcessor;
-	_ZProcessor == NULL;
+	if (_ZProcessor != NULL) {
 
-	delete pbrb;
-	pbrb = NULL;
+		delete _ZProcessor;
+		_ZProcessor == NULL;
+	}
 
+	if (pbrb != NULL) {
+
+		delete pbrb;
+		pbrb = NULL;
+	}
 }
 
 int EpollData::fd() const {
@@ -246,7 +290,34 @@ int EpollServer::reuseSock(int sock) {
 		return 0;
 }
 
+void* EpollServer::threadedServe(void *arg) {
+
+	EpollServer *pes = (EpollServer*) arg;
+
+	while (true) {
+
+		while (!pes->_eventQueue.empty()) {
+
+			EventData eventData = pes->_eventQueue.front();
+
+			pes->_ZProcessor->process(eventData.fd(), eventData.buf(),
+					eventData.fromaddr());
+
+			pes->_eventQueue.pop();
+		}
+	}
+}
+
+void EpollServer::init_thread() {
+
+	pthread_t thread;
+
+	pthread_create(&thread, NULL, threadedServe, this);
+}
+
 void EpollServer::serve() {
+
+	//init_thread();
 
 	int sfd, s;
 	int efd;
@@ -307,20 +378,18 @@ void EpollServer::serve() {
 					 means one or more incoming connections. */
 					while (1) {
 
-						int infd;
-						socklen_t in_len = sizeof(struct sockaddr);
 						sockaddr *in_addr = (sockaddr *) calloc(1,
 								sizeof(struct sockaddr));
+						socklen_t in_len = sizeof(struct sockaddr);
 
-						infd = accept(sfd, in_addr, &in_len);
+						int infd = accept(sfd, in_addr, &in_len);
 						if (infd == -1) {
 
 							free(in_addr);
 
 							if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
 
-								/* We have processed all incoming
-								 connections. */
+								/* We have processed all incoming connections. */
 								break;
 							} else {
 
@@ -335,11 +404,12 @@ void EpollServer::serve() {
 						 in_addr.sin_addr.s_addr, in_addr.sin_port);
 						 */
 
-						char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
-						getnameinfo(in_addr, in_len, hbuf, sizeof hbuf, sbuf,
-								sizeof sbuf, 0);
+						/*
+						 char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+						 getnameinfo(in_addr, in_len, hbuf, sizeof hbuf, sbuf,
+						 sizeof sbuf, 0);
 
-						/*if (s == 0) {
+						 if (s == 0) {
 
 						 printf("Accepted connection on descriptor %d "
 						 "(host=%s, _port=%s)\n", infd, hbuf, sbuf);
@@ -369,26 +439,65 @@ void EpollServer::serve() {
 					continue;
 				} else {
 
-					ssize_t count;
-					char buf[MAX_MSG_SIZE];
-					memset(buf, 0, sizeof(buf));
+					int done = 0;
 
-					sockaddr_in fromaddr;
-					socklen_t sender_len = sizeof(struct sockaddr);
-					count = recvfrom(edata->fd(), buf, sizeof buf, 0,
-							(struct sockaddr*) &fromaddr, &sender_len);
+					while (1) {
 
-					sockaddr *sender = (struct sockaddr*) &fromaddr;
+						char buf[Env::BUF_SIZE];
+						memset(buf, 0, sizeof(buf));
 
-					string str(buf);
-					_ZProcessor->process(edata->fd(), buf, *sender); //todo: problem maybe
+						sockaddr fromaddr;
+						socklen_t sender_len = sizeof(struct sockaddr);
+						ssize_t count = recvfrom(edata->fd(), buf, sizeof buf,
+								0, &fromaddr, &sender_len);
 
-					memset(buf, 0, sizeof(buf));
+						if (count == -1) {
+
+							if (errno != EAGAIN) {
+
+								perror("read");
+								done = 1;
+							}
+
+						} else if (count == 0) {
+
+							done = 1;
+							break;
+
+						} else {
+
+							bool ready = false;
+							string bd = pbrb->getBdStr(sfd, buf, count, ready);
+
+							if (ready) {
+
+								_ZProcessor->process(edata->fd(), bd.c_str(),
+										fromaddr);
+							}
+						}
+
+						/*
+						 string bufstr(buf);
+						 _ZProcessor->process(edata->fd(), bufstr.c_str(), fromaddr);*/
+
+						/*EventData eventData(edata->fd(), buf, sizeof(buf),
+						 fromaddr);
+						 _eventQueue.push(eventData);*/
+
+						memset(buf, 0, sizeof(buf));
+					}
+
+					/*if (done) {
+
+					 close(edata->fd());
+					 delete edata;
+					 }*/
 				}
 
 			} else {
 
 				if (_tcp == true) {
+
 					/* We have data on the fd waiting to be read. Read and
 					 display it. We must read whatever data is available
 					 completely, as we are running in edge-triggered mode
@@ -398,11 +507,10 @@ void EpollServer::serve() {
 
 					while (1) {
 
-						ssize_t count;
-						char buf[MAX_MSG_SIZE];
+						char buf[Env::BUF_SIZE];
 						memset(buf, 0, sizeof(buf));
 
-						count = recv(edata->fd(), buf, sizeof(buf), 0);
+						ssize_t count = recv(edata->fd(), buf, sizeof(buf), 0);
 
 						if (count == -1) {
 
@@ -430,21 +538,29 @@ void EpollServer::serve() {
 							break;
 						} else {
 
-							/*							bool ready = false;
-							 string bd = pbrb->getBdStr(sfd, buf, count, ready);
+							bool ready = false;
+							string bd = pbrb->getBdStr(sfd, buf, count, ready);
 
-							 if (ready) {
+							if (ready) {
 
-							 _ZProcessor->process(edata->fd(), bd.c_str(),
-							 *edata->sender());
-							 }*/
+								_ZProcessor->process(edata->fd(), bd.c_str(),
+										*edata->sender());
+							}
 
-							_ZProcessor->process(edata->fd(), buf,
-									*edata->sender());
+							/*string bufstr(buf);
+							 _ZProcessor->process(edata->fd(), bufstr.c_str(),
+							 *edata->sender());*/
+
+							/*sockaddr fromaddr;
+							 EventData eventData(edata->fd(), buf, sizeof(buf),
+							 fromaddr);
+							 _eventQueue.push(eventData);
+							 */
 						}
 
 						memset(buf, 0, sizeof(buf));
 					}
+
 					if (done) {
 
 						/*printf("Closed connection on descriptor %d, done.\n",
@@ -464,229 +580,9 @@ void EpollServer::serve() {
 
 	close(sfd);
 
-	EpollData *gedata = (EpollData*) event.data.ptr;
-	delete gedata;
+	EpollData *edata = (EpollData*) event.data.ptr;
+	delete edata;
 }
-
-/*
- void EpollServer::serve() {
-
- int sfd, s;
- int efd;
- struct epoll_event event;
- struct epoll_event *events;
-
- sfd = makeSvrSocket();
- if (sfd == -1)
- abort();
-
- s = make_socket_non_blocking(sfd);
- if (s == -1)
- abort();
-
- reuseSock(sfd);
-
- efd = epoll_create(1);
- if (efd == -1) {
- perror("epoll_create");
- abort();
- }
-
- event.data.ptr = new EpollData(sfd, NULL);
- event.events = EPOLLIN | EPOLLET;
- s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
- if (s == -1) {
- perror("epoll_ctl");
- abort();
- }
-
- Buffer where events are returned
- events = (epoll_event *) calloc(MAX_EVENTS, sizeof event);
-
- The event loop
- while (1) {
-
- int n, i;
-
- n = epoll_wait(efd, events, MAX_EVENTS, -1);
-
- for (i = 0; i < n; i++) {
-
- EpollData *edata = (EpollData*) events[i].data.ptr;
-
- if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)
- || (!(events[i].events & EPOLLIN))) {
-
- An error has occured on this fd, or the socket is not
- ready for reading (why were we notified then?)
- fprintf(stderr, "epoll error\n");
- close(edata->fd());
- delete edata;
- continue;
- } else if (sfd == edata->fd()) {
-
- if (_tcp == true) {
- We have a notification on the listening socket, which
- means one or more incoming connections.
- while (1) {
-
- int infd;
- socklen_t in_len = sizeof(struct sockaddr);
- sockaddr *in_addr = (sockaddr *) calloc(1,
- sizeof(struct sockaddr));
-
- infd = accept(sfd, in_addr, &in_len);
- if (infd == -1) {
-
- free(in_addr);
-
- if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
-
- We have processed all incoming
- connections.
- break;
- } else {
-
- perror("accept");
- break;
- }
- }
-
- fprintf(stdout,
- "sin_family[%hu], sin_zero[%s], sin_addr.s_addr[%u], sin_port[%hu]\n",
- in_addr.sin_family, in_addr.sin_zero,
- in_addr.sin_addr.s_addr, in_addr.sin_port);
-
-
- char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
- getnameinfo(in_addr, in_len, hbuf, sizeof hbuf, sbuf,
- sizeof sbuf, 0);
-
- if (s == 0) {
-
- printf("Accepted connection on descriptor %d "
- "(host=%s, _port=%s)\n", infd, hbuf, sbuf);
- }
-
- Make the incoming socket non-blocking and add it to the
- list of fds to monitor.
- s = make_socket_non_blocking(infd);
- if (s == -1) {
-
- free(in_addr);
- abort();
- }
-
- reuseSock(infd);
-
- event.data.ptr = new EpollData(infd, in_addr);
- event.events = EPOLLIN | EPOLLET;
- s = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
- if (s == -1) {
-
- free(in_addr);
- perror("epoll_ctl");
- abort();
- }
- }
- continue;
- } else {
-
- ssize_t count;
- char buf[MAX_MSG_SIZE];
- memset(buf, 0, sizeof(buf));
-
- sockaddr_in fromaddr;
- socklen_t sender_len = sizeof(struct sockaddr);
- count = recvfrom(edata->fd(), buf, sizeof buf, 0,
- (struct sockaddr*) &fromaddr, &sender_len);
-
- sockaddr *sender = (struct sockaddr*) &fromaddr;
-
- string str(buf);
- _ZProcessor->process(edata->fd(), buf, *sender); //todo: problem maybe
-
- memset(buf, 0, sizeof(buf));
- }
-
- } else {
-
- if (_tcp == true) {
- We have data on the fd waiting to be read. Read and
- display it. We must read whatever data is available
- completely, as we are running in edge-triggered mode
- and won't get a notification again for the same
- data.
- int done = 0;
-
- while (1) {
-
- ssize_t count;
- char buf[MAX_MSG_SIZE];
- memset(buf, 0, sizeof(buf));
-
- count = recv(edata->fd(), buf, sizeof(buf), 0);
-
- if (count == -1) {
-
- If errno == EAGAIN, that means we have read all
- data. So go back to the main loop.
- if (errno != EAGAIN) {
-
- perror("read");
- done = 1;
- } else {
-
- printf(
- "Closed connection on descriptor %d, -1<--recv\n",
- edata->fd());
-
- close(edata->fd());
- delete edata;
- }
- break;
- } else if (count == 0) {
-
- End of file. The remote has closed the
- connection.
- done = 1;
- break;
- } else {
-
- bool ready = false;
- string bd = pbrb->getBdStr(sfd, buf, count, ready);
-
- if (ready) {
-
- _ZProcessor->process(edata->fd(), bd.c_str(),
- *edata->sender());
- }
- }
-
- memset(buf, 0, sizeof(buf));
- }
- if (done) {
-
- printf("Closed connection on descriptor %d, done.\n",
- edata->fd());
-
- Closing the descriptor will make epoll remove it
- from the set of descriptors which are monitored.
- close(edata->fd());
- delete edata;
- }
- } //if TCP == true
- }
- }
- }
-
- free(events);
-
- close(sfd);
-
- EpollData *gedata = (EpollData*) event.data.ptr;
- delete gedata;
- }*/
 
 } /* namespace dm */
 } /* namespace zht */

@@ -33,7 +33,10 @@
 #include  "ProxyStubFactory.h"
 
 #include <string.h>
+#include <string>
 #include <stdio.h>
+
+using namespace std;
 
 IPServer::IPServer() :
 		_stub(ProxyStubFactory::createStub()) {
@@ -41,8 +44,11 @@ IPServer::IPServer() :
 
 IPServer::~IPServer() {
 
-	delete _stub;
-	_stub = NULL;
+	if (_stub != NULL) {
+
+		delete _stub;
+		_stub = NULL;
+	}
 }
 
 void IPServer::process(const int& fd, const char * const buf, sockaddr sender) {
@@ -58,6 +64,8 @@ void IPServer::process(const int& fd, const char * const buf, sockaddr sender) {
 	pa.fd = fd;
 	pa.sender = &sender;
 
-	_stub->recvsend(pa, buf);
+	string bufstr(buf);
+
+	_stub->recvsend(pa, bufstr.c_str());
 }
 
