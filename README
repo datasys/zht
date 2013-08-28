@@ -1,5 +1,5 @@
 -------------------ABOUT ZHT-------------------
-ZHT is a zero-hop distributed hash table(see also the paper, http://datasys.cs.iit.edu/publications/2013_IPDPS13_ZHT.pdf).
+ZHT is a zero-hop distributed hash table(see also the paper, http://datasys.cs.iit.edu/projects/ZHT/ZHT-CRC-PID2666213-Final.pdf).
 
 -------------------SOFTWARE REQUIREMENTS-------------------
 Google protocol buffers c binding, VERSION 0.15 or later
