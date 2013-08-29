@@ -37,10 +37,10 @@
 #include "c_zhtclient.h"
 #include "meta.pb-c.h"
 
-const int LOOKUP_SIZE = 1024 * 10000 * 2; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
+const int LOOKUP_SIZE = 1000 * 1000 * 2; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
 //const int LOOKUP_SIZE = 16 * 3; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
 
-const int TOTAL_SIZE = 1024 * 10000 * 1; //total size of a message to be transfered
+const int TOTAL_SIZE = 1000 * 1000 * 1; //total size of a message to be transfered
 //const int TOTAL_SIZE = 16 * 2; //total size of a message to be transfered
 
 void test_large_keyvalue();
@@ -66,12 +66,11 @@ void test_all() {
 
 	test_common_usecase();
 
-	//test_simple_largevalue();
+	test_simple_largevalue();
 
-	//test_large_keyvalue();
+	test_large_keyvalue();
 
-	//test_pass_package();
-
+//	test_pass_package();
 }
 
 int main(int argc, char **argv) {
@@ -390,6 +389,8 @@ void test_pass_package() {
 	test_pass_package_blankspace();
 
 	fprintf(stdout, "%s\n", "--------------------------");
+
+	test_pass_package_emptystring();
 }
 
 void test_pass_package_blankspace() {
@@ -450,20 +451,27 @@ void test_pass_package_reuse(const char *key, const char *value,
 
 		if (lret == 0 && ln > 0) {
 
-			Package *lpkg = package__unpack(NULL, LOOKUP_SIZE, result);
+			char *tokens, *pch;
+			tokens = strtok_r(result, ":", &pch);
+			while (tokens != NULL ) {
 
-			if (lpkg == NULL ) {
+				Package *lpkg = package__unpack(NULL, LOOKUP_SIZE, result);
 
-				fprintf(stdout, "error unpacking lookup result\n");
-			} else {
+				if (lpkg == NULL ) {
 
-				fprintf(stdout,
-						"c_zht_lookup, return {key}:{value} => {%s}:{%s}\n",
-						lpkg->virtualpath, lpkg->realfullpath);
+					fprintf(stdout, "error unpacking lookup result\n");
+				} else {
 
+					fprintf(stdout,
+							"c_zht_lookup, return {key}:{value} => {%s}:{%s}\n",
+							lpkg->virtualpath, lpkg->realfullpath);
+
+				}
+
+				package__free_unpacked(lpkg, NULL );
+
+				tokens = strtok_r(NULL, ":", &pch);
 			}
-
-			package__free_unpacked(lpkg, NULL );
 		}
 	}
 	free(result);
@@ -494,7 +502,7 @@ void test_pass_package_reuse(const char *key, const char *value,
 
 	if (result != NULL ) {
 
-		int lret = c_zht_lookup(key, result);
+		int lret = c_zht_lookup(key, result); //Here's bug
 		ln = strlen(result);
 
 		fprintf(stdout, "c_zht_lookup, return code(length): %d(%lu)\n", lret,
@@ -502,20 +510,28 @@ void test_pass_package_reuse(const char *key, const char *value,
 
 		if (lret == 0 && ln > 0) {
 
-			Package *lpkg = lpkg = package__unpack(NULL, LOOKUP_SIZE, result);
+			char *tokens, *pch;
+			tokens = strtok_r(result, ":", &pch);
+			while (tokens != NULL ) {
 
-			if (lpkg == NULL ) {
+				Package *lpkg = package__unpack(NULL, LOOKUP_SIZE, result);
 
-				fprintf(stdout, "error unpacking lookup result\n");
+				if (lpkg == NULL ) {
 
-			} else {
+					fprintf(stdout, "error unpacking lookup result\n");
 
-				fprintf(stdout,
-						"c_zht_lookup, return {key}:{value} => {%s}:{%s}\n",
-						lpkg->virtualpath, lpkg->realfullpath);
+				} else {
 
+					fprintf(stdout,
+							"c_zht_lookup, return {key}:{value} => {%s}:{%s}\n",
+							lpkg->virtualpath, lpkg->realfullpath);
+
+				}
+
+				package__free_unpacked(lpkg, NULL );
+
+				tokens = strtok_r(NULL, ":", &pch);
 			}
-			package__free_unpacked(lpkg, NULL );
 		}
 	}
 	free(result);

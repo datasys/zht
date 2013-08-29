@@ -51,7 +51,7 @@ namespace datasys {
 namespace zht {
 namespace dm {
 
-EventData::EventData(int fd, char* buf, size_t bufsize, sockaddr addr) {
+EventData::EventData(int fd, const char* buf, size_t bufsize, sockaddr addr) {
 
 	_fd = fd;
 	int len = strlen((const char*) buf);
@@ -317,7 +317,9 @@ void EpollServer::init_thread() {
 
 void EpollServer::serve() {
 
-	//init_thread();
+#ifdef THREADED_SERVE
+	init_thread();
+#endif
 
 	int sfd, s;
 	int efd;
@@ -466,23 +468,37 @@ void EpollServer::serve() {
 
 						} else {
 
+#ifdef BIG_MSG
 							bool ready = false;
 							string bd = pbrb->getBdStr(sfd, buf, count, ready);
 
 							if (ready) {
 
+#ifdef THREADED_SERVE
+								EventData eventData(edata->fd(), bd.c_str(), bd.size(),
+										fromaddr);
+								_eventQueue.push(eventData);
+
+#else
 								_ZProcessor->process(edata->fd(), bd.c_str(),
 										fromaddr);
+#endif
 							}
+#endif
+
+#ifdef SML_MSG
+#ifdef THREADED_SERVE
+							EventData eventData(edata->fd(), buf, sizeof(buf),
+									fromaddr);
+							_eventQueue.push(eventData);
+
+#else
+							string bufstr(buf);
+							_ZProcessor->process(edata->fd(), bufstr.c_str(),
+									fromaddr);
+#endif
+#endif
 						}
-
-						/*
-						 string bufstr(buf);
-						 _ZProcessor->process(edata->fd(), bufstr.c_str(), fromaddr);*/
-
-						/*EventData eventData(edata->fd(), buf, sizeof(buf),
-						 fromaddr);
-						 _eventQueue.push(eventData);*/
 
 						memset(buf, 0, sizeof(buf));
 					}
@@ -538,24 +554,34 @@ void EpollServer::serve() {
 							break;
 						} else {
 
+#ifdef BIG_MSG
 							bool ready = false;
 							string bd = pbrb->getBdStr(sfd, buf, count, ready);
 
 							if (ready) {
 
+#ifdef THREADED_SERVE
+								EventData eventData(edata->fd(), bd.c_str(), bd.size(),
+										*edata->sender());
+								_eventQueue.push(eventData);
+#else
 								_ZProcessor->process(edata->fd(), bd.c_str(),
 										*edata->sender());
+#endif
 							}
+#endif
 
-							/*string bufstr(buf);
-							 _ZProcessor->process(edata->fd(), bufstr.c_str(),
-							 *edata->sender());*/
-
-							/*sockaddr fromaddr;
-							 EventData eventData(edata->fd(), buf, sizeof(buf),
-							 fromaddr);
-							 _eventQueue.push(eventData);
-							 */
+#ifdef SML_MSG
+#ifdef THREADED_SERVE
+							EventData eventData(edata->fd(), buf, sizeof(buf),
+									*edata->sender());
+							_eventQueue.push(eventData);
+#else
+							string bufstr(buf);
+							_ZProcessor->process(edata->fd(), bufstr.c_str(),
+									*edata->sender());
+#endif
+#endif
 						}
 
 						memset(buf, 0, sizeof(buf));

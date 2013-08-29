@@ -35,6 +35,7 @@
 #include <string.h>
 #include <string>
 #include <stdio.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -62,10 +63,10 @@ void IPServer::process(const int& fd, const char * const buf, sockaddr sender) {
 
 	ProtoAddr pa;
 	pa.fd = fd;
-	pa.sender = &sender;
+	pa.sender = calloc(1, sizeof(sockaddr));
+	memcpy(pa.sender, &sender, sizeof(sockaddr));
 
 	string bufstr(buf);
-
 	_stub->recvsend(pa, bufstr.c_str());
 }
 

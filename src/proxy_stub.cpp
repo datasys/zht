@@ -30,6 +30,8 @@
 
 #include "proxy_stub.h"
 
+#include <stdlib.h>
+
 ProtoAddr::ProtoAddr() :
 		fd(-1), sender(0) {
 }

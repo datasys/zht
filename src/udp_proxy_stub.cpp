@@ -85,13 +85,11 @@ bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 	return sent_bool && recv_bool;
 }
 
+#ifdef BIG_MSG
 int UDPProxy::sendTo(int sock, const string &host, uint port,
 		const void* sendbuf, int sendcount) {
 
 	struct sockaddr_in dest = getAddrCached(host, port);
-
-	/*int sentSize = sendto(sock, sendbuf, sendcount, 0, (struct sockaddr*) &dest,
-	 sizeof(struct sockaddr));*/
 
 	BdSendBase *pbsb = new BdSendToServer((char*) sendbuf);
 	int sentSize = pbsb->bsend(sock, &dest);
@@ -108,7 +106,29 @@ int UDPProxy::sendTo(int sock, const string &host, uint port,
 
 	return sentSize;
 }
+#endif
 
+#ifdef SML_MSG
+int UDPProxy::sendTo(int sock, const string &host, uint port,
+		const void* sendbuf, int sendcount) {
+
+	struct sockaddr_in dest = getAddrCached(host, port);
+
+	int sentSize = sendto(sock, sendbuf, sendcount, 0, (struct sockaddr*) &dest,
+			sizeof(struct sockaddr));
+
+	//prompt errors
+	if (sentSize < sendcount) {
+
+		cerr << "UDPProxy::sendTo(): error on BdSendToServer::bsend(...): "
+		<< strerror(errno) << endl;
+	}
+
+	return sentSize;
+}
+#endif
+
+#ifdef BIG_MSG
 int UDPProxy::recvFrom(int sock, void* recvbuf) {
 
 	string result;
@@ -120,11 +140,34 @@ int UDPProxy::recvFrom(int sock, void* recvbuf) {
 	if (recvcount < 0) {
 
 		cerr << "UDPProxy::recvFrom(): error on loopedrecv(...): "
-				<< strerror(errno) << endl;
+		<< strerror(errno) << endl;
 	}
 
 	return recvcount;
 }
+#endif
+
+#ifdef SML_MSG
+int UDPProxy::recvFrom(int sock, void* recvbuf) {
+
+	char buf[Env::BUF_SIZE];
+	memset(buf, '\0', sizeof(buf));
+
+	struct sockaddr_in recvAddr;
+	int recvcount = ::recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr*)recvAddr, sizeof(sockaddr));
+
+	memcpy(recvbuf, buf, strlen(buf));
+
+	/*prompt errors*/
+	if (recvcount < 0) {
+
+		cerr << "UDPProxy::recvFrom(): error on loopedrecv(...): "
+		<< strerror(errno) << endl;
+	}
+
+	return recvcount;
+}
+#endif
 
 int UDPProxy::loopedrecv(int sock, string &srecv) {
 
@@ -231,7 +274,7 @@ sockaddr_in UDPProxy::makeClientAddr(const string& host, const uint& port) {
 	dest.sin_family = PF_INET;
 	dest.sin_port = htons(port);
 
-	struct hostent *hinfo = gethostbyname(host.c_str()); //todo: remove it from here...
+	struct hostent *hinfo = gethostbyname(host.c_str());
 	if (hinfo == NULL) {
 		cerr << "UDPProxy::makeClientAddr(): ";
 		herror(host.c_str());
@@ -266,21 +309,41 @@ bool UDPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 	return sent_bool;
 }
 
+#ifdef BIG_MSG
 int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 
 	//send response to client over server sock fd
 	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
 	int sentsize = pbsb->bsend(addr.fd, addr.sender);
-
 	delete pbsb;
 	pbsb = NULL;
 
 	//prompt errors
 	if (sentsize < sendcount) {
 
+		//todo: bug prone
 		cerr << "UDPStub::sendBack():  error on BdSendToClient::bsend(...): "
-				<< strerror(errno) << endl;
+		<< strerror(errno) << endl;
 	}
 
 	return sentsize;
 }
+#endif
+
+#ifdef SML_MSG
+int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+
+	//send response to client over server sock fd
+	int sentsize = ::sendto(addr.fd, sendbuf, sendcount, 0,
+			(struct sockaddr*)addr.sender, sizeof(struct sockaddr));
+
+	//prompt errors
+	if (sentsize < sendcount) {
+
+		cerr << "UDPStub::sendBack():  error on BdSendToClient::bsend(...): "
+		<< strerror(errno) << endl;
+	}
+
+	return sentsize;
+}
+#endif

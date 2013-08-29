@@ -197,11 +197,6 @@ int BdSendBase::bsend(int sock) const {
 	bsend(sock, NULL);
 }
 
-int BdSendBase::bsend(const char* host, int port, int sock) const {
-
-	return bsend(sock);
-}
-
 int BdSendBase::bsend(int sock, void *senderAddr) const {
 
 	int count = 0;

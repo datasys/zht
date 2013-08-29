@@ -48,7 +48,7 @@ namespace dm {
 
 class EventData {
 public:
-	EventData(int fd, char* buf, size_t bufsize, sockaddr addr);
+	EventData(int fd, const char* buf, size_t bufsize, sockaddr addr);
 
 	~EventData();
 
