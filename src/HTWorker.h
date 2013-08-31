@@ -49,10 +49,15 @@ public:
 	string run(const char *buf);
 
 private:
-	string lookup(const ZPack &zpack);
-	string remove(const ZPack &zpack);
 	string insert(const ZPack &zpack);
+	string lookup(const ZPack &zpack);
 	string append(const ZPack &zpack);
+	string compare_swap(const ZPack &zpack);
+	string compare_swap_internal(const ZPack &zpack);
+	string remove(const ZPack &zpack);
+
+private:
+	string erase_status_code(string &val);
 
 private:
 	static NoVoHT *pmap;

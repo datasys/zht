@@ -73,7 +73,7 @@ int c_zht_append(const char *key, const char *value) {
 }
 
 int c_zht_compare_swap(const char *key, const
-char *seen_value, const char *new_value, char **value_queried) {
+char *seen_value, const char *new_value, char *value_queried) {
 
 	lock_guard lock(&c_zht_client_mutex);
 

@@ -55,8 +55,8 @@ static const ProtobufCFieldDescriptor zpack__field_descriptors[7] =
     "opcode",
     1,
     PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
+    PROTOBUF_C_TYPE_BYTES,
+    PROTOBUF_C_OFFSETOF(ZPack, has_opcode),
     PROTOBUF_C_OFFSETOF(ZPack, opcode),
     NULL,
     NULL,
@@ -67,8 +67,8 @@ static const ProtobufCFieldDescriptor zpack__field_descriptors[7] =
     "key",
     2,
     PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
+    PROTOBUF_C_TYPE_BYTES,
+    PROTOBUF_C_OFFSETOF(ZPack, has_key),
     PROTOBUF_C_OFFSETOF(ZPack, key),
     NULL,
     NULL,
@@ -79,8 +79,8 @@ static const ProtobufCFieldDescriptor zpack__field_descriptors[7] =
     "val",
     3,
     PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
+    PROTOBUF_C_TYPE_BYTES,
+    PROTOBUF_C_OFFSETOF(ZPack, has_val),
     PROTOBUF_C_OFFSETOF(ZPack, val),
     NULL,
     NULL,
@@ -88,24 +88,24 @@ static const ProtobufCFieldDescriptor zpack__field_descriptors[7] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "valnull",
+    "newval",
     4,
     PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_BOOL,
-    PROTOBUF_C_OFFSETOF(ZPack, has_valnull),
-    PROTOBUF_C_OFFSETOF(ZPack, valnull),
+    PROTOBUF_C_TYPE_BYTES,
+    PROTOBUF_C_OFFSETOF(ZPack, has_newval),
+    PROTOBUF_C_OFFSETOF(ZPack, newval),
     NULL,
     NULL,
     0,            /* packed */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "newval",
+    "valnull",
     5,
     PROTOBUF_C_LABEL_OPTIONAL,
-    PROTOBUF_C_TYPE_STRING,
-    0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(ZPack, newval),
+    PROTOBUF_C_TYPE_BOOL,
+    PROTOBUF_C_OFFSETOF(ZPack, has_valnull),
+    PROTOBUF_C_OFFSETOF(ZPack, valnull),
     NULL,
     NULL,
     0,            /* packed */
@@ -138,12 +138,12 @@ static const ProtobufCFieldDescriptor zpack__field_descriptors[7] =
 };
 static const unsigned zpack__field_indices_by_name[] = {
   1,   /* field[1] = key */
-  4,   /* field[4] = newval */
+  3,   /* field[3] = newval */
   5,   /* field[5] = newvalnull */
   0,   /* field[0] = opcode */
   6,   /* field[6] = replicanum */
   2,   /* field[2] = val */
-  3,   /* field[3] = valnull */
+  4,   /* field[4] = valnull */
 };
 static const ProtobufCIntRange zpack__number_ranges[1 + 1] =
 {

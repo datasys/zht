@@ -134,7 +134,7 @@ int UDPProxy::recvFrom(int sock, void* recvbuf) {
 	string result;
 	int recvcount = loopedrecv(sock, result);
 
-	memcpy(recvbuf, result.c_str(), result.size() + 1);
+	memcpy(recvbuf, result.c_str(), result.size());
 
 	/*prompt errors*/
 	if (recvcount < 0) {
@@ -154,7 +154,8 @@ int UDPProxy::recvFrom(int sock, void* recvbuf) {
 	memset(buf, '\0', sizeof(buf));
 
 	struct sockaddr_in recvAddr;
-	int recvcount = ::recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr*)recvAddr, sizeof(sockaddr));
+	socklen_t addr_len = sizeof(struct sockaddr);
+	int recvcount = ::recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr*)&recvAddr, &addr_len);
 
 	memcpy(recvbuf, buf, strlen(buf));
 
@@ -178,9 +179,17 @@ int UDPProxy::loopedrecv(int sock, string &srecv) {
 
 bool UDPProxy::teardown() {
 
-	int rc = close(UDP_SOCKET);
+	bool result = true;
 
-	return rc == 0;
+	SIT it;
+	for (it = SOCK_CACHE.begin(); it != SOCK_CACHE.end(); it++) {
+
+		int rc = close(it->second);
+
+		result &= rc == 0;
+	}
+
+	return result;
 }
 
 int UDPProxy::getSockCached(const string& host, const uint& port) {

@@ -79,8 +79,7 @@ ZHT_CPP(extern "C" {)
 			const char *value);
 
 	int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
-			const char *seen_value, const char *new_value,
-			char **value_queried);
+			const char *seen_value, const char *new_value, char *value_queried);
 
 	/* wrapp C++ ZHTClient::teardown.
 	 * return code: 0 if succeeded, or -1 if failed.

@@ -66,7 +66,7 @@ int c_zht_lookup_std(ZHTClient_c zhtClient, const char *key, char *result) {
 	string resultStr;
 	int ret = zhtcppClient->lookup(skey, resultStr);
 
-	strncpy(result, resultStr.c_str(), resultStr.size() + 1);
+	strncpy(result, resultStr.c_str(), resultStr.size());
 
 	return ret;
 }
@@ -104,7 +104,7 @@ int c_zht_append_std(ZHTClient_c zhtClient, const char *key,
 }
 
 int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
-		const char *seen_value, const char *new_value, char **value_queried) {
+		const char *seen_value, const char *new_value, char *value_queried) {
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
 
@@ -115,7 +115,7 @@ int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
 	string resultStr;
 	int rc = zhtcppClient->compare_swap(skey, sseenValue, snewValue, resultStr);
 
-	strncpy(*value_queried, resultStr.c_str(), resultStr.size() + 1);
+	strncpy(value_queried, resultStr.c_str(), resultStr.size());
 
 	return rc;
 }

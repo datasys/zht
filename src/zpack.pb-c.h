@@ -19,12 +19,16 @@ typedef struct _ZPack ZPack;
 struct  _ZPack
 {
   ProtobufCMessage base;
-  char *opcode;
-  char *key;
-  char *val;
+  protobuf_c_boolean has_opcode;
+  ProtobufCBinaryData opcode;
+  protobuf_c_boolean has_key;
+  ProtobufCBinaryData key;
+  protobuf_c_boolean has_val;
+  ProtobufCBinaryData val;
+  protobuf_c_boolean has_newval;
+  ProtobufCBinaryData newval;
   protobuf_c_boolean has_valnull;
   protobuf_c_boolean valnull;
-  char *newval;
   protobuf_c_boolean has_newvalnull;
   protobuf_c_boolean newvalnull;
   protobuf_c_boolean has_replicanum;
@@ -32,7 +36,7 @@ struct  _ZPack
 };
 #define ZPACK__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&zpack__descriptor) \
-    , NULL, NULL, NULL, 0,0, NULL, 0,0, 0,0 }
+    , 0,{0,NULL}, 0,{0,NULL}, 0,{0,NULL}, 0,{0,NULL}, 0,0, 0,0, 0,0 }
 
 
 /* ZPack methods */

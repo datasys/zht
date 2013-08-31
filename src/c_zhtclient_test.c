@@ -37,10 +37,10 @@
 #include "c_zhtclient.h"
 #include "meta.pb-c.h"
 
-const int LOOKUP_SIZE = 1000 * 1000 * 2; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
+const int LOOKUP_SIZE = 1000 * 100 * 2; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
 //const int LOOKUP_SIZE = 16 * 3; //size of buffer to store lookup result, larger enough than TOTAL_SIZE
 
-const int TOTAL_SIZE = 1000 * 1000 * 1; //total size of a message to be transfered
+const int TOTAL_SIZE = 1000 * 100 * 1; //total size of a message to be transfered
 //const int TOTAL_SIZE = 16 * 2; //total size of a message to be transfered
 
 void test_large_keyvalue();
@@ -64,9 +64,15 @@ void printUsage(char *argv_0);
 
 void test_all() {
 
+	printf("%s\n", "//////////////////test_common_usecase");
+
 	test_common_usecase();
 
+	printf("%s\n", "//////////////////test_simple_largevalue");
+
 	test_simple_largevalue();
+
+	printf("%s\n", "//////////////////test_large_keyvalue");
 
 	test_large_keyvalue();
 

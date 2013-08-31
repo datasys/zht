@@ -33,8 +33,8 @@ void protobuf_AssignDesc_zpack_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, opcode_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, key_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, val_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, valnull_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, newval_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, valnull_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, newvalnull_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ZPack, replicanum_),
   };
@@ -79,9 +79,9 @@ void protobuf_AddDesc_zpack_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\013zpack.proto\"z\n\005ZPack\022\016\n\006opcode\030\001 \001(\t\022\013"
-    "\n\003key\030\002 \001(\t\022\013\n\003val\030\003 \001(\t\022\017\n\007valnull\030\004 \001("
-    "\010\022\016\n\006newval\030\005 \001(\t\022\022\n\nnewvalnull\030\006 \001(\010\022\022\n"
+    "\n\013zpack.proto\"z\n\005ZPack\022\016\n\006opcode\030\001 \001(\014\022\013"
+    "\n\003key\030\002 \001(\014\022\013\n\003val\030\003 \001(\014\022\016\n\006newval\030\004 \001(\014"
+    "\022\017\n\007valnull\030\005 \001(\010\022\022\n\nnewvalnull\030\006 \001(\010\022\022\n"
     "\nreplicanum\030\007 \001(\005", 137);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "zpack.proto", &protobuf_RegisterTypes);
@@ -104,8 +104,8 @@ struct StaticDescriptorInitializer_zpack_2eproto {
 const int ZPack::kOpcodeFieldNumber;
 const int ZPack::kKeyFieldNumber;
 const int ZPack::kValFieldNumber;
-const int ZPack::kValnullFieldNumber;
 const int ZPack::kNewvalFieldNumber;
+const int ZPack::kValnullFieldNumber;
 const int ZPack::kNewvalnullFieldNumber;
 const int ZPack::kReplicanumFieldNumber;
 #endif  // !_MSC_VER
@@ -129,8 +129,8 @@ void ZPack::SharedCtor() {
   opcode_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   key_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   val_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  valnull_ = false;
   newval_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  valnull_ = false;
   newvalnull_ = false;
   replicanum_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -194,12 +194,12 @@ void ZPack::Clear() {
         val_->clear();
       }
     }
-    valnull_ = false;
     if (has_newval()) {
       if (newval_ != &::google::protobuf::internal::kEmptyString) {
         newval_->clear();
       }
     }
+    valnull_ = false;
     newvalnull_ = false;
     replicanum_ = 0;
   }
@@ -213,15 +213,12 @@ bool ZPack::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string opcode = 1;
+      // optional bytes opcode = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_opcode()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->opcode().data(), this->opcode().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
         }
@@ -229,16 +226,13 @@ bool ZPack::MergePartialFromCodedStream(
         break;
       }
       
-      // optional string key = 2;
+      // optional bytes key = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_key:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_key()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->key().data(), this->key().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
         }
@@ -246,25 +240,36 @@ bool ZPack::MergePartialFromCodedStream(
         break;
       }
       
-      // optional string val = 3;
+      // optional bytes val = 3;
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_val:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_val()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->val().data(), this->val().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(32)) goto parse_valnull;
+        if (input->ExpectTag(34)) goto parse_newval;
         break;
       }
       
-      // optional bool valnull = 4;
+      // optional bytes newval = 4;
       case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_newval:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_newval()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_valnull;
+        break;
+      }
+      
+      // optional bool valnull = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_valnull:
@@ -272,23 +277,6 @@ bool ZPack::MergePartialFromCodedStream(
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &valnull_)));
           set_has_valnull();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(42)) goto parse_newval;
-        break;
-      }
-      
-      // optional string newval = 5;
-      case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_newval:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_newval()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->newval().data(), this->newval().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
         }
@@ -346,45 +334,33 @@ bool ZPack::MergePartialFromCodedStream(
 
 void ZPack::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional string opcode = 1;
+  // optional bytes opcode = 1;
   if (has_opcode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->opcode().data(), this->opcode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
       1, this->opcode(), output);
   }
   
-  // optional string key = 2;
+  // optional bytes key = 2;
   if (has_key()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->key().data(), this->key().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
       2, this->key(), output);
   }
   
-  // optional string val = 3;
+  // optional bytes val = 3;
   if (has_val()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->val().data(), this->val().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
       3, this->val(), output);
   }
   
-  // optional bool valnull = 4;
-  if (has_valnull()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->valnull(), output);
+  // optional bytes newval = 4;
+  if (has_newval()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+      4, this->newval(), output);
   }
   
-  // optional string newval = 5;
-  if (has_newval()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->newval().data(), this->newval().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      5, this->newval(), output);
+  // optional bool valnull = 5;
+  if (has_valnull()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(5, this->valnull(), output);
   }
   
   // optional bool newvalnull = 6;
@@ -405,49 +381,37 @@ void ZPack::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* ZPack::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional string opcode = 1;
+  // optional bytes opcode = 1;
   if (has_opcode()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->opcode().data(), this->opcode().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         1, this->opcode(), target);
   }
   
-  // optional string key = 2;
+  // optional bytes key = 2;
   if (has_key()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->key().data(), this->key().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         2, this->key(), target);
   }
   
-  // optional string val = 3;
+  // optional bytes val = 3;
   if (has_val()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->val().data(), this->val().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         3, this->val(), target);
   }
   
-  // optional bool valnull = 4;
-  if (has_valnull()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->valnull(), target);
+  // optional bytes newval = 4;
+  if (has_newval()) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        4, this->newval(), target);
   }
   
-  // optional string newval = 5;
-  if (has_newval()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->newval().data(), this->newval().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        5, this->newval(), target);
+  // optional bool valnull = 5;
+  if (has_valnull()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(5, this->valnull(), target);
   }
   
   // optional bool newvalnull = 6;
@@ -471,37 +435,37 @@ int ZPack::ByteSize() const {
   int total_size = 0;
   
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional string opcode = 1;
+    // optional bytes opcode = 1;
     if (has_opcode()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
+        ::google::protobuf::internal::WireFormatLite::BytesSize(
           this->opcode());
     }
     
-    // optional string key = 2;
+    // optional bytes key = 2;
     if (has_key()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
+        ::google::protobuf::internal::WireFormatLite::BytesSize(
           this->key());
     }
     
-    // optional string val = 3;
+    // optional bytes val = 3;
     if (has_val()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
+        ::google::protobuf::internal::WireFormatLite::BytesSize(
           this->val());
     }
     
-    // optional bool valnull = 4;
-    if (has_valnull()) {
-      total_size += 1 + 1;
-    }
-    
-    // optional string newval = 5;
+    // optional bytes newval = 4;
     if (has_newval()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
+        ::google::protobuf::internal::WireFormatLite::BytesSize(
           this->newval());
+    }
+    
+    // optional bool valnull = 5;
+    if (has_valnull()) {
+      total_size += 1 + 1;
     }
     
     // optional bool newvalnull = 6;
@@ -552,11 +516,11 @@ void ZPack::MergeFrom(const ZPack& from) {
     if (from.has_val()) {
       set_val(from.val());
     }
-    if (from.has_valnull()) {
-      set_valnull(from.valnull());
-    }
     if (from.has_newval()) {
       set_newval(from.newval());
+    }
+    if (from.has_valnull()) {
+      set_valnull(from.valnull());
     }
     if (from.has_newvalnull()) {
       set_newvalnull(from.newvalnull());
@@ -590,8 +554,8 @@ void ZPack::Swap(ZPack* other) {
     std::swap(opcode_, other->opcode_);
     std::swap(key_, other->key_);
     std::swap(val_, other->val_);
-    std::swap(valnull_, other->valnull_);
     std::swap(newval_, other->newval_);
+    std::swap(valnull_, other->valnull_);
     std::swap(newvalnull_, other->newvalnull_);
     std::swap(replicanum_, other->replicanum_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);

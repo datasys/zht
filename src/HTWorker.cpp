@@ -56,22 +56,44 @@ string HTWorker::run(const char *buf) {
 	if (zpack.opcode() == Const::ZSC_OPC_LOOKUP) {
 
 		result = lookup(zpack);
-
-	} else if (zpack.opcode() == Const::ZSC_OPC_REMOVE) {
-
-		result = remove(zpack);
-
 	} else if (zpack.opcode() == Const::ZSC_OPC_INSERT) {
 
 		result = insert(zpack);
-
 	} else if (zpack.opcode() == Const::ZSC_OPC_APPEND) {
 
 		result = append(zpack);
+	} else if (zpack.opcode() == Const::ZSC_OPC_CMPSWP) {
 
+		result = compare_swap(zpack);
+	} else if (zpack.opcode() == Const::ZSC_OPC_REMOVE) {
+
+		result = remove(zpack);
 	} else {
 
 		result = Const::ZSC_REC_UOPC;
+	}
+
+	return result;
+}
+
+string HTWorker::insert(const ZPack &zpack) {
+
+	string result;
+
+	if (zpack.key().empty())
+		return Const::ZSC_REC_EMPTYKEY; //-1
+
+	string key = zpack.key();
+	int ret = pmap->put(key, zpack.SerializeAsString());
+
+	if (ret != 0) {
+
+		cerr << "DB Error: fail to insert: rcode = " << ret << endl;
+		result = Const::ZSC_REC_NONEXISTKEY; //-92
+
+	} else {
+
+		result = Const::ZSC_REC_SUCC; //0, succeed.
 	}
 
 	return result;
@@ -103,6 +125,74 @@ string HTWorker::lookup(const ZPack &zpack) {
 	return result;
 }
 
+string HTWorker::append(const ZPack &zpack) {
+
+	string result;
+
+	if (zpack.key().empty())
+		return Const::ZSC_REC_EMPTYKEY; //-1
+
+	string key = zpack.key();
+	int ret = pmap->append(key, zpack.SerializeAsString());
+
+	if (ret != 0) {
+
+		cerr << "DB Error: fail to append: rcode = " << ret << endl;
+		result = Const::ZSC_REC_NONEXISTKEY; //-92
+
+	} else {
+
+		result = Const::ZSC_REC_SUCC; //0, succeed.
+	}
+
+	return result;
+}
+
+string HTWorker::compare_swap(const ZPack &zpack) {
+
+	if (zpack.key().empty())
+		return Const::ZSC_REC_EMPTYKEY; //-1
+
+	string ret = compare_swap_internal(zpack);
+
+	string result = lookup(zpack);
+
+	ret.append(erase_status_code(result));
+
+	return ret;
+}
+
+string HTWorker::compare_swap_internal(const ZPack &zpack) {
+
+	string ret;
+
+	/*get Package stored by lookup*/
+	string lresult = lookup(zpack);
+	ZPack lzpack;
+	lresult = erase_status_code(lresult);
+	lzpack.ParseFromString(lresult);
+
+	string seen_value_pass_in = zpack.val();
+
+	/*get seen_value stored*/
+	string seen_value_stored = lzpack.val();
+
+	/*	printf("{%s}:{%s,%s}\n", zpack.key().c_str(), zpack.val().c_str(),
+	 zpack.newval().c_str());*/
+
+	/*they are equivalent, compare and swap*/
+	if (!seen_value_pass_in.compare(seen_value_stored)) {
+
+		lzpack.set_val(zpack.newval());
+
+		return insert(lzpack);
+
+	} else {
+
+		return Const::ZSC_REC_SRVEXP;
+	}
+}
+
 string HTWorker::remove(const ZPack &zpack) {
 
 	string result;
@@ -126,48 +216,7 @@ string HTWorker::remove(const ZPack &zpack) {
 	return result;
 }
 
-string HTWorker::insert(const ZPack &zpack) {
+string HTWorker::erase_status_code(string &val) {
 
-	string result;
-
-	if (zpack.key().empty())
-		return Const::ZSC_REC_EMPTYKEY; //-1
-
-	string key = zpack.key();
-	int ret = pmap->put(key, zpack.SerializeAsString());
-
-	if (ret != 0) {
-
-		cerr << "DB Error: fail to insert: rcode = " << ret << endl;
-		result = Const::ZSC_REC_NONEXISTKEY; //-92
-
-	} else {
-
-		result = Const::ZSC_REC_SUCC; //0, succeed.
-	}
-
-	return result;
-}
-
-string HTWorker::append(const ZPack &zpack) {
-
-	string result;
-
-	if (zpack.key().empty())
-		return Const::ZSC_REC_EMPTYKEY; //-1
-
-	string key = zpack.key();
-	int ret = pmap->append(key, zpack.SerializeAsString());
-
-	if (ret != 0) {
-
-		cerr << "DB Error: fail to append: rcode = " << ret << endl;
-		result = Const::ZSC_REC_NONEXISTKEY; //-92
-
-	} else {
-
-		result = Const::ZSC_REC_SUCC; //0, succeed.
-	}
-
-	return result;
+	return val.substr(3);
 }

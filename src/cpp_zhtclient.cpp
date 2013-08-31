@@ -131,21 +131,37 @@ string ZHTClient::extract_value(const string &returnStr) {
 	/*
 	 * hello,zht:hello,ZHT ==> zht:ZHT
 	 * */
-	while (strtok.has_more_tokens()) {
+
+	if (strtok.has_more_tokens()) {
+
+		while (strtok.has_more_tokens()) {
+
+			ZPack zpack;
+			zpack.ParseFromString(strtok.next_token());
+
+			if (zpack.valnull())
+				val.append("");
+			else
+				val.append(zpack.val());
+
+			val.append(":");
+		}
+
+		size_t found = val.find_last_of(":");
+		val = val.substr(0, found);
+
+	} else {
 
 		ZPack zpack;
-		zpack.ParseFromString(strtok.next_token());
+		zpack.ParseFromString(returnStr);
 
 		if (zpack.valnull())
-			val.append("");
+			val = "";
 		else
-			val.append(zpack.val());
-
-		val.append(":");
+			val = zpack.val();
 	}
 
-	size_t found = val.find_last_of(":");
-	return val.substr(0, found);
+	return val;
 }
 
 int ZHTClient::compare_swap(const string &key, const string &seen_val,
@@ -162,7 +178,7 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 		const string &val, const string &val2, string &result) {
 
 	ZPack zpack;
-	zpack.set_opcode(opcode); //"001": lookup, "002": remove, "003": insert, "004": append
+	zpack.set_opcode(opcode); //"001": lookup, "002": remove, "003": insert, "004": append, "005", compare_swap
 	zpack.set_replicanum(3);
 
 	if (key.empty())
@@ -172,7 +188,7 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 
 	if (val.empty()) {
 
-		zpack.set_val(" "); //coup, to fix ridiculous bug of protobuf! //to debug
+		zpack.set_val("^"); //coup, to fix ridiculous bug of protobuf! //to debug
 		zpack.set_valnull(true);
 	} else {
 
@@ -182,7 +198,7 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 
 	if (val2.empty()) {
 
-		zpack.set_newval(" "); //coup, to fix ridiculous bug of protobuf! //to debug
+		zpack.set_newval("?"); //coup, to fix ridiculous bug of protobuf! //to debug
 		zpack.set_newvalnull(true);
 	} else {
 
@@ -191,6 +207,12 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 	}
 
 	string msg = zpack.SerializeAsString();
+
+	/*ZPack tmp;
+	 tmp.ParseFromString(msg);
+
+	 printf("{%s}:{%s,%s}\n", tmp.key().c_str(), tmp.val().c_str(),
+	 tmp.newval().c_str());*/
 
 	char *buf = (char*) calloc(_msg_maxsize, sizeof(char));
 	size_t msz = _msg_maxsize;

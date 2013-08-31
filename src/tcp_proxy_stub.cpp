@@ -317,8 +317,8 @@ int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 	if (sentsize < sendcount) {
 
 		//todo: bug prone
-		cerr << "TCPStub::sendBack():  error on BdSendToClient::bsend(...): "
-		<< strerror(errno) << endl;
+		/*	cerr << "TCPStub::sendBack():  error on BdSendToClient::bsend(...): "
+		 << strerror(errno) << endl;*/
 	}
 
 	return sentsize;

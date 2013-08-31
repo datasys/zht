@@ -88,56 +88,56 @@ class ZPack : public ::google::protobuf::Message {
   
   // accessors -------------------------------------------------------
   
-  // optional string opcode = 1;
+  // optional bytes opcode = 1;
   inline bool has_opcode() const;
   inline void clear_opcode();
   static const int kOpcodeFieldNumber = 1;
   inline const ::std::string& opcode() const;
   inline void set_opcode(const ::std::string& value);
   inline void set_opcode(const char* value);
-  inline void set_opcode(const char* value, size_t size);
+  inline void set_opcode(const void* value, size_t size);
   inline ::std::string* mutable_opcode();
   inline ::std::string* release_opcode();
   
-  // optional string key = 2;
+  // optional bytes key = 2;
   inline bool has_key() const;
   inline void clear_key();
   static const int kKeyFieldNumber = 2;
   inline const ::std::string& key() const;
   inline void set_key(const ::std::string& value);
   inline void set_key(const char* value);
-  inline void set_key(const char* value, size_t size);
+  inline void set_key(const void* value, size_t size);
   inline ::std::string* mutable_key();
   inline ::std::string* release_key();
   
-  // optional string val = 3;
+  // optional bytes val = 3;
   inline bool has_val() const;
   inline void clear_val();
   static const int kValFieldNumber = 3;
   inline const ::std::string& val() const;
   inline void set_val(const ::std::string& value);
   inline void set_val(const char* value);
-  inline void set_val(const char* value, size_t size);
+  inline void set_val(const void* value, size_t size);
   inline ::std::string* mutable_val();
   inline ::std::string* release_val();
   
-  // optional bool valnull = 4;
-  inline bool has_valnull() const;
-  inline void clear_valnull();
-  static const int kValnullFieldNumber = 4;
-  inline bool valnull() const;
-  inline void set_valnull(bool value);
-  
-  // optional string newval = 5;
+  // optional bytes newval = 4;
   inline bool has_newval() const;
   inline void clear_newval();
-  static const int kNewvalFieldNumber = 5;
+  static const int kNewvalFieldNumber = 4;
   inline const ::std::string& newval() const;
   inline void set_newval(const ::std::string& value);
   inline void set_newval(const char* value);
-  inline void set_newval(const char* value, size_t size);
+  inline void set_newval(const void* value, size_t size);
   inline ::std::string* mutable_newval();
   inline ::std::string* release_newval();
+  
+  // optional bool valnull = 5;
+  inline bool has_valnull() const;
+  inline void clear_valnull();
+  static const int kValnullFieldNumber = 5;
+  inline bool valnull() const;
+  inline void set_valnull(bool value);
   
   // optional bool newvalnull = 6;
   inline bool has_newvalnull() const;
@@ -161,10 +161,10 @@ class ZPack : public ::google::protobuf::Message {
   inline void clear_has_key();
   inline void set_has_val();
   inline void clear_has_val();
-  inline void set_has_valnull();
-  inline void clear_has_valnull();
   inline void set_has_newval();
   inline void clear_has_newval();
+  inline void set_has_valnull();
+  inline void clear_has_valnull();
   inline void set_has_newvalnull();
   inline void clear_has_newvalnull();
   inline void set_has_replicanum();
@@ -197,7 +197,7 @@ class ZPack : public ::google::protobuf::Message {
 
 // ZPack
 
-// optional string opcode = 1;
+// optional bytes opcode = 1;
 inline bool ZPack::has_opcode() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -230,7 +230,7 @@ inline void ZPack::set_opcode(const char* value) {
   }
   opcode_->assign(value);
 }
-inline void ZPack::set_opcode(const char* value, size_t size) {
+inline void ZPack::set_opcode(const void* value, size_t size) {
   set_has_opcode();
   if (opcode_ == &::google::protobuf::internal::kEmptyString) {
     opcode_ = new ::std::string;
@@ -255,7 +255,7 @@ inline ::std::string* ZPack::release_opcode() {
   }
 }
 
-// optional string key = 2;
+// optional bytes key = 2;
 inline bool ZPack::has_key() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -288,7 +288,7 @@ inline void ZPack::set_key(const char* value) {
   }
   key_->assign(value);
 }
-inline void ZPack::set_key(const char* value, size_t size) {
+inline void ZPack::set_key(const void* value, size_t size) {
   set_has_key();
   if (key_ == &::google::protobuf::internal::kEmptyString) {
     key_ = new ::std::string;
@@ -313,7 +313,7 @@ inline ::std::string* ZPack::release_key() {
   }
 }
 
-// optional string val = 3;
+// optional bytes val = 3;
 inline bool ZPack::has_val() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -346,7 +346,7 @@ inline void ZPack::set_val(const char* value) {
   }
   val_->assign(value);
 }
-inline void ZPack::set_val(const char* value, size_t size) {
+inline void ZPack::set_val(const void* value, size_t size) {
   set_has_val();
   if (val_ == &::google::protobuf::internal::kEmptyString) {
     val_ = new ::std::string;
@@ -371,37 +371,15 @@ inline ::std::string* ZPack::release_val() {
   }
 }
 
-// optional bool valnull = 4;
-inline bool ZPack::has_valnull() const {
+// optional bytes newval = 4;
+inline bool ZPack::has_newval() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void ZPack::set_has_valnull() {
+inline void ZPack::set_has_newval() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void ZPack::clear_has_valnull() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void ZPack::clear_valnull() {
-  valnull_ = false;
-  clear_has_valnull();
-}
-inline bool ZPack::valnull() const {
-  return valnull_;
-}
-inline void ZPack::set_valnull(bool value) {
-  set_has_valnull();
-  valnull_ = value;
-}
-
-// optional string newval = 5;
-inline bool ZPack::has_newval() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void ZPack::set_has_newval() {
-  _has_bits_[0] |= 0x00000010u;
-}
 inline void ZPack::clear_has_newval() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void ZPack::clear_newval() {
   if (newval_ != &::google::protobuf::internal::kEmptyString) {
@@ -426,7 +404,7 @@ inline void ZPack::set_newval(const char* value) {
   }
   newval_->assign(value);
 }
-inline void ZPack::set_newval(const char* value, size_t size) {
+inline void ZPack::set_newval(const void* value, size_t size) {
   set_has_newval();
   if (newval_ == &::google::protobuf::internal::kEmptyString) {
     newval_ = new ::std::string;
@@ -449,6 +427,28 @@ inline ::std::string* ZPack::release_newval() {
     newval_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
+}
+
+// optional bool valnull = 5;
+inline bool ZPack::has_valnull() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void ZPack::set_has_valnull() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void ZPack::clear_has_valnull() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void ZPack::clear_valnull() {
+  valnull_ = false;
+  clear_has_valnull();
+}
+inline bool ZPack::valnull() const {
+  return valnull_;
+}
+inline void ZPack::set_valnull(bool value) {
+  set_has_valnull();
+  valnull_ = value;
 }
 
 // optional bool newvalnull = 6;
