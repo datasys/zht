@@ -5,7 +5,7 @@ MPIFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB} -DMPI_INET
 LIBFLAGS = -lstdc++ -lrt -lpthread -lm -lc -lprotobuf -lprotobuf-c
 COMMON = common/
 
-all:	$(TARGETS) mpi
+all:	$(TARGETS)
 
 
 

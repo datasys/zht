@@ -43,9 +43,9 @@ using namespace std;
 class UDPProxy: public IPProtoProxy {
 public:
 	typedef map<string, int> SMAP;
-	typedef typename SMAP::iterator SIT;
+	typedef SMAP::iterator SIT;
 	typedef map<string, sockaddr_in> AMAP;
-	typedef typename AMAP::iterator AIT;
+	typedef AMAP::iterator AIT;
 
 public:
 	UDPProxy();

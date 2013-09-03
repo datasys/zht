@@ -43,7 +43,7 @@ using namespace std;
 class TCPProxy: public IPProtoProxy {
 public:
 	typedef map<string, int> MAP;
-	typedef typename MAP::iterator MIT;
+	typedef MAP::iterator MIT;
 
 public:
 	TCPProxy();
