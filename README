@@ -47,9 +47,9 @@ ORTHERWISE, assuming that you will install them to /home/xiaobingo/install, foll
 If you installed Google protocol buffers c and c++ bindings to customized directory, e.g./home/xiaobingo/install, MAKE SURE TO EXPORT them,
 1. vim/gedit ~/.bashrc
 2. append the following lines to the end,
-	export USER_LIB=/home/xiaobingo/install/lib/:$USER_LIB
-	export USER_INCLUDE=/home/xiaobingo/install/include/:$USER_INCLUDE
-	export LD_LIBRARY_PATH=/home/xiaobingo/install/lib/:$LD_LIBRARY_PATH
+	export USER_LIB=/home/xiaobingo/install/lib/
+	export USER_INCLUDE=/home/xiaobingo/install/include/
+	export LD_LIBRARY_PATH=/home/xiaobingo/install/lib/
 3. source ~/.bashrc
 4. cd to ZHT src directory
 5. TO COMPILE ZHT, RUN
