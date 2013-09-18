@@ -92,6 +92,8 @@ bool TCPProxy::teardown() {
 
 		int rc = close(it->second);
 
+		CONN_CACHE.erase(it);
+
 		result &= rc == 0;
 	}
 

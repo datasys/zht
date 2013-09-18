@@ -186,6 +186,8 @@ bool UDPProxy::teardown() {
 
 		int rc = close(it->second);
 
+		SOCK_CACHE.erase(it);
+
 		result &= rc == 0;
 	}
 
