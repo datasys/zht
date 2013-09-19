@@ -109,6 +109,12 @@ public:
 	static const string MSG_MAXSIZE;
 
 	/*
+	 * SCCB_: state change callback
+	 * POLL_: polling
+	 */
+	static const string SCCB_POLL_INTERVAL;
+
+	/*
 	 * ASC_: admin server(service) chars
 	 * ASI_: admin server(service) integers
 	 * OPC_: operation code
@@ -155,6 +161,7 @@ public:
 	static const string ZSC_OPC_INSERT; //insert item
 	static const string ZSC_OPC_APPEND; //append item
 	static const string ZSC_OPC_CMPSWP; //compare and swap item
+	static const string ZSC_OPC_STCHGCB; //state change call back
 	static const string ZSC_OPC_BRDDN_GMEM; //broadcast global membership done
 	static const string ZSC_OPC_OPR_CANCEL; //cancle an operation
 	static const string ZSC_OPC_GET_ASNGHB; //get information of ZHTNode as a neighbor
@@ -169,6 +176,7 @@ public:
 	static const string ZSC_REC_EMPTYKEY; //empty key
 	static const string ZSC_REC_CLTFAIL; //operation failed in client-side
 	static const string ZSC_REC_SRVFAIL; //operation failed in server-side
+	static const string ZSC_REC_SCCBPOLLTRY; //retry state_change_callback polling
 	static const string ZSC_REC_SRVEXP; //operation failed
 	static const string ZSC_REC_NONEXISTKEY; //non existent key
 	static const string ZSC_REC_NODESTZHT; //no destination for a key

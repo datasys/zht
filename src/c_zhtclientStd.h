@@ -78,8 +78,23 @@ ZHT_CPP(extern "C" {)
 	int c_zht_append_std(ZHTClient_c zhtClient, const char *key,
 			const char *value);
 
+	/* wrapp C++ ZHTClient::compare_swapappend.
+	 * KEY: empty key not allowed, if empty, return -1, means failed.
+	 * SEEN_VALUE: serialized string with Google protocol-buffer-c-binding representation.
+	 * NEW_VALUE: serialized string with Google protocol-buffer-c-binding representation.
+	 * VALUE_QUERIE: serialized string with Google protocol-buffer-c-binding representation.
+	 * return code: 0 if succeeded, or -1 if empty key, or -2 if failed, -98 if unrecognized operation.
+	 * */
 	int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
 			const char *seen_value, const char *new_value, char *value_queried);
+
+	/* wrapp C++ ZHTClient::compare_swapappend.
+	 * KEY: empty key not allowed, if empty, return -1, means failed.
+	 * EXPEDED_VAL: the value expected to be equal to what is lookuped by the key, if equal, return 0, or keep polling in server-side.
+	 * return code: 0 if succeeded, or -1 if empty key, or -2 if failed, -98 if unrecognized operation.
+	 * */
+	int c_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
+			const char *expeded_val);
 
 	/* wrapp C++ ZHTClient::teardown.
 	 * return code: 0 if succeeded, or -1 if failed.

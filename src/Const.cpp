@@ -69,6 +69,8 @@ const string Const::PROTO_VAL_MPI = "MPI";
 
 const string Const::MSG_MAXSIZE = "MSG_MAXSIZE";
 
+const string Const::SCCB_POLL_INTERVAL = "SCCB_POLL_INTERVAL";
+
 const string Const::ASC_OPC_AZ_ALL = "101";
 const string Const::ASC_OPC_AZ_PORT = "102";
 const string Const::ASC_OPC_AZ_IPPORT = "103";
@@ -96,6 +98,7 @@ const string Const::ZSC_OPC_REMOVE = "002";
 const string Const::ZSC_OPC_INSERT = "003";
 const string Const::ZSC_OPC_APPEND = "004";
 const string Const::ZSC_OPC_CMPSWP = "005";
+const string Const::ZSC_OPC_STCHGCB = "006";
 const string Const::ZSC_OPC_BRDDN_GMEM = "087";
 const string Const::ZSC_OPC_OPR_CANCEL = "088";
 const string Const::ZSC_OPC_GET_ASNGHB = "089";
@@ -111,6 +114,7 @@ const string Const::ZSC_REC_EMPTYKEY = "-01";
 const string Const::ZSC_REC_CLTFAIL = "-02";
 const string Const::ZSC_REC_SRVFAIL = "-03";
 const string Const::ZSC_REC_SRVEXP = "-04";
+const string Const::ZSC_REC_SCCBPOLLTRY = "-91";
 const string Const::ZSC_REC_NONEXISTKEY = "-92";
 const string Const::ZSC_REC_NODESTZHT = "-93";
 const string Const::ZSC_REC_NONEEDMIG = "-94";

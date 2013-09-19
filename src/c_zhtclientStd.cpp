@@ -120,6 +120,19 @@ int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
 	return rc;
 }
 
+int c_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
+		const char *expeded_val) {
+
+	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
+
+	string skey(key);
+	string expededval(expeded_val);
+
+	int rc = zhtcppClient->state_change_callback(skey, expededval);
+
+	return rc;
+}
+
 int c_zht_teardown_std(ZHTClient_c zhtClient) {
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;

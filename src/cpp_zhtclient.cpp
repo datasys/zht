@@ -78,7 +78,8 @@ int ZHTClient::commonOp(const string &opcode, const string &key,
 	if (opcode != Const::ZSC_OPC_LOOKUP && opcode != Const::ZSC_OPC_REMOVE
 			&& opcode != Const::ZSC_OPC_INSERT
 			&& opcode != Const::ZSC_OPC_APPEND
-			&& opcode != Const::ZSC_OPC_CMPSWP)
+			&& opcode != Const::ZSC_OPC_CMPSWP
+			&& opcode != Const::ZSC_OPC_STCHGCB)
 		return Const::toInt(Const::ZSC_REC_UOPC);
 
 	string sstatus = commonOpInternal(opcode, key, val, val2, result);
@@ -106,21 +107,27 @@ int ZHTClient::remove(const string &key) {
 	string val;
 	string val2;
 	string result;
-	return commonOp(Const::ZSC_OPC_REMOVE, key, val, val2, result);
+	int rc = commonOp(Const::ZSC_OPC_REMOVE, key, val, val2, result);
+
+	return rc;
 }
 
 int ZHTClient::insert(const string &key, const string &val) {
 
 	string val2;
 	string result;
-	return commonOp(Const::ZSC_OPC_INSERT, key, val, val2, result);
+	int rc = commonOp(Const::ZSC_OPC_INSERT, key, val, val2, result);
+
+	return rc;
 }
 
 int ZHTClient::append(const string &key, const string &val) {
 
 	string val2;
 	string result;
-	return commonOp(Const::ZSC_OPC_APPEND, key, val, val2, result);
+	int rc = commonOp(Const::ZSC_OPC_APPEND, key, val, val2, result);
+
+	return rc;
 }
 
 string ZHTClient::extract_value(const string &returnStr) {
@@ -174,6 +181,17 @@ int ZHTClient::compare_swap(const string &key, const string &seen_val,
 	return rc;
 }
 
+int ZHTClient::state_change_callback(const string &key,
+		const string &expeded_val) {
+
+	string val2;
+	string result;
+
+	int rc = commonOp(Const::ZSC_OPC_STCHGCB, key, expeded_val, val2, result);
+
+	return rc;
+}
+
 string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 		const string &val, const string &val2, string &result) {
 
@@ -210,7 +228,6 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 
 	/*ZPack tmp;
 	 tmp.ParseFromString(msg);
-
 	 printf("{%s}:{%s,%s}\n", tmp.key().c_str(), tmp.val().c_str(),
 	 tmp.newval().c_str());*/
 

@@ -52,9 +52,11 @@ private:
 	string insert(const ZPack &zpack);
 	string lookup(const ZPack &zpack);
 	string append(const ZPack &zpack);
+	string remove(const ZPack &zpack);
+	string state_change_callback(const ZPack &zpack);
+	string state_change_callback_internal(const ZPack &zpack);
 	string compare_swap(const ZPack &zpack);
 	string compare_swap_internal(const ZPack &zpack);
-	string remove(const ZPack &zpack);
 
 private:
 	string erase_status_code(string &val);

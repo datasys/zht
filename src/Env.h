@@ -41,15 +41,21 @@ public:
 	virtual ~Env();
 
 public:
-	static const int MSG_DEFAULTSIZE; //max size of a message in each transfer
 
 	static const uint BUF_SIZE; //size of blob transfered from client to server each time
+	static const int MSG_DEFAULTSIZE; //max size of a message in each transfer
+	static const int SCCB_POLL_DEFAULT_INTERVAL; //polling interval for state_change_callback
 
-	static int REPLICATION_TYPE; //1 for Client-side replication
 	static int NUM_REPLICAS;
+	static int REPLICATION_TYPE; //1 for Client-side replication
 
 public:
 	static int get_msg_maxsize();
+	static int get_sccb_poll_interval();
+
+private:
+	static string get_conf_parameter(const string &paraname);
+
 };
 
 #endif /* ENV_H_ */

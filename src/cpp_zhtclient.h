@@ -58,6 +58,7 @@ public:
 	int append(const string &key, const string &val);
 	int compare_swap(const string &key, const string &seen_val,
 			const string &new_val, string &result);
+	int state_change_callback(const string &key, const string &expeded_val);
 	int teardown();
 
 private:

@@ -81,6 +81,13 @@ char *seen_value, const char *new_value, char *value_queried) {
 			value_queried);
 }
 
+int c_state_change_callback(const char *key, const char *expeded_val) {
+
+	lock_guard lock(&c_zht_client_mutex);
+
+	return c_state_change_callback_std(zhtClient_c, key, expeded_val);
+}
+
 int c_zht_teardown() {
 
 	pthread_mutex_destroy(&c_zht_client_mutex);

@@ -33,12 +33,12 @@
 
 using namespace iit::datasys::zht::dm;
 
-const int Env::MSG_DEFAULTSIZE = 1024 * 1024 * 2; //2M
-
 const uint Env::BUF_SIZE = 512 + 38;
+const int Env::MSG_DEFAULTSIZE = 1024 * 1024 * 2; //2M
+const int Env::SCCB_POLL_DEFAULT_INTERVAL = 1; //1 ms;
 
-int Env::REPLICATION_TYPE = 0; //1 for Client-side replication
 int Env::NUM_REPLICAS = 0;
+int Env::REPLICATION_TYPE = 0; //1 for Client-side replication
 
 Env::Env() {
 }
@@ -46,8 +46,9 @@ Env::Env() {
 Env::~Env() {
 }
 
-int Env::get_msg_maxsize() {
+string Env::get_conf_parameter(const string &paraname) {
 
+	string result;
 	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
 
 	ConfHandler::MIT it;
@@ -59,11 +60,27 @@ int Env::get_msg_maxsize() {
 		ConfEntry ce;
 		ce.assign(it->first);
 
-		if (ce.name() == Const::MSG_MAXSIZE) {
+		if (ce.name() == paraname) {
 
-			return atoi(ce.value().c_str());
+			result = ce.value();
+
+			break;
 		}
 	}
 
-	return MSG_DEFAULTSIZE;
+	return result;
+}
+
+int Env::get_msg_maxsize() {
+
+	string val = get_conf_parameter(Const::MSG_MAXSIZE);
+
+	return val.empty() ? MSG_DEFAULTSIZE : atoi(val.c_str());
+}
+
+int Env::get_sccb_poll_interval() {
+
+	string val = get_conf_parameter(Const::SCCB_POLL_INTERVAL);
+
+	return val.empty() ? SCCB_POLL_DEFAULT_INTERVAL : atoi(val.c_str());
 }

@@ -31,6 +31,7 @@
 #include "HTWorker.h"
 
 #include "Const-impl.h"
+#include "Env.h"
 
 #include <iostream>
 
@@ -68,6 +69,9 @@ string HTWorker::run(const char *buf) {
 	} else if (zpack.opcode() == Const::ZSC_OPC_REMOVE) {
 
 		result = remove(zpack);
+	} else if (zpack.opcode() == Const::ZSC_OPC_STCHGCB) {
+
+		result = state_change_callback(zpack);
 	} else {
 
 		result = Const::ZSC_REC_UOPC;
@@ -148,6 +152,58 @@ string HTWorker::append(const ZPack &zpack) {
 	return result;
 }
 
+string HTWorker::state_change_callback(const ZPack &zpack) {
+
+	string result;
+
+	result = state_change_callback_internal(zpack);
+
+	int poll_interval = Env::get_sccb_poll_interval();
+	//printf("poll_interval: %d\n", poll_interval);
+
+	while (result == Const::ZSC_REC_SCCBPOLLTRY) {
+
+		usleep(poll_interval * 1000);
+
+		result = state_change_callback_internal(zpack);
+	}
+
+	return result;
+}
+
+string HTWorker::state_change_callback_internal(const ZPack &zpack) {
+
+	string result;
+
+	if (zpack.key().empty())
+		return Const::ZSC_REC_EMPTYKEY; //-1
+
+	string key = zpack.key();
+	string *ret = pmap->get(key);
+
+	if (ret == NULL) {
+
+		cerr << "DB Error: lookup find nothing" << endl;
+
+		result = Const::ZSC_REC_NONEXISTKEY;
+
+	} else {
+
+		ZPack rltpack;
+		rltpack.ParseFromString(*ret);
+
+		if (zpack.val() == rltpack.val()) {
+
+			result = Const::ZSC_REC_SUCC; //0, succeed.
+		} else {
+
+			result = Const::ZSC_REC_SCCBPOLLTRY;
+		}
+	}
+
+	return result;
+}
+
 string HTWorker::compare_swap(const ZPack &zpack) {
 
 	if (zpack.key().empty())
@@ -216,7 +272,7 @@ string HTWorker::remove(const ZPack &zpack) {
 	return result;
 }
 
-string HTWorker::erase_status_code(string &val) {
+string HTWorker::erase_status_code(string & val) {
 
 	return val.substr(3);
 }

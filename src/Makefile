@@ -71,7 +71,7 @@ libzht.a:
 
 
 c_zhtclient_lanl_threaded.o: c_zhtclient_lanl_threaded.c
-c_zhtclient_threaded_test.o: c_zhtclient_threaded_test.c
+c_zhtclient_threaded_test.o: c_zhtclient_threaded_test.cpp
 c_zhtclient_test.o: c_zhtclient_test.c
 cpp_zhtclient_test.o: cpp_zhtclient_test.cpp
 benchmark_client.o: benchmark_client.cpp
