@@ -47,6 +47,7 @@
 #include <pthread.h>
 #include <assert.h>
 #include <stdio.h>
+#include <getopt.h>
 
 /*concurrent threads to request c_zht_compare_and_swap*/
 #define CONCUR_DEGREE 5

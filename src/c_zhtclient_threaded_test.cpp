@@ -46,6 +46,8 @@
 
 #include "Util.h"
 
+#include <getopt.h>
+
 using namespace iit::datasys::zht::dm;
 
 /*concurrent threads to invoke a specified ZHT API*/
