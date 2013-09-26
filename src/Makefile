@@ -122,8 +122,8 @@ clean:
 	rm zht-mpiserver	
 	
 mpi:
-	mpicxx mpi_broker.cpp proxy_stub.cpp mq_proxy_stub.cpp ipc_plus.cpp mpi_proxy_stub.cpp ConfHandler.cpp ConfEntry.cpp StrTokenizer.cpp Util.cpp HTWorker.cpp Const.cpp novoht.cpp meta.pb.cc zpack.pb.cc $(MPIFLAGS) -DMPI_INET -lprotobuf -lpthread -o zht-mpibroker
+	mpicxx mpi_broker.cpp proxy_stub.cpp mq_proxy_stub.cpp ipc_plus.cpp mpi_proxy_stub.cpp ConfHandler.cpp ConfEntry.cpp StrTokenizer.cpp Util.cpp Env.cpp HTWorker.cpp Const.cpp novoht.cpp meta.pb.cc zpack.pb.cc $(MPIFLAGS) -DMPI_INET -lprotobuf -lpthread -o zht-mpibroker
 		
-	mpicxx ZHTServer.cpp mpi_server.cpp ProxyStubFactory.cpp proxy_stub.cpp mpi_proxy_stub.cpp Util.cpp mq_proxy_stub.cpp ipc_plus.cpp ConfHandler.cpp ConfEntry.cpp StrTokenizer.cpp HTWorker.cpp Const.cpp novoht.cpp meta.pb.cc zpack.pb.cc $(MPIFLAGS) -DMPI_INET -lprotobuf -lpthread -o zht-mpiserver
+	mpicxx ZHTServer.cpp mpi_server.cpp ProxyStubFactory.cpp proxy_stub.cpp mpi_proxy_stub.cpp Util.cpp Env.cpp mq_proxy_stub.cpp ipc_plus.cpp ConfHandler.cpp ConfEntry.cpp StrTokenizer.cpp HTWorker.cpp Const.cpp novoht.cpp meta.pb.cc zpack.pb.cc $(MPIFLAGS) -DMPI_INET -lprotobuf -lpthread -o zht-mpiserver
 
 	
