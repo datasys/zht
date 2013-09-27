@@ -63,7 +63,8 @@ private:
 	int sendTo(int sock, const void* sendbuf, int sendcount);
 
 private:
-	static MAP CONN_CACHE;
+	//static MAP CONN_CACHE;
+	MAP CONN_CACHE;
 };
 
 class TCPStub: public IPProtoStub {

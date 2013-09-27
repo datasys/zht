@@ -30,44 +30,31 @@
 
 #include "c_zhtclient.h"
 #include "c_zhtclientStd.h"
-#include "lock_guard.h"
 #include <pthread.h>
 
 ZHTClient_c zhtClient_c;
 
-pthread_mutex_t c_zht_client_mutex;
-
 int c_zht_init(const char *zhtConfig, const char *neighborConf) {
-
-	pthread_mutex_init(&c_zht_client_mutex, NULL);
 
 	return c_zht_init_std(&zhtClient_c, zhtConfig, neighborConf);
 }
 
 int c_zht_lookup(const char *key, char *result) {
 
-	lock_guard lock(&c_zht_client_mutex);
-
 	return c_zht_lookup_std(zhtClient_c, key, result);
 }
 
 int c_zht_remove(const char *key) {
-
-	lock_guard lock(&c_zht_client_mutex);
 
 	return c_zht_remove_std(zhtClient_c, key);
 }
 
 int c_zht_insert(const char *key, const char *value) {
 
-	lock_guard lock(&c_zht_client_mutex);
-
 	return c_zht_insert_std(zhtClient_c, key, value);
 }
 
 int c_zht_append(const char *key, const char *value) {
-
-	lock_guard lock(&c_zht_client_mutex);
 
 	return c_zht_append_std(zhtClient_c, key, value);
 }
@@ -75,22 +62,16 @@ int c_zht_append(const char *key, const char *value) {
 int c_zht_compare_swap(const char *key, const
 char *seen_value, const char *new_value, char *value_queried) {
 
-	lock_guard lock(&c_zht_client_mutex);
-
 	return c_zht_compare_swap_std(zhtClient_c, key, seen_value, new_value,
 			value_queried);
 }
 
 int c_state_change_callback(const char *key, const char *expeded_val) {
 
-	lock_guard lock(&c_zht_client_mutex);
-
 	return c_state_change_callback_std(zhtClient_c, key, expeded_val);
 }
 
 int c_zht_teardown() {
-
-	pthread_mutex_destroy(&c_zht_client_mutex);
 
 	return c_zht_teardown_std(zhtClient_c);
 }

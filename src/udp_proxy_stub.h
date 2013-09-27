@@ -68,9 +68,10 @@ private:
 			int sendcount);
 
 private:
-	static int UDP_SOCKET;
-	static SMAP SOCK_CACHE;
-	static AMAP ADDR_CACHE;
+	//static SMAP SOCK_CACHE;
+	//static AMAP ADDR_CACHE;
+	SMAP SOCK_CACHE;
+	AMAP ADDR_CACHE;
 };
 
 class UDPStub: public IPProtoStub {

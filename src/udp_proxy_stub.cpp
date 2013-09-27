@@ -48,12 +48,13 @@
 
 using namespace iit::datasys::zht::dm;
 
-int UDPProxy::UDP_SOCKET = -1;
+/*
+ UDPProxy::SMAP UDPProxy::SOCK_CACHE = UDPProxy::SMAP();
+ UDPProxy::AMAP UDPProxy::ADDR_CACHE = UDPProxy::AMAP();
+ */
 
-UDPProxy::SMAP UDPProxy::SOCK_CACHE = UDPProxy::SMAP();
-UDPProxy::AMAP UDPProxy::ADDR_CACHE = UDPProxy::AMAP();
-
-UDPProxy::UDPProxy() {
+UDPProxy::UDPProxy() :
+		SOCK_CACHE(), ADDR_CACHE() {
 
 }
 
@@ -240,23 +241,6 @@ sockaddr_in UDPProxy::getAddrCached(const string& host, const uint& port) {
 		return ADDR_CACHE[hashKey];
 	}
 }
-
-/*int UDPProxy::getSockCached(const string& host, const uint& port) {
-
- int sock;
-
- if (UDP_SOCKET <= 0) {
-
- sock = makeClientSocket(host, port);
- UDP_SOCKET = sock;
-
- } else {
-
- sock = UDP_SOCKET;
- }
-
- return sock;
- }*/
 
 int UDPProxy::makeClientSocket(const string& host, const uint& port) {
 

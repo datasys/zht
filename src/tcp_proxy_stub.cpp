@@ -50,9 +50,9 @@ using namespace iit::datasys::zht::dm;
 /*LRUCache<string, int> TCPProxy::CONN_CACHE = LRUCache<string, int>(
  TCPProxy::CACHE_SIZE);*/
 
-TCPProxy::MAP TCPProxy::CONN_CACHE = TCPProxy::MAP();
-
-TCPProxy::TCPProxy() {
+//TCPProxy::MAP TCPProxy::CONN_CACHE = TCPProxy::MAP();
+TCPProxy::TCPProxy() :
+		CONN_CACHE() {
 
 }
 
@@ -92,10 +92,10 @@ bool TCPProxy::teardown() {
 
 		int rc = close(it->second);
 
-		CONN_CACHE.erase(it);
-
 		result &= rc == 0;
 	}
+
+	CONN_CACHE.clear();
 
 	return result;
 }
