@@ -296,7 +296,7 @@ void* state_change_callback_threaded(void *arg) {
 	char *buf = (char*) calloc(100, sizeof(char));
 
 	//sprintf(buf, "%lu", pthread_self()); //try this line to unblock state_change_callback
-	sprintf(buf, "%lu", pthread_self() + 1); //try this line to block state_change_callback
+	sprintf(buf, "%lu", pthread_self()); //try this line to block state_change_callback
 	int rc = c_zht_insert(key, buf); //first, insert the key/value pair
 
 	sprintf(buf, "%lu", pthread_self());

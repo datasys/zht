@@ -161,7 +161,8 @@ string HTWorker::state_change_callback(const ZPack &zpack) {
 	int poll_interval = Env::get_sccb_poll_interval();
 	//printf("poll_interval: %d\n", poll_interval);
 
-	while (result == Const::ZSC_REC_SCCBPOLLTRY) {
+	//while (result == Const::ZSC_REC_SCCBPOLLTRY) {
+	while (result != Const::ZSC_REC_SUCC) {
 
 		usleep(poll_interval * 1000);
 
