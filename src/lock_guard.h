@@ -44,6 +44,8 @@ public:
 
 private:
 	bool lock();
+
+public:
 	bool unlock();
 
 private:

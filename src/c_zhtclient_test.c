@@ -136,7 +136,7 @@ void printUsage(char *argv_0) {
 
 void test_simple_largevalue() {
 
-	const char *key = "keyofLargeValue";
+	const char *key = "test_simple_largevalue";
 //	const char *value = "xiaobingo";
 
 	char *value2 = calloc(TOTAL_SIZE, sizeof(char));
@@ -213,7 +213,7 @@ void test_common_usecase() {
 
 void test_common_usecase_blankspace() {
 
-	const char *key = "hello";
+	const char *key = "test_common_usecase_blankspace";
 	const char *value = " ";
 	const char *value2 = "zht";
 
@@ -222,7 +222,7 @@ void test_common_usecase_blankspace() {
 
 void test_common_usecase_emptystring() {
 
-	const char *key = "hello";
+	const char *key = "test_common_usecase_emptystring";
 	const char *value = "";
 	const char *value2 = "ZHT";
 
@@ -302,7 +302,7 @@ void test_large_keyvalue() {
 
 void test_large_keyvalue_blankspace() {
 
-	const char *key = "keyofLargeValue";
+	const char *key = "test_large_keyvalue_blankspace";
 	const char *value = " ";
 
 	char *value2 = calloc(TOTAL_SIZE, sizeof(char));
@@ -316,7 +316,7 @@ void test_large_keyvalue_blankspace() {
 
 void test_large_keyvalue_emptystring() {
 
-	const char *key = "keyofLargeValue";
+	const char *key = "test_large_keyvalue_emptystring";
 	const char *value = "";
 
 	char *value2 = calloc(TOTAL_SIZE, sizeof(char));

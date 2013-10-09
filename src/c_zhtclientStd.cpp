@@ -95,6 +95,8 @@ int c_zht_lookup_std(ZHTClient_c zhtClient, const char *key, char *result) {
 	string resultStr;
 	int ret = zhtcppClient->lookup(skey, resultStr);
 
+	memset(result, 0, strlen(result));
+
 	strncpy(result, resultStr.c_str(), resultStr.size());
 
 	return ret;
@@ -167,6 +169,8 @@ int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
 
 	string resultStr;
 	int rc = zhtcppClient->compare_swap(skey, sseenValue, snewValue, resultStr);
+
+	memset(value_queried, 0, strlen(value_queried));
 
 	strncpy(value_queried, resultStr.c_str(), resultStr.size());
 

@@ -282,8 +282,7 @@ int TCPProxy::loopedrecv(int sock, string &srecv) {
 	return IPProtoProxy::loopedrecv(sock, NULL, srecv);
 }
 
-TCPStub::TCPStub() :
-		_htw() {
+TCPStub::TCPStub() {
 
 }
 
@@ -294,8 +293,18 @@ bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	//get response to be sent to client
 	string recvstr((char*) recvbuf);
-	string result = _htw.run(recvstr.c_str());
 
+#ifdef SCCB
+	HTWorker htw(addr, this);
+#else
+	HTWorker htw;
+#endif
+
+	string result = htw.run(recvstr.c_str());
+
+#ifdef SCCB
+	return true;
+#else
 	const char *sendbuf = result.data();
 	int sendcount = result.size();
 
@@ -304,10 +313,11 @@ bool TCPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 	bool sent_bool = sentsize == sendcount;
 
 	return sent_bool;
+#endif
 }
 
 #ifdef BIG_MSG
-int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) const {
 
 	//send response to client over server sock fd
 	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
@@ -328,7 +338,7 @@ int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 #endif
 
 #ifdef SML_MSG
-int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+int TCPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) const {
 
 	//send response to client over server sock fd
 	int sentsize = ::send(addr.fd, sendbuf, sendcount, 0);

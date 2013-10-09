@@ -291,9 +291,18 @@ UDPStub::~UDPStub() {
 bool UDPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 
 	/*get response to be sent to client*/
+	string recvstr((char*) recvbuf);
+#ifdef SCCB
+	HTWorker htw(addr, this);
+#else
 	HTWorker htw;
-	string result = htw.run((char*) recvbuf);
+#endif
 
+	string result = htw.run(recvstr.c_str());
+
+#ifdef SCCB
+	return true;
+#else
 	const char *sendbuf = result.data();
 	int sendcount = result.size();
 
@@ -302,10 +311,12 @@ bool UDPStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 	bool sent_bool = sentsize == sendcount;
 
 	return sent_bool;
+
+#endif
 }
 
 #ifdef BIG_MSG
-int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) const {
 
 	//send response to client over server sock fd
 	BdSendBase *pbsb = new BdSendToClient((char*) sendbuf);
@@ -317,8 +328,8 @@ int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 	if (sentsize < sendcount) {
 
 		//todo: bug prone
-		cerr << "UDPStub::sendBack():  error on BdSendToClient::bsend(...): "
-		<< strerror(errno) << endl;
+		/*cerr << "UDPStub::sendBack():  error on BdSendToClient::bsend(...): "
+		 << strerror(errno) << endl;*/
 	}
 
 	return sentsize;
@@ -326,7 +337,7 @@ int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
 #endif
 
 #ifdef SML_MSG
-int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) {
+int UDPStub::sendBack(ProtoAddr addr, const void* sendbuf, int sendcount) const {
 
 	//send response to client over server sock fd
 	int sentsize = ::sendto(addr.fd, sendbuf, sendcount, 0,

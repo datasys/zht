@@ -74,11 +74,10 @@ public:
 
 	virtual bool recvsend(ProtoAddr addr, const void *recvbuf);
 
-protected:
-	virtual int sendBack(ProtoAddr addr, const void* sendbuf, int sendcount);
+public:
+	virtual int sendBack(ProtoAddr addr, const void* sendbuf,
+			int sendcount) const;
 
-private:
-	HTWorker _htw;
 };
 
 #endif /* TCP_PROXY_STUB_H_ */

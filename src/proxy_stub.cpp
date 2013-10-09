@@ -31,12 +31,23 @@
 #include "proxy_stub.h"
 
 #include <stdlib.h>
+#include <sys/socket.h>
+#include <string.h>
 
 ProtoAddr::ProtoAddr() :
-		fd(-1), sender(0) {
+		fd(-1), sender(NULL) {
+}
+
+ProtoAddr::ProtoAddr(const ProtoAddr& addr) {
+
+	fd = addr.fd;
+	sender = calloc(1, sizeof(sockaddr));
+	memcpy(sender, &addr.sender, sizeof(sockaddr));
 }
 
 ProtoAddr::~ProtoAddr() {
+
+	free(sender);
 }
 
 ProtoProxy::ProtoProxy() {
@@ -100,4 +111,10 @@ bool ProtoStub::recvsend(ProtoAddr addr, const void *recvbuf) {
 bool ProtoStub::teardown() {
 
 	return false;
+}
+
+int ProtoStub::sendBack(ProtoAddr addr, const void* sendbuf,
+		int sendcount) const {
+
+	return -1;
 }

@@ -99,6 +99,9 @@ public:
 	static uint NC_ZHT_CAPACITY;
 	static string ZC_HTDATA_PATH;
 	static uint ZC_MIGSLP_TIME;
+
+private:
+	static bool BEEN_INIT;
 };
 
 } /* namespace dm */

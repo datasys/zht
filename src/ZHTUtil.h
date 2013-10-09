@@ -38,13 +38,13 @@ using namespace std;
 #include <arpa/inet.h>
 
 struct HostEntity {
-
-	struct sockaddr_in si;
 	int sock;
 	string host;
 	int port;
-	bool valid;
-	vector<unsigned long long> ringID;
+
+	/*bool valid;
+	 struct sockaddr_in si;
+	 vector<unsigned long long> ringID;*/
 };
 
 /*

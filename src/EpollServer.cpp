@@ -447,6 +447,7 @@ void EpollServer::serve() {
 
 						char buf[Env::BUF_SIZE];
 						memset(buf, 0, sizeof(buf));
+						//char *buf = (char*) calloc(Env::BUF_SIZE, sizeof(char));
 
 						sockaddr fromaddr;
 						socklen_t sender_len = sizeof(struct sockaddr);
@@ -500,7 +501,8 @@ void EpollServer::serve() {
 #endif
 						}
 
-						memset(buf, 0, sizeof(buf));
+						//memset(buf, 0, sizeof(buf));
+						//free(buf);
 					}
 
 					/*if (done) {
@@ -525,6 +527,7 @@ void EpollServer::serve() {
 
 						char buf[Env::BUF_SIZE];
 						memset(buf, 0, sizeof(buf));
+						//char *buf = (char*) calloc(Env::BUF_SIZE, sizeof(char));
 
 						ssize_t count = recv(edata->fd(), buf, sizeof(buf), 0);
 
@@ -584,7 +587,8 @@ void EpollServer::serve() {
 #endif
 						}
 
-						memset(buf, 0, sizeof(buf));
+						//memset(buf, 0, sizeof(buf));
+						//free(buf);
 					}
 
 					if (done) {

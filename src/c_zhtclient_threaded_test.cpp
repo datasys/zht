@@ -75,6 +75,7 @@
 #include "Util.h"
 
 #include <getopt.h>
+#include <pthread.h>
 
 using namespace iit::datasys::zht::dm;
 
@@ -91,7 +92,9 @@ const char *key = "c_zht_key";
 void *insert_threaded(void *arg) {
 
 	char buf[100];
-	sprintf(buf, "%lu", pthread_self());
+	//sprintf(buf, "%lu", pthread_self());
+
+	sprintf(buf, "%lu", 140328762492672);
 
 	int rc = c_zht_insert(key, buf);
 
@@ -297,10 +300,11 @@ void* state_change_callback_threaded(void *arg) {
 
 	//sprintf(buf, "%lu", pthread_self()); //try this line to unblock state_change_callback
 	sprintf(buf, "%lu", pthread_self()); //try this line to block state_change_callback
-	int rc = c_zht_insert(key, buf); //first, insert the key/value pair
+	//int rc = c_zht_insert(key, buf); //first, insert the key/value pair
 
-	sprintf(buf, "%lu", pthread_self());
-	rc = c_state_change_callback(key, buf);
+	//sprintf(buf, "%lu", pthread_self());
+	sprintf(buf, "%lu", 140328762492672);
+	int rc = c_state_change_callback(key, buf);
 
 	fprintf(stdout,
 			"[%lu] c_state_change_callback, {key}:{value}=> {%s}:{%s}, rc(%d)\n",
@@ -398,6 +402,8 @@ void test_dipatch() {
 			pthread_join(threads[i], NULL);
 	}
 }
+
+#include "pthread.h"
 
 int main(int argc, char **argv) {
 

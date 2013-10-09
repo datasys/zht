@@ -46,6 +46,8 @@ namespace datasys {
 namespace zht {
 namespace dm {
 
+bool ConfHandler::BEEN_INIT = false;
+
 ConfHandler::VEC ConfHandler::NeighborVector = VEC();
 ConfHandler::MAP ConfHandler::NeighborSeeds = MAP();
 ConfHandler::MAP ConfHandler::ZHTParameters = MAP();
@@ -117,11 +119,16 @@ string ConfHandler::getPortFromConf() {
 
 void ConfHandler::initConf(string zhtConf, string neighborConf) {
 
-	ConfHandler::CONF_ZHT = zhtConf; //zht.conf
-	ConfHandler::CONF_NEIGHBOR = neighborConf; //neighbor.conf
+	if (!BEEN_INIT) {
 
-	ConfHandler::setZHTParameters(zhtConf);
-	ConfHandler::setNeighborSeeds(neighborConf);
+		ConfHandler::CONF_ZHT = zhtConf; //zht.conf
+		ConfHandler::CONF_NEIGHBOR = neighborConf; //neighbor.conf
+
+		ConfHandler::setZHTParameters(zhtConf);
+		ConfHandler::setNeighborSeeds(neighborConf);
+
+		BEEN_INIT = true;
+	}
 }
 
 void ConfHandler::setNeighborSeeds(const string& neighborCfg) {

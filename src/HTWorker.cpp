@@ -32,15 +32,44 @@
 
 #include "Const-impl.h"
 #include "Env.h"
+#include "lock_guard.h"
+
 #include <unistd.h>
 #include <iostream>
+#include <pthread.h>
 
 using namespace std;
 using namespace iit::datasys::zht::dm;
 
-NoVoHT* HTWorker::pmap = new NoVoHT("", 100000, 10000, 0.7);
+WorkerThreadArg::WorkerThreadArg() :
+		_stub(NULL) {
+}
 
-HTWorker::HTWorker() {
+WorkerThreadArg::WorkerThreadArg(const ZPack &zpack, const ProtoAddr &addr,
+		const ProtoStub * const stub) :
+		_zpack(zpack), _addr(addr), _stub(stub) {
+}
+
+WorkerThreadArg::~WorkerThreadArg() {
+}
+
+NoVoHT* HTWorker::PMAP = new NoVoHT("", 100000, 10000, 0.7);
+
+HTWorker::QUEUE* HTWorker::PQUEUE = new QUEUE();
+
+bool HTWorker::INIT_SCCB_MUTEX = false;
+pthread_mutex_t HTWorker::SCCB_MUTEX;
+
+HTWorker::HTWorker() :
+		_stub(NULL) {
+
+	init_sscb_mutex();
+}
+
+HTWorker::HTWorker(const ProtoAddr& addr, const ProtoStub* const stub) :
+		_addr(addr), _stub(stub) {
+
+	init_sscb_mutex();
 }
 
 HTWorker::~HTWorker() {
@@ -80,7 +109,7 @@ string HTWorker::run(const char *buf) {
 	return result;
 }
 
-string HTWorker::insert(const ZPack &zpack) {
+string HTWorker::insert_shared(const ZPack &zpack) {
 
 	string result;
 
@@ -88,7 +117,7 @@ string HTWorker::insert(const ZPack &zpack) {
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
 	string key = zpack.key();
-	int ret = pmap->put(key, zpack.SerializeAsString());
+	int ret = PMAP->put(key, zpack.SerializeAsString());
 
 	if (ret != 0) {
 
@@ -103,7 +132,19 @@ string HTWorker::insert(const ZPack &zpack) {
 	return result;
 }
 
-string HTWorker::lookup(const ZPack &zpack) {
+string HTWorker::insert(const ZPack &zpack) {
+
+	string result = insert_shared(zpack);
+
+#ifdef SCCB
+	_stub->sendBack(_addr, result.data(), result.size());
+	return "";
+#else
+	return result;
+#endif
+}
+
+string HTWorker::lookup_shared(const ZPack &zpack) {
 
 	string result;
 
@@ -111,7 +152,7 @@ string HTWorker::lookup(const ZPack &zpack) {
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
 	string key = zpack.key();
-	string *ret = pmap->get(key);
+	string *ret = PMAP->get(key);
 
 	if (ret == NULL) {
 
@@ -129,7 +170,19 @@ string HTWorker::lookup(const ZPack &zpack) {
 	return result;
 }
 
-string HTWorker::append(const ZPack &zpack) {
+string HTWorker::lookup(const ZPack &zpack) {
+
+	string result = lookup_shared(zpack);
+
+#ifdef SCCB
+	_stub->sendBack(_addr, result.data(), result.size());
+	return "";
+#else
+	return result;
+#endif
+}
+
+string HTWorker::append_shared(const ZPack &zpack) {
 
 	string result;
 
@@ -137,7 +190,7 @@ string HTWorker::append(const ZPack &zpack) {
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
 	string key = zpack.key();
-	int ret = pmap->append(key, zpack.SerializeAsString());
+	int ret = PMAP->append(key, zpack.SerializeAsString());
 
 	if (ret != 0) {
 
@@ -152,24 +205,61 @@ string HTWorker::append(const ZPack &zpack) {
 	return result;
 }
 
+string HTWorker::append(const ZPack &zpack) {
+
+	string result = append_shared(zpack);
+
+#ifdef SCCB
+	_stub->sendBack(_addr, result.data(), result.size());
+	return "";
+#else
+	return result;
+#endif
+}
+
 string HTWorker::state_change_callback(const ZPack &zpack) {
 
-	string result;
+	lock_guard lock(&SCCB_MUTEX);
+	WorkerThreadArg *wta = new WorkerThreadArg(zpack, _addr, _stub);
+	PQUEUE->push(wta); //queue the WorkerThreadArg to be used in thread function
 
-	result = state_change_callback_internal(zpack);
+	pthread_t tid;
+	pthread_create(&tid, NULL, threaded_state_change_callback, NULL);
 
-	int poll_interval = Env::get_sccb_poll_interval();
-	//printf("poll_interval: %d\n", poll_interval);
+	return "";
+}
 
-	//while (result == Const::ZSC_REC_SCCBPOLLTRY) {
-	while (result != Const::ZSC_REC_SUCC) {
+void *HTWorker::threaded_state_change_callback(void *arg) {
 
-		usleep(poll_interval * 1000);
+	lock_guard lock(&SCCB_MUTEX);
 
-		result = state_change_callback_internal(zpack);
+	while (!PQUEUE->empty()) { //dequeue the WorkerThreadArg
+
+		WorkerThreadArg* pwta = PQUEUE->front();
+		PQUEUE->pop();
+
+		lock.unlock();
+
+		string result = state_change_callback_internal(pwta->_zpack);
+
+		int poll_interval = Env::get_sccb_poll_interval();
+		//printf("poll_interval: %d\n", poll_interval);
+
+		//while (result == Const::ZSC_REC_SCCBPOLLTRY) {
+		while (result != Const::ZSC_REC_SUCC) {
+
+			usleep(poll_interval * 1000);
+
+			result = state_change_callback_internal(pwta->_zpack);
+		}
+
+		pwta->_stub->sendBack(pwta->_addr, result.data(), result.size());
+
+		/*pwta->_htw->_stub->sendBack(pwta->_htw->_addr, result.data(),
+		 result.size());*/
+
+		delete pwta;
 	}
-
-	return result;
 }
 
 string HTWorker::state_change_callback_internal(const ZPack &zpack) {
@@ -180,11 +270,13 @@ string HTWorker::state_change_callback_internal(const ZPack &zpack) {
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
 	string key = zpack.key();
-	string *ret = pmap->get(key);
+	string *ret = PMAP->get(key);
 
 	if (ret == NULL) {
 
 		cerr << "DB Error: lookup find nothing" << endl;
+
+		printf("[%lu] DB Error: lookup find nothing", pthread_self());
 
 		result = Const::ZSC_REC_NONEXISTKEY;
 
@@ -210,13 +302,18 @@ string HTWorker::compare_swap(const ZPack &zpack) {
 	if (zpack.key().empty())
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
-	string ret = compare_swap_internal(zpack);
+	string result = compare_swap_internal(zpack);
 
-	string result = lookup(zpack);
+	string lkpresult = lookup_shared(zpack);
 
-	ret.append(erase_status_code(result));
+	result.append(erase_status_code(lkpresult));
 
-	return ret;
+#ifdef SCCB
+	_stub->sendBack(_addr, result.data(), result.size());
+	return "";
+#else
+	return result;
+#endif
 }
 
 string HTWorker::compare_swap_internal(const ZPack &zpack) {
@@ -224,12 +321,13 @@ string HTWorker::compare_swap_internal(const ZPack &zpack) {
 	string ret;
 
 	/*get Package stored by lookup*/
-	string lresult = lookup(zpack);
+	string lresult = lookup_shared(zpack);
 	ZPack lzpack;
 	lresult = erase_status_code(lresult);
 	lzpack.ParseFromString(lresult);
 
-	string seen_value_pass_in = zpack.val();
+	/*get seen_value passed in*/
+	string seen_value_passed_in = zpack.val();
 
 	/*get seen_value stored*/
 	string seen_value_stored = lzpack.val();
@@ -238,11 +336,11 @@ string HTWorker::compare_swap_internal(const ZPack &zpack) {
 	 zpack.newval().c_str());*/
 
 	/*they are equivalent, compare and swap*/
-	if (!seen_value_pass_in.compare(seen_value_stored)) {
+	if (!seen_value_passed_in.compare(seen_value_stored)) {
 
 		lzpack.set_val(zpack.newval());
 
-		return insert(lzpack);
+		return insert_shared(lzpack);
 
 	} else {
 
@@ -250,7 +348,7 @@ string HTWorker::compare_swap_internal(const ZPack &zpack) {
 	}
 }
 
-string HTWorker::remove(const ZPack &zpack) {
+string HTWorker::remove_shared(const ZPack &zpack) {
 
 	string result;
 
@@ -258,7 +356,7 @@ string HTWorker::remove(const ZPack &zpack) {
 		return Const::ZSC_REC_EMPTYKEY; //-1
 
 	string key = zpack.key();
-	int ret = pmap->remove(key);
+	int ret = PMAP->remove(key);
 
 	if (ret != 0) {
 
@@ -273,7 +371,28 @@ string HTWorker::remove(const ZPack &zpack) {
 	return result;
 }
 
+string HTWorker::remove(const ZPack &zpack) {
+
+	string result = remove_shared(zpack);
+
+#ifdef SCCB
+	_stub->sendBack(_addr, result.data(), result.size());
+	return "";
+#else
+	return result;
+#endif
+}
+
 string HTWorker::erase_status_code(string & val) {
 
 	return val.substr(3);
+}
+
+void HTWorker::init_sscb_mutex() {
+
+	if (!INIT_SCCB_MUTEX) {
+
+		pthread_mutex_init(&SCCB_MUTEX, NULL);
+		INIT_SCCB_MUTEX = true;
+	}
 }

@@ -39,6 +39,7 @@ class ProtoAddr {
 
 public:
 	ProtoAddr();
+	ProtoAddr(const ProtoAddr& addr);
 	virtual ~ProtoAddr();
 
 	int fd;
@@ -78,5 +79,9 @@ public:
 	virtual bool recvsend(ProtoAddr addr, const void *recvbuf);
 
 	virtual bool teardown();
+
+public:
+	virtual int sendBack(ProtoAddr addr, const void* sendbuf,
+			int sendcount) const;
 };
 #endif /* PROXY_STUB_H_ */

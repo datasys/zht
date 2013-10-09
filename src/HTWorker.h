@@ -33,16 +33,35 @@
 
 #include "zpack.pb.h"
 #include "novoht.h"
-
+#include "proxy_stub.h"
 #include <string>
+#include <queue>
 using namespace std;
 
+class HTWorker;
+
+class WorkerThreadArg {
+
+public:
+	WorkerThreadArg();
+	WorkerThreadArg(const ZPack &zpack, const ProtoAddr &addr,
+			const ProtoStub * const stub);
+	virtual ~WorkerThreadArg();
+
+	ZPack _zpack;
+	ProtoAddr _addr;
+	const ProtoStub *_stub;
+};
 /*
  *
  */
 class HTWorker {
 public:
+	typedef queue<WorkerThreadArg*> QUEUE;
+
+public:
 	HTWorker();
+	HTWorker(const ProtoAddr& addr, const ProtoStub* const stub);
 	virtual ~HTWorker();
 
 public:
@@ -53,16 +72,32 @@ private:
 	string lookup(const ZPack &zpack);
 	string append(const ZPack &zpack);
 	string remove(const ZPack &zpack);
-	string state_change_callback(const ZPack &zpack);
-	string state_change_callback_internal(const ZPack &zpack);
 	string compare_swap(const ZPack &zpack);
+	string state_change_callback(const ZPack &zpack);
+
+	string insert_shared(const ZPack &zpack);
+	string lookup_shared(const ZPack &zpack);
+	string append_shared(const ZPack &zpack);
+	string remove_shared(const ZPack &zpack);
+
+	static void *threaded_state_change_callback(void *arg);
+	static string state_change_callback_internal(const ZPack &zpack);
+
 	string compare_swap_internal(const ZPack &zpack);
 
 private:
 	string erase_status_code(string &val);
+	static void init_sscb_mutex();
 
 private:
-	static NoVoHT *pmap;
+	ProtoAddr _addr;
+	const ProtoStub * const _stub;
+
+private:
+	static NoVoHT *PMAP;
+	static QUEUE *PQUEUE;
+	static bool INIT_SCCB_MUTEX;
+	static pthread_mutex_t SCCB_MUTEX;
 };
 
 #endif /* HTWORKER_H_ */
