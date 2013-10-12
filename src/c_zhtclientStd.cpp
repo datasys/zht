@@ -178,7 +178,7 @@ int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
 }
 
 int c_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
-		const char *expeded_val) {
+		const char *expeded_val, int lease) {
 
 #ifdef IND_MUTEX
 	lock_guard lock(&c_state_change_callback_mutex);
@@ -191,7 +191,7 @@ int c_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
 	string skey(key);
 	string expededval(expeded_val);
 
-	int rc = zhtcppClient->state_change_callback(skey, expededval);
+	int rc = zhtcppClient->state_change_callback(skey, expededval, lease);
 
 	return rc;
 }

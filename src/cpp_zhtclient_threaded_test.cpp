@@ -342,7 +342,7 @@ void* state_change_callback_threaded(void *arg) {
 	int rc = zhtclient->insert(key, buf); //first, insert the key/value pair
 
 	sprintf(buf, "%lu", pthread_self());
-	rc = zhtclient->state_change_callback(key, buf);
+	rc = zhtclient->state_change_callback(key, buf, 500);
 
 	fprintf(stdout,
 			"[%lu] ZHTClient::state_change_callback, {key}:{value}=> {%s}:{%s}, rc(%d)\n",

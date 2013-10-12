@@ -179,7 +179,7 @@ void *lookup_threaded(void *arg) {
 		 seq_num, lret, ln);*/
 
 		fprintf(stdout,
-				"[%lu] c_zht_lookup2, return {key}:{value}=> {%s}:{%s}, rc(%d)\n",
+				"[%lu] c_zht_lookup, return {key}:{value}=> {%s}:{%s}, rc(%d)\n",
 				pthread_self(), key, result, rc);
 	}
 
@@ -304,7 +304,7 @@ void* state_change_callback_threaded(void *arg) {
 
 	//sprintf(buf, "%lu", pthread_self());
 	sprintf(buf, "%lu", 140328762492672);
-	int rc = c_state_change_callback(key, buf);
+	int rc = c_state_change_callback(key, buf, 500);
 
 	fprintf(stdout,
 			"[%lu] c_state_change_callback, {key}:{value}=> {%s}:{%s}, rc(%d)\n",

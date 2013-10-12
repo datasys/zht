@@ -94,7 +94,7 @@ ZHT_CPP(extern "C" {)
 	 * return code: 0 if succeeded, or -1 if empty key, or -2 if failed, -98 if unrecognized operation.
 	 * */
 	int c_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
-			const char *expeded_val);
+			const char *expeded_val, int lease);
 
 	/* wrapp C++ ZHTClient::teardown.
 	 * return code: 0 if succeeded, or -1 if failed.

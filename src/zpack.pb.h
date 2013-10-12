@@ -132,24 +132,35 @@ class ZPack : public ::google::protobuf::Message {
   inline ::std::string* mutable_newval();
   inline ::std::string* release_newval();
   
-  // optional bool valnull = 5;
+  // optional bytes lease = 5;
+  inline bool has_lease() const;
+  inline void clear_lease();
+  static const int kLeaseFieldNumber = 5;
+  inline const ::std::string& lease() const;
+  inline void set_lease(const ::std::string& value);
+  inline void set_lease(const char* value);
+  inline void set_lease(const void* value, size_t size);
+  inline ::std::string* mutable_lease();
+  inline ::std::string* release_lease();
+  
+  // optional bool valnull = 6;
   inline bool has_valnull() const;
   inline void clear_valnull();
-  static const int kValnullFieldNumber = 5;
+  static const int kValnullFieldNumber = 6;
   inline bool valnull() const;
   inline void set_valnull(bool value);
   
-  // optional bool newvalnull = 6;
+  // optional bool newvalnull = 7;
   inline bool has_newvalnull() const;
   inline void clear_newvalnull();
-  static const int kNewvalnullFieldNumber = 6;
+  static const int kNewvalnullFieldNumber = 7;
   inline bool newvalnull() const;
   inline void set_newvalnull(bool value);
   
-  // optional int32 replicanum = 7;
+  // optional int32 replicanum = 8;
   inline bool has_replicanum() const;
   inline void clear_replicanum();
-  static const int kReplicanumFieldNumber = 7;
+  static const int kReplicanumFieldNumber = 8;
   inline ::google::protobuf::int32 replicanum() const;
   inline void set_replicanum(::google::protobuf::int32 value);
   
@@ -163,6 +174,8 @@ class ZPack : public ::google::protobuf::Message {
   inline void clear_has_val();
   inline void set_has_newval();
   inline void clear_has_newval();
+  inline void set_has_lease();
+  inline void clear_has_lease();
   inline void set_has_valnull();
   inline void clear_has_valnull();
   inline void set_has_newvalnull();
@@ -176,12 +189,13 @@ class ZPack : public ::google::protobuf::Message {
   ::std::string* key_;
   ::std::string* val_;
   ::std::string* newval_;
+  ::std::string* lease_;
   bool valnull_;
   bool newvalnull_;
   ::google::protobuf::int32 replicanum_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
   
   friend void  protobuf_AddDesc_zpack_2eproto();
   friend void protobuf_AssignDesc_zpack_2eproto();
@@ -429,15 +443,73 @@ inline ::std::string* ZPack::release_newval() {
   }
 }
 
-// optional bool valnull = 5;
-inline bool ZPack::has_valnull() const {
+// optional bytes lease = 5;
+inline bool ZPack::has_lease() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void ZPack::set_has_valnull() {
+inline void ZPack::set_has_lease() {
   _has_bits_[0] |= 0x00000010u;
 }
-inline void ZPack::clear_has_valnull() {
+inline void ZPack::clear_has_lease() {
   _has_bits_[0] &= ~0x00000010u;
+}
+inline void ZPack::clear_lease() {
+  if (lease_ != &::google::protobuf::internal::kEmptyString) {
+    lease_->clear();
+  }
+  clear_has_lease();
+}
+inline const ::std::string& ZPack::lease() const {
+  return *lease_;
+}
+inline void ZPack::set_lease(const ::std::string& value) {
+  set_has_lease();
+  if (lease_ == &::google::protobuf::internal::kEmptyString) {
+    lease_ = new ::std::string;
+  }
+  lease_->assign(value);
+}
+inline void ZPack::set_lease(const char* value) {
+  set_has_lease();
+  if (lease_ == &::google::protobuf::internal::kEmptyString) {
+    lease_ = new ::std::string;
+  }
+  lease_->assign(value);
+}
+inline void ZPack::set_lease(const void* value, size_t size) {
+  set_has_lease();
+  if (lease_ == &::google::protobuf::internal::kEmptyString) {
+    lease_ = new ::std::string;
+  }
+  lease_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* ZPack::mutable_lease() {
+  set_has_lease();
+  if (lease_ == &::google::protobuf::internal::kEmptyString) {
+    lease_ = new ::std::string;
+  }
+  return lease_;
+}
+inline ::std::string* ZPack::release_lease() {
+  clear_has_lease();
+  if (lease_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = lease_;
+    lease_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+
+// optional bool valnull = 6;
+inline bool ZPack::has_valnull() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void ZPack::set_has_valnull() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void ZPack::clear_has_valnull() {
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void ZPack::clear_valnull() {
   valnull_ = false;
@@ -451,15 +523,15 @@ inline void ZPack::set_valnull(bool value) {
   valnull_ = value;
 }
 
-// optional bool newvalnull = 6;
+// optional bool newvalnull = 7;
 inline bool ZPack::has_newvalnull() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000040u) != 0;
 }
 inline void ZPack::set_has_newvalnull() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000040u;
 }
 inline void ZPack::clear_has_newvalnull() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void ZPack::clear_newvalnull() {
   newvalnull_ = false;
@@ -473,15 +545,15 @@ inline void ZPack::set_newvalnull(bool value) {
   newvalnull_ = value;
 }
 
-// optional int32 replicanum = 7;
+// optional int32 replicanum = 8;
 inline bool ZPack::has_replicanum() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void ZPack::set_has_replicanum() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void ZPack::clear_has_replicanum() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void ZPack::clear_replicanum() {
   replicanum_ = 0;

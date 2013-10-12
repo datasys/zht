@@ -121,9 +121,11 @@ string HTWorker::insert_shared(const ZPack &zpack) {
 
 	if (ret != 0) {
 
-		cerr << "DB Error: fail to insert: rcode = " << ret << endl;
-		result = Const::ZSC_REC_NONEXISTKEY; //-92
+		printf("thread[%lu] DB Error: fail to insert, rcode = %d\n",
+				pthread_self(), ret);
+		fflush(stdout);
 
+		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
 		result = Const::ZSC_REC_SUCC; //0, succeed.
@@ -156,11 +158,11 @@ string HTWorker::lookup_shared(const ZPack &zpack) {
 
 	if (ret == NULL) {
 
-		cerr << "DB Error: lookup find nothing" << endl;
+		printf("thread[%lu] DB Error: lookup found nothing\n", pthread_self());
+		fflush(stdout);
 
 		result = Const::ZSC_REC_NONEXISTKEY;
 		result.append("Empty");
-
 	} else {
 
 		result = Const::ZSC_REC_SUCC;
@@ -194,9 +196,11 @@ string HTWorker::append_shared(const ZPack &zpack) {
 
 	if (ret != 0) {
 
-		cerr << "DB Error: fail to append: rcode = " << ret << endl;
-		result = Const::ZSC_REC_NONEXISTKEY; //-92
+		printf("thread[%lu] DB Error: fail to append, rcode = %d\n",
+				pthread_self(), ret);
+		fflush(stdout);
 
+		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
 		result = Const::ZSC_REC_SUCC; //0, succeed.
@@ -233,7 +237,7 @@ void *HTWorker::threaded_state_change_callback(void *arg) {
 
 	lock_guard lock(&SCCB_MUTEX);
 
-	while (!PQUEUE->empty()) { //dequeue the WorkerThreadArg
+	if (!PQUEUE->empty()) { //dequeue the WorkerThreadArg
 
 		WorkerThreadArg* pwta = PQUEUE->front();
 		PQUEUE->pop();
@@ -242,13 +246,18 @@ void *HTWorker::threaded_state_change_callback(void *arg) {
 
 		string result = state_change_callback_internal(pwta->_zpack);
 
+		int mslapsed = 0;
+		int lease = atoi(pwta->_zpack.lease().c_str());
 		int poll_interval = Env::get_sccb_poll_interval();
 		//printf("poll_interval: %d\n", poll_interval);
 
-		//while (result == Const::ZSC_REC_SCCBPOLLTRY) {
 		while (result != Const::ZSC_REC_SUCC) {
 
+			mslapsed += poll_interval;
 			usleep(poll_interval * 1000);
+
+			if (mslapsed >= lease)
+				break;
 
 			result = state_change_callback_internal(pwta->_zpack);
 		}
@@ -274,12 +283,10 @@ string HTWorker::state_change_callback_internal(const ZPack &zpack) {
 
 	if (ret == NULL) {
 
-		cerr << "DB Error: lookup find nothing" << endl;
-
-		printf("[%lu] DB Error: lookup find nothing", pthread_self());
+		printf("thread[%lu] DB Error: lookup found nothing\n", pthread_self());
+		fflush(stdout);
 
 		result = Const::ZSC_REC_NONEXISTKEY;
-
 	} else {
 
 		ZPack rltpack;
@@ -360,9 +367,11 @@ string HTWorker::remove_shared(const ZPack &zpack) {
 
 	if (ret != 0) {
 
-		cerr << "DB Error: fail to remove: rcode = " << ret << endl;
-		result = Const::ZSC_REC_NONEXISTKEY; //-92
+		printf("thread[%lu] DB Error: fail to remove, rcode = %d\n",
+				pthread_self(), ret);
+		fflush(stdout);
 
+		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
 		result = Const::ZSC_REC_SUCC; //0, succeed.
