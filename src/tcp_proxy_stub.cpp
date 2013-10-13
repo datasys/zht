@@ -72,6 +72,7 @@ bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 	reuseSock(sock);
 
+	/*get mutex to protected shared socket*/
 	pthread_mutex_t *sock_mutex = getSockMutex(he.host, he.port);
 	lock_guard lock(sock_mutex);
 

@@ -80,12 +80,15 @@ bool UDPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 	reuseSock(sock);
 
+	/*get mutex to protected shared socket*/
 	pthread_mutex_t *sock_mutex = getSockMutex(he.host, he.port);
 	lock_guard lock(sock_mutex);
+
 
 	/*send message to server over client sock fd*/
 	int sentSize = sendTo(sock, he.host, he.port, (char*) sendbuf, sendcount);
 	int sent_bool = sentSize == sendcount;
+
 
 	/*receive response from server over client sock fd*/ //todo: loopedReceive for zht_lookup
 	recvcount = recvFrom(sock, recvbuf);
