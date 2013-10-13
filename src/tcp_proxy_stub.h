@@ -33,6 +33,7 @@
 
 #include "ip_proxy_stub.h"
 #include "HTWorker.h"
+#include <pthread.h>
 
 #include <map>
 using namespace std;

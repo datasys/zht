@@ -87,9 +87,9 @@ const int LOOKUP_SIZE = 1024 * 2; //size of buffer to store lookup result, large
 
 void printUsage(char *argv_0);
 
-const char *key = "c_zht_key";
-
 void *insert_threaded(void *arg) {
+
+	const char *key = "insert_threaded";
 
 	char buf[100];
 	//sprintf(buf, "%lu", pthread_self());
@@ -132,6 +132,8 @@ void* test_insert(void *arg) {
 
 void *remove_threaded(void *arg) {
 
+	const char *key = "remove_threaded";
+
 	int rc = c_zht_remove(key);
 
 	fprintf(stdout, "[%lu] c_zht_remove, {key}=> {%s}, rc(%d)\n",
@@ -165,6 +167,8 @@ void* test_remove(void *arg) {
 }
 
 void *lookup_threaded(void *arg) {
+
+	const char *key = "lookup_threaded";
 
 	size_t ln;
 	char *result = (char*) calloc(LOOKUP_SIZE, sizeof(char));
@@ -214,6 +218,8 @@ void* test_lookup(void *arg) {
 
 void *append_threaded(void *arg) {
 
+	const char *key = "append_threaded";
+
 	char buf[100];
 	sprintf(buf, "%lu", pthread_self());
 
@@ -251,6 +257,8 @@ void* test_append(void *arg) {
 }
 
 void *comp_swap_threaded(void *arg) {
+
+	const char *key = "comp_swap_threaded";
 
 	char buf[100];
 	sprintf(buf, "%lu", pthread_self());
@@ -295,6 +303,8 @@ void* test_comp_swap(void *arg) {
 }
 
 void* state_change_callback_threaded(void *arg) {
+
+	const char *key = "state_change_callback_threaded";
 
 	char *buf = (char*) calloc(100, sizeof(char));
 

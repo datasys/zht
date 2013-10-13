@@ -96,6 +96,7 @@ private:
 private:
 	static NoVoHT *PMAP;
 	static QUEUE *PQUEUE;
+
 	static bool INIT_SCCB_MUTEX;
 	static pthread_mutex_t SCCB_MUTEX;
 };

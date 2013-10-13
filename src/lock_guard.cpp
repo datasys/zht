@@ -43,14 +43,16 @@ lock_guard::~lock_guard() {
 
 bool lock_guard::lock() {
 
-	pthread_mutex_lock(_mutex);
+	if (_mutex != NULL)
+		pthread_mutex_lock(_mutex);
 
 	return true;
 }
 
 bool lock_guard::unlock() {
 
-	pthread_mutex_unlock(_mutex);
+	if (_mutex != NULL)
+		pthread_mutex_unlock(_mutex);
 
 	return true;
 }

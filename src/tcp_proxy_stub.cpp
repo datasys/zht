@@ -43,6 +43,7 @@
 #include "Util.h"
 #include "ZHTUtil.h"
 #include "bigdata_transfer.h"
+#include "lock_guard.h"
 
 using namespace std;
 using namespace iit::datasys::zht::dm;
@@ -71,6 +72,9 @@ bool TCPProxy::sendrecv(const void *sendbuf, const size_t sendcount,
 
 	reuseSock(sock);
 
+	pthread_mutex_t *sock_mutex = getSockMutex(he.host, he.port);
+	lock_guard lock(sock_mutex);
+
 	/*send message to server over client sock fd*/
 	int sentSize = sendTo(sock, sendbuf, sendcount);
 	int sent_bool = sentSize == sendcount;
@@ -97,6 +101,8 @@ bool TCPProxy::teardown() {
 
 	CONN_CACHE.clear();
 
+	result &= IPProtoProxy::teardown();
+
 	return result;
 }
 
@@ -104,63 +110,38 @@ int TCPProxy::getSockCached(const string& host, const uint& port) {
 
 	int sock = 0;
 
+#ifdef SOCKET_CACHE
 	string hashKey = HashUtil::genBase(host, port);
 
 	MIT it = CONN_CACHE.find(hashKey);
 
 	if (it == CONN_CACHE.end()) {
 
+		lock_guard lock(&CC_MUTEX);
+
 		sock = makeClientSocket(host, port);
 
 		if (sock <= 0) {
 
 			cerr << "TCPProxy::getSockCached(): error on makeClientSocket("
-					<< host << ":" << port << "): " << strerror(errno) << endl;
+			<< host << ":" << port << "): " << strerror(errno) << endl;
 			sock = -1;
 		} else {
 
 			CONN_CACHE[hashKey] = sock;
+
+			putSockMutex(host, port);
 		}
 	} else {
 
 		sock = it->second;
 	}
+#else
+	sock = makeClientSocket(host, port);
+#endif
 
 	return sock;
 }
-
-/*
- int TCPProxy::getSockCached(const string& host, const uint& port) {
-
- int sock = 0;
-
- string hashKey = HashUtil::genBase(host, port);
-
- sock = CONN_CACHE.fetch(hashKey, true);
-
- if (sock <= 0) {
-
- sock = makeClientSocket(host, port);
-
- if (sock <= 0) {
-
- cerr
- << "TCPProxy::getSockCached(): error on makeClientSocket(...): "
- << strerror(errno) << endl;
- sock = -1;
- } else {
-
- int tobeRemoved = -1;
- CONN_CACHE.insert(hashKey, sock, tobeRemoved);
-
- if (tobeRemoved != -1) {
- close(tobeRemoved);
- }
- }
- }
-
- return sock;
- }*/
 
 int TCPProxy::makeClientSocket(const string& host, const uint& port) {
 

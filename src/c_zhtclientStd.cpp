@@ -46,8 +46,9 @@ pthread_mutex_t c_zht_insert_mutex;
 pthread_mutex_t c_zht_append_mutex;
 pthread_mutex_t c_zht_compare_swap_mutex;
 pthread_mutex_t c_state_change_callback_mutex;
-#else
+#elif SHARED_MUTEX
 pthread_mutex_t c_zht_client_mutex;
+#else
 #endif
 
 int c_zht_init_std(ZHTClient_c *zhtClient, const char *zhtConfig,
@@ -60,8 +61,9 @@ int c_zht_init_std(ZHTClient_c *zhtClient, const char *zhtConfig,
 	pthread_mutex_init(&c_zht_append_mutex, NULL);
 	pthread_mutex_init(&c_zht_compare_swap_mutex, NULL);
 	pthread_mutex_init(&c_state_change_callback_mutex, NULL);
-#else
+#elif SHARED_MUTEX
 	pthread_mutex_init(&c_zht_client_mutex, NULL);
+#else
 #endif
 
 	ZHTClient *zhtcppClient = new ZHTClient();
@@ -84,8 +86,9 @@ int c_zht_lookup_std(ZHTClient_c zhtClient, const char *key, char *result) {
 
 #ifdef IND_MUTEX
 	lock_guard lock(&c_zht_lookup_mutex);
-#else
+#elif SHARED_MUTEX
 	lock_guard lock(&c_zht_client_mutex);
+#else
 #endif
 
 	ZHTClient *zhtcppClient = (ZHTClient *) zhtClient;
@@ -106,8 +109,9 @@ int c_zht_remove_std(ZHTClient_c zhtClient, const char *key) {
 
 #ifdef IND_MUTEX
 	lock_guard lock(&c_zht_remove_mutex);
-#else
+#elif SHARED_MUTEX
 	lock_guard lock(&c_zht_client_mutex);
+#else
 #endif
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
@@ -122,8 +126,9 @@ int c_zht_insert_std(ZHTClient_c zhtClient, const char *key,
 
 #ifdef IND_MUTEX
 	lock_guard lock(&c_zht_insert_mutex);
-#else
+#elif SHARED_MUTEX
 	lock_guard lock(&c_zht_client_mutex);
+#else
 #endif
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
@@ -139,8 +144,9 @@ int c_zht_append_std(ZHTClient_c zhtClient, const char *key,
 
 #ifdef IND_MUTEX
 	lock_guard lock(&c_zht_append_mutex);
-#else
+#elif SHARED_MUTEX
 	lock_guard lock(&c_zht_client_mutex);
+#else
 #endif
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
@@ -157,8 +163,9 @@ int c_zht_compare_swap_std(ZHTClient_c zhtClient, const char *key,
 
 #ifdef IND_MUTEX
 	lock_guard lock(&c_zht_compare_swap_mutex);
-#else
+#elif SHARED_MUTEX
 	lock_guard lock(&c_zht_client_mutex);
+#else
 #endif
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
@@ -182,8 +189,9 @@ int c_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
 
 #ifdef IND_MUTEX
 	lock_guard lock(&c_state_change_callback_mutex);
-#else
+#elif SHARED_MUTEX
 	lock_guard lock(&c_zht_client_mutex);
+#else
 #endif
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;
@@ -205,8 +213,9 @@ int c_zht_teardown_std(ZHTClient_c zhtClient) {
 	pthread_mutex_destroy (&c_zht_append_mutex);
 	pthread_mutex_destroy (&c_zht_compare_swap_mutex);
 	pthread_mutex_destroy (&c_state_change_callback_mutex);
-#else
+#elif SHARED_MUTEX
 	pthread_mutex_destroy(&c_zht_client_mutex);
+#else
 #endif
 
 	ZHTClient * zhtcppClient = (ZHTClient *) zhtClient;

@@ -32,8 +32,10 @@
 #define IPPROTOCOL_H_
 
 #include "proxy_stub.h"
+#include <pthread.h>
 
 #include <string>
+#include <map>
 using namespace std;
 
 /*
@@ -41,13 +43,42 @@ using namespace std;
  */
 class IPProtoProxy: public ProtoProxy {
 public:
+	typedef map<string, pthread_mutex_t> MAP;
+	typedef MAP::iterator MIT;
+
+public:
 	IPProtoProxy();
 	virtual ~IPProtoProxy();
+	virtual bool teardown();
 
 protected:
+	virtual int getSockCached(const string& host, const uint& port) = 0;
+	virtual int makeClientSocket(const string& host, const uint& port) = 0;
+	virtual int recvFrom(int sock, void* recvbuf) = 0;
+	virtual int loopedrecv(int sock, string &srecv) = 0;
+
 	virtual int reuseSock(int sock);
-	virtual int recvFrom(int sock, void* recvbuf)= 0;
-	virtual int loopedrecv(int sock, void *senderAddr, string &srecv);
+
+	virtual pthread_mutex_t* getSockMutex(const string& host, const uint& port);
+	virtual void putSockMutex(const string& host, const uint& port);
+
+protected:
+	int loopedrecv(int sock, void *senderAddr, string &srecv);
+
+private:
+	static void init_XX_MUTEX();
+
+protected:
+	static pthread_mutex_t CC_MUTEX; //mutex for connection cache
+	static pthread_mutex_t MC_MUTEX; //mutex for mutex cache
+
+private:
+	static bool INIT_CC_MUTEX;
+	static bool INIT_MC_MUTEX;
+
+private:
+	MAP MUTEX_CACHE;
+
 };
 
 class IPProtoStub: public ProtoStub {

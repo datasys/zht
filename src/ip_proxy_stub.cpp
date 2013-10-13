@@ -31,6 +31,8 @@
 #include "ip_proxy_stub.h"
 #include "Env.h"
 #include "bigdata_transfer.h"
+#include "lock_guard.h"
+#include "Util.h"
 
 #include <sys/socket.h>
 #include <string.h>
@@ -38,11 +40,38 @@
 #include <iostream>
 
 using namespace std;
+using namespace iit::datasys::zht::dm;
 
-IPProtoProxy::IPProtoProxy() {
+bool IPProtoProxy::INIT_CC_MUTEX = false;
+bool IPProtoProxy::INIT_MC_MUTEX = false;
+
+pthread_mutex_t IPProtoProxy::CC_MUTEX;
+pthread_mutex_t IPProtoProxy::MC_MUTEX;
+
+IPProtoProxy::IPProtoProxy() :
+		MUTEX_CACHE() {
+
+	init_XX_MUTEX();
 }
 
 IPProtoProxy::~IPProtoProxy() {
+}
+
+bool IPProtoProxy::teardown() {
+
+	bool result = true;
+
+	MIT it;
+	for (it = MUTEX_CACHE.begin(); it != MUTEX_CACHE.end(); it++) {
+
+		int rc = pthread_mutex_destroy(&it->second);
+
+		result &= rc == 0;
+	}
+
+	MUTEX_CACHE.clear();
+
+	return result;
 }
 
 int IPProtoProxy::reuseSock(int sock) {
@@ -56,6 +85,38 @@ int IPProtoProxy::reuseSock(int sock) {
 		return -1;
 	} else
 		return 0;
+}
+
+pthread_mutex_t* IPProtoProxy::getSockMutex(const string& host,
+		const uint& port) {
+
+	string hashKey = HashUtil::genBase(host, port);
+
+	MIT it = MUTEX_CACHE.find(hashKey);
+
+	if (it != MUTEX_CACHE.end()) {
+
+		return &MUTEX_CACHE[hashKey];
+	}
+
+	return NULL;
+}
+
+void IPProtoProxy::putSockMutex(const string& host, const uint& port) {
+
+	string hashKey = HashUtil::genBase(host, port);
+
+	MIT it = MUTEX_CACHE.find(hashKey);
+
+	if (it == MUTEX_CACHE.end()) {
+
+		lock_guard lock(&MC_MUTEX);
+
+		pthread_mutex_t sock_mutex;
+		pthread_mutex_init(&sock_mutex, NULL);
+
+		MUTEX_CACHE[hashKey] = sock_mutex;
+	}
 }
 
 int IPProtoProxy::loopedrecv(int sock, void *senderAddr, string &srecv) {
@@ -104,6 +165,21 @@ int IPProtoProxy::loopedrecv(int sock, void *senderAddr, string &srecv) {
 	pbrb = NULL;
 
 	return recvcount;
+}
+
+void IPProtoProxy::init_XX_MUTEX() {
+
+	if (!INIT_CC_MUTEX) {
+
+		pthread_mutex_init(&CC_MUTEX, NULL);
+		INIT_CC_MUTEX = true;
+	}
+
+	if (!INIT_MC_MUTEX) {
+
+		pthread_mutex_init(&MC_MUTEX, NULL);
+		INIT_MC_MUTEX = true;
+	}
 }
 
 IPProtoStub::IPProtoStub() {
