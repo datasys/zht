@@ -46,41 +46,16 @@ Env::Env() {
 Env::~Env() {
 }
 
-string Env::get_conf_parameter(const string &paraname) {
-
-	string result;
-	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
-
-	ConfHandler::MIT it;
-
-	int size = zpmap->size();
-
-	for (it = zpmap->begin(); it != zpmap->end(); it++) {
-
-		ConfEntry ce;
-		ce.assign(it->first);
-
-		if (ce.name() == paraname) {
-
-			result = ce.value();
-
-			break;
-		}
-	}
-
-	return result;
-}
-
 int Env::get_msg_maxsize() {
 
-	string val = get_conf_parameter(Const::MSG_MAXSIZE);
+	string val = ConfHandler::get_zhtconf_parameter(Const::MSG_MAXSIZE);
 
 	return val.empty() ? MSG_DEFAULTSIZE : atoi(val.c_str());
 }
 
 int Env::get_sccb_poll_interval() {
 
-	string val = get_conf_parameter(Const::SCCB_POLL_INTERVAL);
+	string val = ConfHandler::get_zhtconf_parameter(Const::SCCB_POLL_INTERVAL);
 
 	return val.empty() ? SCCB_POLL_DEFAULT_INTERVAL : atoi(val.c_str());
 }

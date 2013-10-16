@@ -115,6 +115,11 @@ public:
 	static const string SCCB_POLL_INTERVAL;
 
 	/*
+	 * NOVOHT DB FILE AND SWAP SWITCH
+	 */
+	static const string INSTANT_SWAP;
+
+	/*
 	 * ASC_: admin server(service) chars
 	 * ASI_: admin server(service) integers
 	 * OPC_: operation code

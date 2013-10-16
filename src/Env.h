@@ -52,10 +52,6 @@ public:
 public:
 	static int get_msg_maxsize();
 	static int get_sccb_poll_interval();
-
-private:
-	static string get_conf_parameter(const string &paraname);
-
 };
 
 #endif /* ENV_H_ */

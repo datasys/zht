@@ -71,6 +71,8 @@ const string Const::MSG_MAXSIZE = "MSG_MAXSIZE";
 
 const string Const::SCCB_POLL_INTERVAL = "SCCB_POLL_INTERVAL";
 
+const string Const::INSTANT_SWAP = "INSTANT_SWAP";
+
 const string Const::ASC_OPC_AZ_ALL = "101";
 const string Const::ASC_OPC_AZ_PORT = "102";
 const string Const::ASC_OPC_AZ_IPPORT = "103";

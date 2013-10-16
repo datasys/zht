@@ -61,18 +61,22 @@ If you installed Google protocol buffers c and c++ bindings to customized direct
 -------------------RUN THE BENCHMARK-------------------
 To run benchmark:
 1. ./zhtserver -z zht.conf -n neighbor.conf, OR
-   ./zhtserver -z zht.conf -n neighbor.conf -p 40000, to define your own port, which overrides PORT in zht.conf
+   ./zhtserver -z zht.conf -n neighbor.conf -p 40000, to specify your own port that overrides PORT in zht.conf, OR
+   ./zhtserver -z zht.conf -n neighbor.conf -p 40000 -f novoht.db, to specify your own disk file to which data is persisted.
 
 2. ./zht_ben -z zht.conf -n neighbor.conf -o 1000
 
 NOTE that:
-	The port you defined to listen on at zhtserver(e.g. the PORT in zht.conf, or ./zhtserver -z zht.conf -n neighbor.conf -p 40000)
+	The port you specified to listen on at zhtserver(e.g. the PORT in zht.conf, or ./zhtserver -z zht.conf -n neighbor.conf -p 40000)
 	MUST BE CONSISTENT WITH the port of that machine in neighbor.conf, otherwise, the zhtclient CANNOT reach the zhtserver by that port.
 		
-In ./zhtserver -z zht.conf -n neighbor.conf -p 40000 	
-	zht.conf is to configure PROTOCOL and PORT, and other parameters,
-	neighbor.conf is to configure neighbored nodes(or ZHT servers) in ZHT overlay network,
-	40000 means zhtserver port to listen on, which overrides PORT in zht.conf, if missing, that PORT will be used. 
+In ./zhtserver -z zht.conf -n neighbor.conf -p 40000 or
+   ./zhtserver -z zht.conf -n neighbor.conf -p 40000 -f novoht.db
+	zht.conf: is to configure PROTOCOL and PORT, and other parameters,
+	neighbor.conf: is to configure neighbored nodes(or ZHT servers) in ZHT overlay network,
+	40000: means zhtserver port to listen on, which overrides PORT in zht.conf, if missing, that PORT in zht.conf will be used.
+	novoht.db: is the disk file to which the data are persisted, if missing, the data reside in memory. Please specify different
+			   files if you are going to run multiple zhtservers in the same node. 
 	
 In ./zht_ben -z zht.conf -n neighbor.conf -o 1000 
 	zht.conf is to configure PROTOCOL and PORT, and other parameters,
@@ -202,16 +206,19 @@ There are two conf files needed, one is zht.conf, the other is neighbor.conf or 
 
 zht.conf:
 PROTOCOL and PORT are the options to configure what protocols and ports(if applicable) 
-over which zhtclient and zhtserver communicate with. 
+over which zhtclient and zhtserver talk to each other. 
 
-If you define your own port by -p option(e.g. ./zhtserver -z zht.conf -n neighbor.conf -p 40000), this will override PORT defined in
+If you specified your own port by -p option(e.g. ./zhtserver -z zht.conf -n neighbor.conf -p 40000), this will override PORT defined in
 zht.conf.
+
+If you specified the disk file by -f option(e.g. -f novoht.db), the data will be persisted to that file, otherwise, they reside in memory.
+Please specify different files if you are going to run multiple zhtservers in the same node. 
 
 
 neighbor.conf:
 This file is used for TCP/UDP protocol.
 
-The IP and PORT pairs of neighbored nodes(or ZHT servers) in ZHT overlay network are configured, e.g. 192.168.1.100 50000 
+The IP and PORT pairs of neighbored nodes(or ZHT servers) in ZHT overlay network are configured, e.g. 192.168.1.100 50000, 192.168.1.100 50001 
 
 The port you defined to listen on at neighbored node(or ZHT server)(e.g. the PORT in zht.conf, or ./zhtserver -z zht.conf -n neighbor.conf -p 40000)
 MUST BE CONSISTENT WITH the port of that machine in neighbor.conf, otherwise, the zhtclient CANNOT reach the zhtserver by that port.

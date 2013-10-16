@@ -56,6 +56,7 @@ ConfHandler::MAP ConfHandler::NodeParameters = MAP();
 string ConfHandler::CONF_ZHT = "zht.conf";
 string ConfHandler::CONF_NODE = "node.conf";
 string ConfHandler::CONF_NEIGHBOR = "neighbor.conf";
+string ConfHandler::NOVOHT_FILE = "";
 
 uint ConfHandler::ZC_MAX_ZHT = 0;
 uint ConfHandler::ZC_NUM_REPLICAS = 0;
@@ -79,26 +80,17 @@ ConfHandler::~ConfHandler() {
 
 string ConfHandler::getProtocolFromConf() {
 
-	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
-
-	ConfHandler::MIT it;
-
-	for (it = zpmap->begin(); it != zpmap->end(); it++) {
-
-		ConfEntry ce;
-		ce.assign(it->first);
-
-		if (ce.name() == Const::PROTO_NAME) {
-
-			return ce.value();
-		}
-	}
-
-	return "";
+	return get_zhtconf_parameter(Const::PROTO_NAME);
 }
 
 string ConfHandler::getPortFromConf() {
 
+	return get_zhtconf_parameter(Const::PROTO_PORT);
+}
+
+string ConfHandler::get_zhtconf_parameter(const string &paraname) {
+
+	string result;
 	ConfHandler::MAP *zpmap = &ConfHandler::ZHTParameters;
 
 	ConfHandler::MIT it;
@@ -108,13 +100,15 @@ string ConfHandler::getPortFromConf() {
 		ConfEntry ce;
 		ce.assign(it->first);
 
-		if (ce.name() == Const::PROTO_PORT) {
+		if (ce.name() == paraname) {
 
-			return ce.value();
+			result = ce.value();
+
+			break;
 		}
 	}
 
-	return "";
+	return result;
 }
 
 void ConfHandler::initConf(string zhtConf, string neighborConf) {

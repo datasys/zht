@@ -80,23 +80,30 @@ private:
 	string append_shared(const ZPack &zpack);
 	string remove_shared(const ZPack &zpack);
 
+private:
 	static void *threaded_state_change_callback(void *arg);
 	static string state_change_callback_internal(const ZPack &zpack);
 
+private:
 	string compare_swap_internal(const ZPack &zpack);
 
 private:
 	string erase_status_code(string &val);
+	string get_novoht_file();
+	void init_store();
+	bool get_instant_swap();
+
+private:
 	static void init_sscb_mutex();
 
 private:
 	ProtoAddr _addr;
 	const ProtoStub * const _stub;
+	bool _instant_swap;
 
 private:
 	static NoVoHT *PMAP;
 	static QUEUE *PQUEUE;
-
 	static bool INIT_SCCB_MUTEX;
 	static pthread_mutex_t SCCB_MUTEX;
 };

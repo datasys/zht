@@ -51,14 +51,15 @@ int main(int argc, char **argv) {
 	extern char *optarg;
 
 	int printHelp = 0;
-	string protocol = Const::StringEmpty;
-	string port_from_input = Const::StringEmpty;
-	string port_from_conf = Const::StringEmpty;
-	string zhtConf = Const::StringEmpty;
-	string neighborConf = Const::StringEmpty;
+	string protocol;
+	string port_from_input;
+	string port_from_conf;
+	string zhtConf;
+	string neighborConf;
+	string novohtDbFile;
 
 	int c;
-	while ((c = getopt(argc, argv, "z:n:p:h")) != -1) {
+	while ((c = getopt(argc, argv, "z:n:p:f:h")) != -1) {
 		switch (c) {
 		case 'z':
 			zhtConf = string(optarg);
@@ -68,6 +69,9 @@ int main(int argc, char **argv) {
 			break;
 		case 'p':
 			port_from_input = string(optarg);
+			break;
+		case 'f':
+			novohtDbFile = string(optarg);
 			break;
 		case 'h':
 			printHelp = 1;
@@ -87,6 +91,8 @@ int main(int argc, char **argv) {
 
 	try {
 		if (!zhtConf.empty() && !neighborConf.empty()) {
+
+			ConfHandler::NOVOHT_FILE = Const::trim(novohtDbFile);
 
 			/*init config*/
 			ConfHandler::initConf(zhtConf, neighborConf);
@@ -161,5 +167,5 @@ int main(int argc, char **argv) {
 void printUsage(char *argv_0) {
 
 	fprintf(stdout, "Usage:\n%s %s\n", argv_0,
-			"-z zht.conf -n neighbor.conf [-p port] [-h(help)]");
+			"-z zht.conf -n neighbor.conf [-p port] [-f novoht_db_file] [-h(help)]");
 }

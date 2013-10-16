@@ -33,10 +33,12 @@
 #include "Const-impl.h"
 #include "Env.h"
 #include "lock_guard.h"
+#include "ConfHandler.h"
 
 #include <unistd.h>
 #include <iostream>
 #include <pthread.h>
+#include <stdlib.h>
 
 using namespace std;
 using namespace iit::datasys::zht::dm;
@@ -53,7 +55,7 @@ WorkerThreadArg::WorkerThreadArg(const ZPack &zpack, const ProtoAddr &addr,
 WorkerThreadArg::~WorkerThreadArg() {
 }
 
-NoVoHT* HTWorker::PMAP = new NoVoHT("", 100000, 10000, 0.7);
+NoVoHT* HTWorker::PMAP = NULL;
 
 HTWorker::QUEUE* HTWorker::PQUEUE = new QUEUE();
 
@@ -61,13 +63,17 @@ bool HTWorker::INIT_SCCB_MUTEX = false;
 pthread_mutex_t HTWorker::SCCB_MUTEX;
 
 HTWorker::HTWorker() :
-		_stub(NULL) {
+		_stub(NULL), _instant_swap(get_instant_swap()) {
+
+	init_store();
 
 	init_sscb_mutex();
 }
 
 HTWorker::HTWorker(const ProtoAddr& addr, const ProtoStub* const stub) :
-		_addr(addr), _stub(stub) {
+		_addr(addr), _stub(stub), _instant_swap(get_instant_swap()) {
+
+	init_store();
 
 	init_sscb_mutex();
 }
@@ -128,6 +134,7 @@ string HTWorker::insert_shared(const ZPack &zpack) {
 		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
+		_instant_swap ? PMAP->flushDbfile() : 0;
 		result = Const::ZSC_REC_SUCC; //0, succeed.
 	}
 
@@ -203,6 +210,7 @@ string HTWorker::append_shared(const ZPack &zpack) {
 		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
+		_instant_swap ? PMAP->flushDbfile() : 0;
 		result = Const::ZSC_REC_SUCC; //0, succeed.
 	}
 
@@ -374,6 +382,7 @@ string HTWorker::remove_shared(const ZPack &zpack) {
 		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
+		_instant_swap ? PMAP->flushDbfile() : 0;
 		result = Const::ZSC_REC_SUCC; //0, succeed.
 	}
 
@@ -404,4 +413,33 @@ void HTWorker::init_sscb_mutex() {
 		pthread_mutex_init(&SCCB_MUTEX, NULL);
 		INIT_SCCB_MUTEX = true;
 	}
+}
+
+string HTWorker::get_novoht_file() {
+
+	return ConfHandler::NOVOHT_FILE;
+}
+
+void HTWorker::init_store() {
+
+	if (PMAP == NULL)
+		PMAP = new NoVoHT(get_novoht_file(), 100000, 10000, 0.7);
+}
+
+bool HTWorker::get_instant_swap() {
+
+	string swap = ConfHandler::get_zhtconf_parameter(Const::INSTANT_SWAP);
+
+	int flag = atoi(swap.c_str());
+
+	bool result;
+
+	if (flag == 1)
+		result = true;
+	else if (flag == 0)
+		result = false;
+	else
+		result = false;
+
+	return result;
 }
