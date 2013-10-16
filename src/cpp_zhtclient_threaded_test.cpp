@@ -89,6 +89,7 @@ const int LOOKUP_SIZE = 1024 * 2; //size of buffer to store lookup result, large
 
 char *zhtConf = NULL;
 char *neighborConf = NULL;
+ZHTClient zhtclient;
 
 void printUsage(char *argv_0);
 
@@ -111,9 +112,6 @@ void *insert_threaded(void *arg) {
 
 void* test_insert(void *arg) {
 
-	ZHTClient zhtclient;
-	zhtclient.init(zhtConf, neighborConf);
-
 	pthread_t threads[CONCUR_DEGREE];
 
 	double start = TimeUtil::getTime_msec();
@@ -130,8 +128,6 @@ void* test_insert(void *arg) {
 	}
 
 	double end = TimeUtil::getTime_msec();
-
-	zhtclient.teardown();
 
 	char buf[200];
 	sprintf(buf, "test_insert(%d thread(s), each running %d insert(s)), %f(ms)",
@@ -154,9 +150,6 @@ void *remove_threaded(void *arg) {
 
 void* test_remove(void *arg) {
 
-	ZHTClient zhtclient;
-	zhtclient.init(zhtConf, neighborConf);
-
 	pthread_t threads[CONCUR_DEGREE];
 
 	double start = TimeUtil::getTime_msec();
@@ -173,8 +166,6 @@ void* test_remove(void *arg) {
 	}
 
 	double end = TimeUtil::getTime_msec();
-
-	zhtclient.teardown();
 
 	char buf[200];
 	sprintf(buf, "test_remove(%d thread(s), each running %d insert(s)), %f(ms)",
@@ -210,9 +201,6 @@ void *lookup_threaded(void *arg) {
 
 void* test_lookup(void *arg) {
 
-	ZHTClient zhtclient;
-	zhtclient.init(zhtConf, neighborConf);
-
 	pthread_t threads[CONCUR_DEGREE];
 
 	double start = TimeUtil::getTime_msec();
@@ -229,8 +217,6 @@ void* test_lookup(void *arg) {
 	}
 
 	double end = TimeUtil::getTime_msec();
-
-	zhtclient.teardown();
 
 	char buf[200];
 	sprintf(buf, "test_lookup(%d thread(s), each running %d insert(s)), %f(ms)",
@@ -256,9 +242,6 @@ void *append_threaded(void *arg) {
 
 void* test_append(void *arg) {
 
-	ZHTClient zhtclient;
-	zhtclient.init(zhtConf, neighborConf);
-
 	pthread_t threads[CONCUR_DEGREE];
 
 	double start = TimeUtil::getTime_msec();
@@ -275,8 +258,6 @@ void* test_append(void *arg) {
 	}
 
 	double end = TimeUtil::getTime_msec();
-
-	zhtclient.teardown();
 
 	char buf[200];
 	sprintf(buf, "test_append(%d thread(s), each running %d insert(s)), %f(ms)",
@@ -309,9 +290,6 @@ void *comp_swap_threaded(void *arg) {
 
 void* test_comp_swap(void *arg) {
 
-	ZHTClient zhtclient;
-	zhtclient.init(zhtConf, neighborConf);
-
 	pthread_t threads[CONCUR_DEGREE];
 
 	double start = TimeUtil::getTime_msec();
@@ -328,8 +306,6 @@ void* test_comp_swap(void *arg) {
 	}
 
 	double end = TimeUtil::getTime_msec();
-
-	zhtclient.teardown();
 
 	char buf[200];
 	sprintf(buf,
@@ -363,9 +339,6 @@ void* state_change_callback_threaded(void *arg) {
 
 void* test_state_change_callback(void *arg) {
 
-	ZHTClient zhtclient;
-	zhtclient.init(zhtConf, neighborConf);
-
 	pthread_t threads[CONCUR_DEGREE];
 
 	double start = TimeUtil::getTime_msec();
@@ -382,8 +355,6 @@ void* test_state_change_callback(void *arg) {
 	}
 
 	double end = TimeUtil::getTime_msec();
-
-	zhtclient.teardown();
 
 	char buf[200];
 	sprintf(buf,
@@ -511,7 +482,8 @@ int main(int argc, char **argv) {
 
 		/*init...*/
 		//c_zht_init(zhtConf, neighborConf); //zht.conf, neighbor.conf
-		//zhtclient.init(zhtConf, neighborConf);
+		zhtclient.init(zhtConf, neighborConf);
+
 		test_dipatch();
 
 		if (!is_insert && !is_remove && !is_lookup && !is_append
@@ -520,7 +492,7 @@ int main(int argc, char **argv) {
 
 		/*clear...*/
 		//c_zht_teardown();
-		//zhtclient.teardown();
+		zhtclient.teardown();
 	} else {
 
 		printUsage(argv[0]);
