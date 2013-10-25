@@ -157,10 +157,10 @@ see also <RUN TEST CASES FOR C BINDING> section
 
 NOTE THAT:
 mpiexec: mpi command to launch mpi jobs.
--np 4 ./zht-mpiserver: allocate 4 processors to run the zht-mpiserver processes. 
+-np 4 ./zht-mpiserver: allocate 4 processors to run 4 zht-mpiserver processes. 
 -z zht.conf: zht conf file as input argument to zht-mpiserver or zht-mpibroker, the same file mentioned above.
 -n neighbor.mpi.conf: negibor conf file as input argument to zht-mpiserver or zht-mpibroker, containing localhost in this case.			  
-zht-mpibroker: the process deployed on each node to talk to zht-mpiserver on behalf of zhtclient. 
+zht-mpibroker: the process launched on each node to talk to zht-mpiserver on behalf of zhtclient. 
 
 PAY SPECIAL ATTENTIONS:
 There is ONLY ONE INSTANCE of zht-mpibroker allowed to be deployed ON EVERY NODE.
@@ -171,9 +171,9 @@ are assigned to proper mpi-ranks that serve processing incoming requests from zh
 
 -------------------ZHT(USING MPI) CLUSTER DEPLOYMENT-------------------
 1. TO START zht-mpiserver and zht-mpibroker(e.g. ON MANY NODEs), RUN:
-mpiexec -f neighbor.mpi.conf -np <#processors> ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
+mpiexec -f neighbor.mpi.conf -np <#processes> ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
 OR
-mpiexec -hosts 192.168.1.100,192.168.1.101 -np <#processors> ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
+mpiexec -hosts 192.168.1.100,192.168.1.101 -np <#processes> ./zht-mpiserver -z zht.conf -n neighbor.mpi.conf : ./zht-mpibroker -z zht.conf -n neighbor.mpi.conf
 
 2. TO RUN THE BENCHMARK:
 see also <RUN THE BENCHMARK> section.
@@ -187,12 +187,12 @@ see also <RUN TEST CASES FOR C BINDING> section
 
 NOTE THAT:
 mpiexec: mpi command to launch mpi jobs.
--f neighbor.mpi.conf: negibor conf file containing nodes on which MPI processors run, in which each line is ip address(e.g. 192.168.1.100), DO NOT USE localhost.
--hosts 192.168.1.100,192.168.1.101: two nodes(comma separated ip addresses) on which MPI processors run.
--np <#processors> ./zht-mpiserver: allocate <#processors> processors to run the zht-mpiserver processes. 
+-f neighbor.mpi.conf: negibor conf file containing nodes on which MPI processes run, in which each line is ip address(e.g. 192.168.1.100), DO NOT USE localhost.
+-hosts 192.168.1.100,192.168.1.101: two nodes(comma separated ip addresses) on which MPI processes run.
+-np <#processes> ./zht-mpiserver: allocate <#processes> processors to run <#processes> zht-mpiserver processes. 
 -z zht.conf: zht conf file as input argument to zht-mpiserver or zht-mpibroker, the same file mentioned above.
 -n neighbor.mpi.conf: negibor conf file as input argument to zht-mpiserver or zht-mpibroker, in which each line is ip address(e.g. 192.168.1.100), DO NOT USE localhost.			  
-zht-mpibroker: the process deployed on each node to talk to zht-mpiserver on behalf of zhtclient. 
+zht-mpibroker: the process launched on each node to talk to zht-mpiserver on behalf of zhtclient. 
 
 PAY SPECIAL ATTENTIONS:
 There is ONLY ONE INSTANCE of zht-mpibroker allowed to be deployed ON EVERY NODE.

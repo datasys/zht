@@ -14,7 +14,7 @@ cpp_zhtclient_test.cpp: C++ examples that call ZHT client API C++ binding
 cpp_zhtclient_threaded_test.cpp: C++ examples that call ZHT client API C++ binding in multi-threaded context
 c_zhtclient.cpp: ZHT client API C binding, which delegates calls to <c_zhtclientStd.cpp>
 c_zhtclient.h
-c_zhtclient_lanl_threaded.c: C examples that call ZHT client API C binding in multi-threaded context
+c_zhtclient_lanl_threaded.c: C examples that call ZHT client API(e.g. c_zht_compare_swap) C binding in multi-threaded context
 c_zhtclientStd.cpp: C wrapper of ZHT client API C++ binding
 c_zhtclientStd.h
 c_zhtclient_test.c: C examples that call ZHT client API C binding
@@ -33,7 +33,7 @@ ip_server.cpp: abstraction for processing incoming socket requests, for IP proto
 ip_server.h
 lock_guard.cpp: wrapper of lock(e.g. pthread_mutex_t), in thread-safe and exception-safe manner
 lock_guard.h
-lru_cache.cpp: LRU cache eviction policy implimentation.
+lru_cache.cpp: LRU cache eviction policy implementation.
 lru_cache.h
 Makefile: make file the whole system
 meta.pb-c.c: Google-protocol-buffer-C-binding package generated based on meta.proto, only used inside <c_zhtclient_test.c>  
