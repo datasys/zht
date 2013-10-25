@@ -130,6 +130,7 @@ OR see also <cpp_zhtclient_test.cpp> on how to use ZHT API in c++ programs.
 
 To compile your own ZHT applications, link to <libzht.a> and include cpp_zhtclient.h and c_zhtclient.h for C++ and C programs, respectively.
 
+See also <doc/ZHT-dev-tutorial-CS554@cs.iit.pptx> for tutorial on how to built ZHT applications step by step.
 
 -------------------HOW TO COMPILE ZHT TO USE MPI PROTOCOL-------------------
 1. INSTALL MPI, e.g. MPICH or OpenMPI, assuming that the mpi is installed to /users/xiaobingo/install
