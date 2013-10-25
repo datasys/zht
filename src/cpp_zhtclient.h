@@ -65,7 +65,7 @@ public:
 			const string &new_val, string &result);
 	int compare_swap(const char *key, const char *seen_val, const char *new_val,
 			char *result);
-	int state_change_callback(const string &key, const string &expeded_val,
+	int state_change_callback(const string &key, const string &expected_val,
 			int lease);
 	int state_change_callback(const char *key, const char *expeded_val,
 			int lease);

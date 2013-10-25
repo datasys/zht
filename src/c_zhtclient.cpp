@@ -66,10 +66,10 @@ char *seen_value, const char *new_value, char *value_queried) {
 			value_queried);
 }
 
-int c_state_change_callback(const char *key, const char *expeded_val,
+int c_state_change_callback(const char *key, const char *expected_val,
 		int lease) {
 
-	return c_state_change_callback_std(zhtClient_c, key, expeded_val, lease);
+	return c_state_change_callback_std(zhtClient_c, key, expected_val, lease);
 }
 
 int c_zht_teardown() {

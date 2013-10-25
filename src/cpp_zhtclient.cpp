@@ -249,12 +249,12 @@ int ZHTClient::compare_swap(const char *key, const char *seen_val,
 }
 
 int ZHTClient::state_change_callback(const string &key,
-		const string &expeded_val, int lease) {
+		const string &expected_val, int lease) {
 
 	string val2;
 	string result;
 
-	int rc = commonOp(Const::ZSC_OPC_STCHGCB, key, expeded_val, val2, result,
+	int rc = commonOp(Const::ZSC_OPC_STCHGCB, key, expected_val, val2, result,
 			lease);
 
 	return rc;
