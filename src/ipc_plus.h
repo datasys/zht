@@ -40,7 +40,7 @@
 #include <string.h>
 
 /// Maximum message size.
-#define IPC_MAX_MSG_SZ  512
+#define IPC_MAX_MSG_SZ  102400
 /// Lowest message priority.
 #define IPC_MIN_MSG_PRI 100
 

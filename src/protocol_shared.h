@@ -31,6 +31,6 @@
 #ifndef PROTOCOL_SHARED_H_
 #define PROTOCOL_SHARED_H_
 
-#define IPC_MAX_MSG_SZ 512
+#define IPC_MAX_MSG_SZ 102400
 
 #endif /* PROTOCOL_SHARED_H_ */
