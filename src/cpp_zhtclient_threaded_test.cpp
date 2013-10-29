@@ -91,11 +91,13 @@ char *zhtConf = NULL;
 char *neighborConf = NULL;
 ZHTClient zhtclient;
 
+const char *key = "cpp_zhtclient_threaded_test";
+
 void printUsage(char *argv_0);
 
 void *insert_threaded(void *arg) {
 
-	const char *key = "insert_threaded";
+//	const char *key = "insert_threaded";
 
 	ZHTClient *zhtclient = (ZHTClient*) arg;
 
@@ -138,7 +140,7 @@ void* test_insert(void *arg) {
 
 void *remove_threaded(void *arg) {
 
-	const char *key = "remove_threaded";
+//	const char *key = "remove_threaded";
 
 	ZHTClient *zhtclient = (ZHTClient*) arg;
 
@@ -175,7 +177,7 @@ void* test_remove(void *arg) {
 
 void *lookup_threaded(void *arg) {
 
-	const char *key = "lookup_threaded";
+//	const char *key = "lookup_threaded";
 
 	ZHTClient *zhtclient = (ZHTClient*) arg;
 
@@ -226,7 +228,7 @@ void* test_lookup(void *arg) {
 
 void *append_threaded(void *arg) {
 
-	const char *key = "append_threaded";
+//	const char *key = "append_threaded";
 
 	ZHTClient *zhtclient = (ZHTClient*) arg;
 
@@ -267,7 +269,7 @@ void* test_append(void *arg) {
 
 void *comp_swap_threaded(void *arg) {
 
-	const char *key = "comp_swap_threaded";
+//	const char *key = "comp_swap_threaded";
 
 	ZHTClient *zhtclient = (ZHTClient*) arg;
 
@@ -316,7 +318,7 @@ void* test_comp_swap(void *arg) {
 
 void* state_change_callback_threaded(void *arg) {
 
-	const char *key = "state_change_callback_threaded";
+//	const char *key = "state_change_callback_threaded";
 
 	ZHTClient *zhtclient = (ZHTClient*) arg;
 

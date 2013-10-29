@@ -134,7 +134,11 @@ string HTWorker::insert_shared(const ZPack &zpack) {
 		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
-		_instant_swap ? PMAP->flushDbfile() : 0;
+		if (_instant_swap) {
+			PMAP->writeFile();
+			//PMAP->flushDbfile();
+		}
+
 		result = Const::ZSC_REC_SUCC; //0, succeed.
 	}
 
@@ -210,7 +214,11 @@ string HTWorker::append_shared(const ZPack &zpack) {
 		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
-		_instant_swap ? PMAP->flushDbfile() : 0;
+		if (_instant_swap) {
+			PMAP->writeFile();
+			//PMAP->flushDbfile();
+		}
+
 		result = Const::ZSC_REC_SUCC; //0, succeed.
 	}
 
@@ -382,7 +390,11 @@ string HTWorker::remove_shared(const ZPack &zpack) {
 		result = Const::ZSC_REC_NONEXISTKEY; //-92
 	} else {
 
-		_instant_swap ? PMAP->flushDbfile() : 0;
+		if (_instant_swap) {
+			PMAP->writeFile();
+			//PMAP->flushDbfile();
+		}
+
 		result = Const::ZSC_REC_SUCC; //0, succeed.
 	}
 
