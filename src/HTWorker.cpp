@@ -58,6 +58,8 @@ NoVoHT* HTWorker::PMAP = NULL;
 
 HTWorker::QUEUE* HTWorker::PQUEUE = new QUEUE();
 
+bool HTWorker::FIRST_ASYNC = false;
+
 int HTWorker::SCCB_POLL_INTERVAL = Env::get_sccb_poll_interval();
 
 HTWorker::HTWorker() :
@@ -234,8 +236,11 @@ string HTWorker::state_change_callback(const ZPack &zpack) {
 	WorkerThreadArg *wta = new WorkerThreadArg(zpack, _addr, _stub);
 	PQUEUE->push(wta); //queue the WorkerThreadArg to be used in thread function
 
-	pthread_t tid;
-	pthread_create(&tid, NULL, threaded_state_change_callback, NULL);
+	if (!FIRST_ASYNC) {
+		pthread_t tid;
+		pthread_create(&tid, NULL, threaded_state_change_callback, NULL);
+		FIRST_ASYNC = true;
+	}
 
 	return "";
 }
@@ -243,32 +248,35 @@ string HTWorker::state_change_callback(const ZPack &zpack) {
 void *HTWorker::threaded_state_change_callback(void *arg) {
 
 	WorkerThreadArg* pwta = NULL;
-	if (PQUEUE->pop(pwta)) { //dequeue the WorkerThreadArg
+	while (true) {
+		while (PQUEUE->pop(pwta)) { //dequeue the WorkerThreadArg
 
-		string result = state_change_callback_internal(pwta->_zpack);
+			string result = state_change_callback_internal(pwta->_zpack);
 
-		int mslapsed = 0;
-		int lease = atoi(pwta->_zpack.lease().c_str());
+			int mslapsed = 0;
+			int lease = atoi(pwta->_zpack.lease().c_str());
 
-		//printf("poll_interval: %d\n", poll_interval);
+			//printf("poll_interval: %d\n", poll_interval);
 
-		while (result != Const::ZSC_REC_SUCC) {
+			while (result != Const::ZSC_REC_SUCC) {
 
-			mslapsed += SCCB_POLL_INTERVAL;
-			usleep(SCCB_POLL_INTERVAL * 1000);
+				mslapsed += SCCB_POLL_INTERVAL;
+				usleep(SCCB_POLL_INTERVAL * 1000);
 
-			if (mslapsed >= lease)
-				break;
+				if (mslapsed >= lease)
+					break;
 
-			result = state_change_callback_internal(pwta->_zpack);
+				result = state_change_callback_internal(pwta->_zpack);
+			}
+
+			pwta->_stub->sendBack(pwta->_addr, result.data(), result.size());
+
+			/*pwta->_htw->_stub->sendBack(pwta->_htw->_addr, result.data(),
+			 result.size());*/
+
+			delete pwta;
+			pwta = NULL;
 		}
-
-		pwta->_stub->sendBack(pwta->_addr, result.data(), result.size());
-
-		/*pwta->_htw->_stub->sendBack(pwta->_htw->_addr, result.data(),
-		 result.size());*/
-
-		delete pwta;
 	}
 }
 

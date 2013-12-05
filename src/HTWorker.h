@@ -100,11 +100,10 @@ private:
 	const ProtoStub * const _stub;
 	bool _instant_swap;
 
-
-
 private:
 	static NoVoHT *PMAP;
 	static QUEUE *PQUEUE;
+	static bool FIRST_ASYNC;
 	static int SCCB_POLL_INTERVAL;
 };
 
