@@ -135,8 +135,7 @@ string HTWorker::insert_shared(const ZPack &zpack) {
 	} else {
 
 		if (_instant_swap) {
-			PMAP->writeFile();
-			//PMAP->flushDbfile();
+			PMAP->writeFileFG();
 		}
 
 		result = Const::ZSC_REC_SUCC; //0, succeed.
@@ -215,8 +214,7 @@ string HTWorker::append_shared(const ZPack &zpack) {
 	} else {
 
 		if (_instant_swap) {
-			PMAP->writeFile();
-			//PMAP->flushDbfile();
+			PMAP->writeFileFG();
 		}
 
 		result = Const::ZSC_REC_SUCC; //0, succeed.
@@ -391,8 +389,7 @@ string HTWorker::remove_shared(const ZPack &zpack) {
 	} else {
 
 		if (_instant_swap) {
-			PMAP->writeFile();
-			//PMAP->flushDbfile();
+			PMAP->writeFileFG();
 		}
 
 		result = Const::ZSC_REC_SUCC; //0, succeed.
