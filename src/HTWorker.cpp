@@ -58,16 +58,18 @@ NoVoHT* HTWorker::PMAP = NULL;
 
 HTWorker::QUEUE* HTWorker::PQUEUE = new QUEUE();
 
+int HTWorker::SCCB_POLL_INTERVAL = Env::get_sccb_poll_interval();
+
 HTWorker::HTWorker() :
 		_stub(NULL), _instant_swap(get_instant_swap()) {
 
-	init_store();
+	init_me();
 }
 
 HTWorker::HTWorker(const ProtoAddr& addr, const ProtoStub* const stub) :
 		_addr(addr), _stub(stub), _instant_swap(get_instant_swap()) {
 
-	init_store();
+	init_me();
 }
 
 HTWorker::~HTWorker() {
@@ -247,13 +249,13 @@ void *HTWorker::threaded_state_change_callback(void *arg) {
 
 		int mslapsed = 0;
 		int lease = atoi(pwta->_zpack.lease().c_str());
-		int poll_interval = Env::get_sccb_poll_interval();
+
 		//printf("poll_interval: %d\n", poll_interval);
 
 		while (result != Const::ZSC_REC_SUCC) {
 
-			mslapsed += poll_interval;
-			usleep(poll_interval * 1000);
+			mslapsed += SCCB_POLL_INTERVAL;
+			usleep(SCCB_POLL_INTERVAL * 1000);
 
 			if (mslapsed >= lease)
 				break;
@@ -405,7 +407,7 @@ string HTWorker::get_novoht_file() {
 	return ConfHandler::NOVOHT_FILE;
 }
 
-void HTWorker::init_store() {
+void HTWorker::init_me() {
 
 	if (PMAP == NULL)
 		PMAP = new NoVoHT(get_novoht_file(), 100000, 10000, 0.7);

@@ -92,7 +92,7 @@ private:
 private:
 	string erase_status_code(string &val);
 	string get_novoht_file();
-	void init_store();
+	void init_me();
 	bool get_instant_swap();
 
 private:
@@ -100,9 +100,12 @@ private:
 	const ProtoStub * const _stub;
 	bool _instant_swap;
 
+
+
 private:
 	static NoVoHT *PMAP;
 	static QUEUE *PQUEUE;
+	static int SCCB_POLL_INTERVAL;
 };
 
 #endif /* HTWORKER_H_ */
