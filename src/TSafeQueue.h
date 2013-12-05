@@ -30,11 +30,11 @@
 #ifndef TSAFEQUEUE_H_
 #define TSAFEQUEUE_H_
 
-#ifdef TSQUEUE
 #include <pthread.h>
 #include <queue>
+#include <mutex>
+#include <thread>
 using namespace std;
-#endif
 
 #ifdef BQUEUE
 #include <algorithm>
@@ -50,8 +50,6 @@ using namespace std;
 namespace iit {
 namespace cs550 {
 namespace finalproj {
-
-#ifdef TSQUEUE
 
 /*
  *
@@ -78,10 +76,11 @@ private:
 
 private:
 	std::queue<T> _queue;
-	pthread_mutex_t _mutex;
+	std::mutex _mutex;
+	//pthread_mutex_t _mutex;
+
 }
 ;
-#endif
 
 #ifdef BQUEUE
 template<typename T>

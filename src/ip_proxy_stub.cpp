@@ -110,7 +110,7 @@ void IPProtoProxy::putSockMutex(const string& host, const uint& port) {
 
 	if (it == MUTEX_CACHE.end()) {
 
-		lock_guard lock(&MC_MUTEX);
+		LockGuard lock(&MC_MUTEX);
 
 		pthread_mutex_t sock_mutex;
 		pthread_mutex_init(&sock_mutex, NULL);

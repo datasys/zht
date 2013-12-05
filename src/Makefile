@@ -1,6 +1,6 @@
-TARGETS = zht_ctest zht_cpptest zht_ben zhtserver libzht.a c_zhtclient_threaded_test cpp_zhtclient_threaded_test c_zhtclient_lanl_threaded
+TARGETS = zht_ctest zht_cpptest zht_ben zhtserver libzht.a c_zhtclient_threaded_test cpp_zhtclient_threaded_test c_zhtclient_lanl_threaded sample
 CC = gcc
-CCFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB} -DPF_INET -DBIG_MSG -DSOCKET_CACHE -DSCCB -DTSQUEUE
+CCFLAGS = -g -std=c++11 -I${USER_INCLUDE} -L${USER_LIB} -DPF_INET -DBIG_MSG -DSOCKET_CACHE -DSCCB -DTSQUEUE
 #CCFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB} -DTHREADED_SERVE -DPF_INET -DBIG_MSG -DSOCKET_CACHE -DSCCB -DTSQUEUE 
 MPIFLAGS = -g -I${USER_INCLUDE} -L${USER_LIB} -DMPI_INET
 LIBFLAGS = -lstdc++ -lrt -lpthread -lm -lc -lprotobuf -lprotobuf-c
@@ -9,8 +9,9 @@ COMMON = common/
 
 all:	$(TARGETS)
 
-
-
+sample: sample.o
+	$(CC) $(CCFLAGS) -o $@ $^ $(LIBFLAGS)
+	
 c_zhtclient_lanl_threaded: c_zhtclient_lanl_threaded.o c_zhtclient.o c_zhtclientStd.o lock_guard.o cpp_zhtclient.o meta.pb-c.o lru_cache.o meta.pb.o zpack.pb.o novoht.o bigdata_transfer.o\
 Const.o ConfHandler.o ConfEntry.o \
 ProxyStubFactory.o proxy_stub.o ip_proxy_stub.o mq_proxy_stub.o ipc_plus.o tcp_proxy_stub.o udp_proxy_stub.o \

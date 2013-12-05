@@ -31,41 +31,42 @@
 #define TSAFEQUEUE_IMPL_H_
 
 #include "TSafeQueue.h"
-#include "lock_guard.h"
 
 namespace iit {
 namespace cs550 {
 namespace finalproj {
 
-#ifdef TSQUEUE
 template<typename T>
-TSafeQueue<T>::TSafeQueue() {
-	init();
+TSafeQueue<T>::TSafeQueue() :
+		_mutex() {
+	//init();
 }
 
 template<typename T>
 TSafeQueue<T>::~TSafeQueue() {
 
-	pthread_mutex_destroy(&_mutex);
+	//pthread_mutex_destroy(&_mutex);
 }
 
 template<typename T>
 void TSafeQueue<T>::init() {
 
-	pthread_mutex_init(&_mutex, NULL);
+	//pthread_mutex_init(&_mutex, NULL);
 }
 
 template<typename T>
 size_t TSafeQueue<T>::size() {
 
-	lock_guard lock(&_mutex);
+	//lock_guard lock(&_mutex);
+	unique_lock < mutex > lck(_mutex);
 	return _queue.size();
 }
 
 template<typename T>
 bool TSafeQueue<T>::push(const T &element) {
 
-	lock_guard lock(&_mutex);
+	//lock_guard lock(&_mutex);
+	unique_lock < mutex > lck(_mutex);
 	_queue.push(element);
 
 	return true;
@@ -74,7 +75,8 @@ bool TSafeQueue<T>::push(const T &element) {
 template<typename T>
 bool TSafeQueue<T>::pop(T &element) {
 
-	lock_guard lock(&_mutex);
+	//lock_guard lock(&_mutex);
+	unique_lock < mutex > lck(_mutex);
 
 	bool result = false;
 	if (!_queue.empty()) {
@@ -90,23 +92,24 @@ bool TSafeQueue<T>::pop(T &element) {
 template<typename T>
 void TSafeQueue<T>::pop_n(int n) {
 
-	lock_guard lock(&_mutex);
+	//lock_guard lock(&_mutex);
+	unique_lock < mutex > lck(_mutex);
 
 	for (int i = 0; i < n; i++) {
 		if (!_queue.empty())
-		_queue.pop();
+			_queue.pop();
 	}
 }
 
 template<typename T>
 void TSafeQueue<T>::pop_all() {
 
-	lock_guard lock(&_mutex);
+	//lock_guard lock(&_mutex);
+	std::unique_lock < std::mutex > lck(_mutex);
 
 	while (!_queue.empty())
-	_queue.pop();
+		_queue.pop();
 }
-#endif
 
 #ifdef BQUEUE
 template<typename T>

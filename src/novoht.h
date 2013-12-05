@@ -258,7 +258,7 @@ public:
 			  return NULL;}
 };
 
-unsigned long long hash(string k);
+unsigned long long fnv_hash(string k);
 
 void fsu(kvpair *);
 
