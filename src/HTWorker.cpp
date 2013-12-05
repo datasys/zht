@@ -32,7 +32,6 @@
 
 #include "Const-impl.h"
 #include "Env.h"
-#include "lock_guard.h"
 #include "ConfHandler.h"
 
 #include <unistd.h>
@@ -59,23 +58,16 @@ NoVoHT* HTWorker::PMAP = NULL;
 
 HTWorker::QUEUE* HTWorker::PQUEUE = new QUEUE();
 
-bool HTWorker::INIT_SCCB_MUTEX = false;
-pthread_mutex_t HTWorker::SCCB_MUTEX;
-
 HTWorker::HTWorker() :
 		_stub(NULL), _instant_swap(get_instant_swap()) {
 
 	init_store();
-
-	init_sscb_mutex();
 }
 
 HTWorker::HTWorker(const ProtoAddr& addr, const ProtoStub* const stub) :
 		_addr(addr), _stub(stub), _instant_swap(get_instant_swap()) {
 
 	init_store();
-
-	init_sscb_mutex();
 }
 
 HTWorker::~HTWorker() {
@@ -237,7 +229,6 @@ string HTWorker::append(const ZPack &zpack) {
 
 string HTWorker::state_change_callback(const ZPack &zpack) {
 
-	lock_guard lock(&SCCB_MUTEX);
 	WorkerThreadArg *wta = new WorkerThreadArg(zpack, _addr, _stub);
 	PQUEUE->push(wta); //queue the WorkerThreadArg to be used in thread function
 
@@ -249,14 +240,8 @@ string HTWorker::state_change_callback(const ZPack &zpack) {
 
 void *HTWorker::threaded_state_change_callback(void *arg) {
 
-	lock_guard lock(&SCCB_MUTEX);
-
-	if (!PQUEUE->empty()) { //dequeue the WorkerThreadArg
-
-		WorkerThreadArg* pwta = PQUEUE->front();
-		PQUEUE->pop();
-
-		lock.unlock();
+	WorkerThreadArg* pwta = NULL;
+	if (PQUEUE->pop(pwta)) { //dequeue the WorkerThreadArg
 
 		string result = state_change_callback_internal(pwta->_zpack);
 
@@ -413,15 +398,6 @@ string HTWorker::remove(const ZPack &zpack) {
 string HTWorker::erase_status_code(string & val) {
 
 	return val.substr(3);
-}
-
-void HTWorker::init_sscb_mutex() {
-
-	if (!INIT_SCCB_MUTEX) {
-
-		pthread_mutex_init(&SCCB_MUTEX, NULL);
-		INIT_SCCB_MUTEX = true;
-	}
 }
 
 string HTWorker::get_novoht_file() {

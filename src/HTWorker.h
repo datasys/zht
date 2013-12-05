@@ -36,7 +36,9 @@
 #include "proxy_stub.h"
 #include <string>
 #include <queue>
+#include "TSafeQueue-impl.h"
 using namespace std;
+using namespace iit::cs550::finalproj;
 
 class HTWorker;
 
@@ -57,7 +59,7 @@ public:
  */
 class HTWorker {
 public:
-	typedef queue<WorkerThreadArg*> QUEUE;
+	typedef TSafeQueue<WorkerThreadArg*> QUEUE;
 
 public:
 	HTWorker();
@@ -94,9 +96,6 @@ private:
 	bool get_instant_swap();
 
 private:
-	static void init_sscb_mutex();
-
-private:
 	ProtoAddr _addr;
 	const ProtoStub * const _stub;
 	bool _instant_swap;
@@ -104,8 +103,6 @@ private:
 private:
 	static NoVoHT *PMAP;
 	static QUEUE *PQUEUE;
-	static bool INIT_SCCB_MUTEX;
-	static pthread_mutex_t SCCB_MUTEX;
 };
 
 #endif /* HTWORKER_H_ */
