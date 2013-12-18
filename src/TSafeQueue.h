@@ -32,8 +32,8 @@
 
 #include <pthread.h>
 #include <queue>
-#include <mutex>
-#include <thread>
+//#include <mutex>
+//#include <thread>
 using namespace std;
 
 #ifdef BQUEUE
@@ -76,8 +76,8 @@ private:
 
 private:
 	std::queue<T> _queue;
-	std::mutex _mutex;
-	//pthread_mutex_t _mutex;
+	//std::mutex _mutex;
+	pthread_mutex_t _mutex;
 
 }
 ;
