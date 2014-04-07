@@ -77,10 +77,24 @@ private:
 	string commonOpInternal(const string &opcode, const string &key,
 			const string &val, const string &val2, string &result, int lease);
 	string extract_value(const string &returnStr);
+	void init_mutex();
+	void destropy_mutex();
 
 private:
 	ProtoProxy *_proxy;
 	int _msg_maxsize;
+
+#ifdef IND_MUTEX
+	pthread_mutex_t cpp_zht_lookup_mutex;
+	pthread_mutex_t cpp_zht_remove_mutex;
+	pthread_mutex_t cpp_zht_insert_mutex;
+	pthread_mutex_t cpp_zht_append_mutex;
+	pthread_mutex_t cpp_zht_compare_swap_mutex;
+	pthread_mutex_t cpp_zht_state_change_callback_mutex;
+#elif SHARED_MUTEX
+	pthread_mutex_t cpp_zht_client_mutex;
+#else
+#endif
 };
 
 #endif /* ZHTCLIENT_H_ */

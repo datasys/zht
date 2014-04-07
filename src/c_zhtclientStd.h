@@ -97,7 +97,7 @@ ZHT_CPP(extern "C" {)
 	 * EXPECTED_VAL: the value expected to be equal to what is lookuped by the key, if equal, return 0, or keep polling in server-side.
 	 * return code: 0 if succeeded, or -1 if empty key, or -2 if failed, -98 if unrecognized operation.
 	 * */
-	int c_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
+	int c_zht_state_change_callback_std(ZHTClient_c zhtClient, const char *key,
 			const char *expected_val, int lease);
 
 	/* wrapp C++ ZHTClient::teardown.

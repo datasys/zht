@@ -93,7 +93,7 @@ ZHT_CPP(extern "C" {)
 	 * LEASE: milliseconds
 	 * return code: 0 if succeeded, or -1 if empty key, or -2 if failed, -98 if unrecognized operation.
 	 * */
-	int c_state_change_callback(const char *key, const char *expected_val,
+	int c_zht_state_change_callback(const char *key, const char *expected_val,
 			int lease);
 
 	/* wrapp C++ ZHTClient::teardown.

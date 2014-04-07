@@ -314,7 +314,7 @@ void* state_change_callback_threaded(void *arg) {
 
 	//sprintf(buf, "%lu", pthread_self());
 	sprintf(buf, "%lu", 140328762492672);
-	int rc = c_state_change_callback(key, buf, 500);
+	int rc = c_zht_state_change_callback(key, buf, 500);
 
 	fprintf(stdout,
 			"[%lu] c_state_change_callback, {key}:{value}=> {%s}:{%s}, rc(%d)\n",

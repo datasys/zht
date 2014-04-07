@@ -37,6 +37,7 @@
 #include "ConfHandler.h"
 #include "Env.h"
 #include "StrTokenizer.h"
+#include "lock_guard.h"
 
 using namespace iit::datasys::zht::dm;
 
@@ -60,6 +61,8 @@ ZHTClient::~ZHTClient() {
 }
 
 int ZHTClient::init(const string& zhtConf, const string& neighborConf) {
+
+	init_mutex();
 
 	ConfHandler::initConf(zhtConf, neighborConf);
 
@@ -104,6 +107,13 @@ int ZHTClient::commonOp(const string &opcode, const string &key,
 
 int ZHTClient::lookup(const string &key, string &result) {
 
+#ifdef IND_MUTEX
+	LockGuard lock(&cpp_zht_lookup_mutex);
+#elif SHARED_MUTEX
+	LockGuard lock(&cpp_zht_client_mutex);
+#else
+#endif
+
 	string val;
 	string val2;
 	int rc = commonOp(Const::ZSC_OPC_LOOKUP, key, val, val2, result, 1);
@@ -127,6 +137,13 @@ int ZHTClient::lookup(const char *key, char *result) {
 
 int ZHTClient::remove(const string &key) {
 
+#ifdef IND_MUTEX
+	LockGuard lock(&cpp_zht_remove_mutex);
+#elif SHARED_MUTEX
+	LockGuard lock(&cpp_zht_client_mutex);
+#else
+#endif
+
 	string val;
 	string val2;
 	string result;
@@ -146,6 +163,13 @@ int ZHTClient::remove(const char *key) {
 
 int ZHTClient::insert(const string &key, const string &val) {
 
+#ifdef IND_MUTEX
+	LockGuard lock(&cpp_zht_insert_mutex);
+#elif SHARED_MUTEX
+	LockGuard lock(&cpp_zht_client_mutex);
+#else
+#endif
+
 	string val2;
 	string result;
 	int rc = commonOp(Const::ZSC_OPC_INSERT, key, val, val2, result, 1);
@@ -164,6 +188,13 @@ int ZHTClient::insert(const char *key, const char *val) {
 }
 
 int ZHTClient::append(const string &key, const string &val) {
+
+#ifdef IND_MUTEX
+	LockGuard lock(&cpp_zht_append_mutex);
+#elif SHARED_MUTEX
+	LockGuard lock(&cpp_zht_client_mutex);
+#else
+#endif
 
 	string val2;
 	string result;
@@ -226,6 +257,13 @@ string ZHTClient::extract_value(const string &returnStr) {
 int ZHTClient::compare_swap(const string &key, const string &seen_val,
 		const string &new_val, string &result) {
 
+#ifdef IND_MUTEX
+	LockGuard lock(&cpp_zht_compare_swap_mutex);
+#elif SHARED_MUTEX
+	LockGuard lock(&cpp_zht_client_mutex);
+#else
+#endif
+
 	int rc = commonOp(Const::ZSC_OPC_CMPSWP, key, seen_val, new_val, result, 1);
 
 	result = extract_value(result);
@@ -250,6 +288,13 @@ int ZHTClient::compare_swap(const char *key, const char *seen_val,
 
 int ZHTClient::state_change_callback(const string &key,
 		const string &expected_val, int lease) {
+
+#ifdef IND_MUTEX
+	LockGuard lock(&cpp_zht_state_change_callback_mutex);
+#elif SHARED_MUTEX
+	LockGuard lock(&cpp_zht_client_mutex);
+#else
+#endif
 
 	string val2;
 	string result;
@@ -338,8 +383,40 @@ string ZHTClient::commonOpInternal(const string &opcode, const string &key,
 
 int ZHTClient::teardown() {
 
+	destropy_mutex();
+
 	if (_proxy->teardown())
 		return 0;
 	else
 		return -1;
+}
+
+void ZHTClient::init_mutex() {
+
+#ifdef IND_MUTEX
+	pthread_mutex_init(&cpp_zht_lookup_mutex, NULL);
+	pthread_mutex_init(&cpp_zht_remove_mutex, NULL);
+	pthread_mutex_init(&cpp_zht_insert_mutex, NULL);
+	pthread_mutex_init(&cpp_zht_append_mutex, NULL);
+	pthread_mutex_init(&cpp_zht_compare_swap_mutex, NULL);
+	pthread_mutex_init(&cpp_zht_state_change_callback_mutex, NULL);
+#elif SHARED_MUTEX
+	pthread_mutex_init(&cpp_zht_client_mutex, NULL);
+#else
+#endif
+}
+
+void ZHTClient::destropy_mutex() {
+
+#ifdef IND_MUTEX
+	pthread_mutex_destroy (&cpp_zht_lookup_mutex);
+	pthread_mutex_destroy (&cpp_zht_remove_mutex);
+	pthread_mutex_destroy (&cpp_zht_insert_mutex);
+	pthread_mutex_destroy (&cpp_zht_append_mutex);
+	pthread_mutex_destroy (&cpp_zht_compare_swap_mutex);
+	pthread_mutex_destroy (&cpp_zht_state_change_callback_mutex);
+#elif SHARED_MUTEX
+	pthread_mutex_destroy(&cpp_zht_client_mutex);
+#else
+#endif
 }

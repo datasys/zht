@@ -102,7 +102,6 @@ bool TCPProxy::teardown() {
 
 		result &= rc == 0;
 	}
-
 	CONN_CACHE.clear();
 
 	result &= IPProtoProxy::teardown();
